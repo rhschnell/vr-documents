@@ -12,7 +12,7 @@ Closes #*specify issue number*
 * [ ] Line coverage is as expected (at least 80%) in the HTML report, and testing was done as much as possible.
 * [ ] There are no StyleCop errors.
 * [ ] The MR contains the spent time, tags, the two reviewers, there is an approval rule that the two reviewers must approve before merging, and squash commits are checked.
-* [ ] The corresponding Sprint Retrospective section has been written in our common document (Google Docs).
+* [ ] The corresponding Sprint Retrospective section has been written in our wiki.
 
 # Details
 *Please specify any details regarding your merge request*
