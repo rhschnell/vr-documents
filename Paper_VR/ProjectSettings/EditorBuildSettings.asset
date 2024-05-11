@@ -6,8 +6,10 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
+    path: Assets/Scenes/Menu.unity
     guid: 2ea7383a0a8af431080e0aa251ee7115
   m_configObjects:
+    WebXR.Settings: {fileID: 11400000, guid: 2842b2860e8afb840969fe1538c4abc2, type: 2}
+    com.unity.input.settings: {fileID: 11400000, guid: a1204ed6290a40a41a93a421de427582, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: c6d1ee6bcfd878449b99035046d93e0f, type: 2}
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 3be9b9f674e058f4bb40e94174bb7257, type: 2}
