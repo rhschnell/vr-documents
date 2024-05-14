@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1eca7773dbc7f5b47878b382f321f62e, type: 3}
+  m_Name: GoogleDriveSettings
+  m_EditorClassIdentifier: 
+  genericClientCredentials:
+    client_id: 285080822982-56c4ltqu2q9n68rmooapv5ejoq2v5b0b.apps.googleusercontent.com
+    project_id: feisty-parity-422613-r2
+    auth_uri: https://accounts.google.com/o/oauth2/auth
+    token_uri: https://oauth2.googleapis.com/token
+    auth_provider_x509_cert_url: https://www.googleapis.com/oauth2/v1/certs
+    client_secret: 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
+    redirect_uris:
+    - http://localhost:8000
+    - http://localhost:60606
+  uriSchemeClientCredentials:
+    clientId: 285080822982-56c4ltqu2q9n68rmooapv5ejoq2v5b0b.apps.googleusercontent.com
+    reversedClientId: 
+    plistVersion: 
+    bundleId: 
+  accessScopes:
+  - https://www.googleapis.com/auth/drive
+  - https://www.googleapis.com/auth/drive.appdata
+  loopbackUri: http://localhost
+  loopbackPort: 8000
+  loopbackResponseHtml: <html><h1>Please return to the app.</h1></html>
+  accessTokenPrefsKey: AIzaSyCR2Bdg8ZpQbJ6uAgE38k-TgKHCoE0m4pU
+  refreshTokenPrefsKey: AIzaSyCR2Bdg8ZpQbJ6uAgE38k-TgKHCoE0m4pU
