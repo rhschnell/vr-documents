@@ -14,30 +14,26 @@ public class GoogleLogin : MonoBehaviour
     public static string folderID;
     private bool Once = true;
 
-
     private void Awake()
     {
-        //connect to google account
+        // connect to google account
 
         settings = GoogleDriveSettings.LoadFromResources();
     }
+
     // Start is called before the first frame update
     void Start()
     {
-        UpdateInfo();
-
-        
+        this.UpdateInfo();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(request.IsDone && Once)
+        if (this.request.IsDone && this.Once)
         {
-            Once = false;
-            StartCoroutine(FindId());
-            
-
+            this.Once = false;
+            this.StartCoroutine(this.FindId());
         }
     }
 
@@ -45,11 +41,11 @@ public class GoogleLogin : MonoBehaviour
     {
         AuthController.CancelAuth();
 
-        request = GoogleDriveAbout.Get();
-        request.Fields = new List<string> { "user" };
-        request.Send();
+        // Make a request and send it to the API
+        this.request = GoogleDriveAbout.Get();
+        this.request.Fields = new List<string> { "user" };
+        this.request.Send();
     }
-
 
     public IEnumerator FindId()
     {
@@ -57,27 +53,22 @@ public class GoogleLogin : MonoBehaviour
         requestList = new GoogleDriveFiles.ListRequest();
         requestList.Fields = new List<string> { "files(id)" };
 
-        requestList.Q = $"'root' in parents and name = '{folderName}' and trashed = false";
+        requestList.Q = $"'root' in parents and name = '{this.folderName}' and trashed = false";
         yield return requestList.Send();
         // if 0 => make one
-        if(requestList.IsError)
+        if (requestList.IsError)
         {
             print("ERROR");
         }
-        if(requestList.ResponseData.Files.Count == 0)
-        {
+
+        if (requestList.ResponseData.Files.Count == 0) {
             StartCoroutine(CreateFolder());
-        }
-        else
-        {
+        } else {
             folderID = requestList.ResponseData.Files[0].Id;
             SceneManager.LoadSceneAsync(1);
-            //SceneManager.SetActiveScene(SceneManager.GetSceneByName("EnviromentMenu"));
+            // SceneManager.SetActiveScene(SceneManager.GetSceneByName("EnviromentMenu"));
             SceneManager.UnloadSceneAsync(0);
         }
-
-
-        
     }
 
     public IEnumerator CreateFolder()

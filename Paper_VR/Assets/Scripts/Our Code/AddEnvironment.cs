@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -21,11 +20,14 @@ public class AddEnvironment : MonoBehaviour
     /// </summary>
     public void AddEnvironmentButton()
     {
-        string environmentName = InputField.text;
-        if (environmentName == ""){
+        string environmentName = this.InputField.text;
+        if (environmentName == "")
+        {
             print("Name must not be empty!");
         }
-        else {
+        else
+        {
+            // Create a new environment folder in the PaperVR folder
             UnityGoogleDrive.Data.File newFile = new UnityGoogleDrive.Data.File { Name = environmentName, MimeType = "application/vnd.google-apps.folder" };
             newFile.Parents = new List<string> { GoogleLogin.folderID };
             GoogleDriveFiles.CreateRequest createRequest = GoogleDriveFiles.Create(newFile);
