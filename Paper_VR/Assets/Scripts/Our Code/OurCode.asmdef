@@ -1,0 +1,23 @@
+{
+    "name": "OurCode",
+    "rootNamespace": "",
+    "references": [
+        "Unity.XR.CoreUtils",
+        "Unity.TextMeshPro",
+        "WebXR",
+        "WebXR.InputSystem",
+        "Elringus.UnityGoogleDrive.Editor",
+        "Elringus.UnityGoogleDrive.Runtime",
+        "Unity.VisualStudio.Editor",
+        "KeyBoard"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
