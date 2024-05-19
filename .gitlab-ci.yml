@@ -145,7 +145,16 @@ test-editmode-with-junit-reports:
   stage: build_and_test
   <<: *unity_defaults
   script:
+    - apt-get update && apt-get dist-upgrade && apt-get install -y openjdk-11-jre
+    - export PATH="$PATH:/root/.dotnet/tools"
+    - dotnet tool install --global dotnet-sonarscanner --version 5.3.1
+    - dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.8.12
+    - echo 'ANALYSE CODE:'
+    - echo ${CI_COMMIT_BRANCH}
+    # - dotnet-sonarscanner -Dsonar.sources=Paper_VR/Assets/Scripts -Dsonar-brach.name=${CI_COMMIT_BRANCH} -Dsonar.organization=paridon -Dsonar.projectKey=paridon_paper-vr -Dsonar.host.url=https://sonarcloud.io
+    - dotnet-sonarscanner begin /k:paridon_paper-vr /o:paridon /d:sonar-branch.name=${CI_COMMIT_BRANCH} /d:sonar.organization=paridon /d:sonar.projectKey=paridon_paper-vr /d:sonar.host.url=https://sonarcloud.io
     - chmod +x ./ci/build.sh && ./ci/build.sh
+    - dotnet-sonarscanner end /d:sonar.login=f555041c7dd5d46fc9463d7ec27540ccd39f2ca6
   artifacts:
     paths:
       - $UNITY_DIR/Builds/
