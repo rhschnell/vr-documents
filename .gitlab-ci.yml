@@ -193,6 +193,7 @@ build-WebGL:
     BUILD_TARGET: WebGL
 
 code-analysis:
+  stage: build_and_test
   needs:
     - job: build-WebGL
   image: $IMAGE:$UNITY_VERSION-webgl-$IMAGE_VERSION
