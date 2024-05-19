@@ -199,7 +199,7 @@ code-analysis:
   image: $IMAGE:$UNITY_VERSION-webgl-$IMAGE_VERSION
   script:
     - echo 'ANALYSE CODE'
-    - msbuild /t:Metrics
+    - dotnet build /t:Metrics
     - ls
     - echo 'READY CODE'
         
