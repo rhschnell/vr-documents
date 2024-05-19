@@ -192,6 +192,14 @@ build-WebGL:
   variables:
     BUILD_TARGET: WebGL
 
+code-analysis:
+    depends_on:
+      - build_and_test
+    image: $IMAGE:$UNITY_VERSION-webgl-$IMAGE_VERSION
+    script:
+      - echo 'ANALYSE CODE'
+        
+    
 # build-android:
 #   <<: *build
 #   image: $IMAGE:$UNITY_VERSION-android-$IMAGE_VERSION
