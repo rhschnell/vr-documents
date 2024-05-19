@@ -150,7 +150,9 @@ test-editmode-with-junit-reports:
     # 6.2.0 = Latest dotnet-sonarscanner
     - dotnet tool install --global dotnet-sonarscanner --version 5.3.1 
     - dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.8.12
+    - dotnet-sonarscanner begin /k:paridon_paper-vr /d:sonar.login=${SONAR_TOKEN} /d:sonar.sources=Paper_VR/Assets/Scripts /d:sonar-brach.name=${CI_COMMIT_BRANCH} /d:sonar.organization=paridon /d:sonar.projectKey=paridon_paper-vr /d:sonar.host.url=https://sonarcloud.io
     - chmod +x ./ci/build.sh && ./ci/build.sh
+    - dotnet-sonarscanner end /d:sonar.login=${SONAR_TOKEN}
   artifacts:
     paths:
       - $UNITY_DIR/Builds/
