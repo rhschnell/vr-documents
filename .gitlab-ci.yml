@@ -14,6 +14,10 @@ variables:
   # You can expose this in Unity via Application.version
   VERSION_NUMBER_VAR: $CI_COMMIT_REF_SLUG-$CI_PIPELINE_ID-$CI_JOB_ID
   VERSION_BUILD_VAR: $CI_PIPELINE_IID
+  # SONARQUBE  
+  SONAR_TOKEN: 46965acdb8f02cb0891791ebde3d9bfe44881e46
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+  GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
 
 image: $IMAGE:$UNITY_VERSION-base-$IMAGE_VERSION
 
@@ -66,7 +70,6 @@ get-activation-file:
     paths:
       - $UNITY_ACTIVATION_FILE
     expire_in: 10 min # Expiring this as artifacts may contain sensitive data and should not be kept public
-
 
 .test: &test
   stage: build_and_test
@@ -151,6 +154,20 @@ test-editmode-with-junit-reports:
   # tags:
   #   - gitlab-org
 
+sonarcloud-check-paper-vr:
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script:
+    - echo 'ANALYSE CODE'
+    - sonar-scanner -Dsonar.sources=Paper_VR/Assets/Scripts -Dsonar.organization=paridon -Dsonar.projectKey=paridon_paper-vr
+  rules:
+    - if: $CI_COMMIT_REF_NAME == 'main' || $CI_PIPELINE_SOURCE == 'merge_request_event'
+
 # build-StandaloneLinux64:
 #   <<: *build
 #   variables:
@@ -190,21 +207,7 @@ build-WebGL:
     - chmod +x ./ci/before_script.sh && ./ci/before_script.sh
     - apt-get update && apt-get install ffmpeg -y
   variables:
-    BUILD_TARGET: WebGL
-
-code-analysis:
-  stage: build_and_test
-  <<: *unity_defaults
-  image: mcr.microsoft.com/dotnet/sdk:8.0
-  # needs: 
-  #  - job: build-WebGL
-  script:
-    # - apt-get update && apt-get install -y dotnet
-    - echo 'ANALYSE CODE'
-    # - dotnet build /t:Metrics
-    - 'ls -al'
-    - echo 'READY CODE'
-        
+    BUILD_TARGET: WebGL        
     
 # build-android:
 #   <<: *build
