@@ -155,6 +155,7 @@ test-editmode-with-junit-reports:
   #   - gitlab-org
 
 sonarcloud-check-paper-vr:
+  stage: build_and_test
   image:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
