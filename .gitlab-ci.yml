@@ -145,18 +145,7 @@ test-editmode-with-junit-reports:
   stage: build_and_test
   <<: *unity_defaults
   script:
-    - apt-get update && apt-get install -y dotnet-sdk-6.0
-    - export PATH="$PATH:/root/.dotnet/tools"
-    # 6.2.0 = Latest dotnet-sonarscanner
-    # - dotnet tool install --global dotnet-sonarscanner --version 5.3.1 
-    - dotnet tool install --global dotnet-sonarscanner --version 6.2.0 
-    - dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.8.12
-    
-    # /d:sonar.projectKey=paridon_paper-vr 
-    # /d:sonar.organization=paridon 
-    - dotnet-sonarscanner begin /k:paridon_paper-vr /o:paridon /d:sonar.login=${SONAR_TOKEN} /d:sonar.sources=Paper_VR/Assets/Scripts /d:sonar-brach.name=${CI_COMMIT_BRANCH} /d:sonar.host.url=https://sonarcloud.io
     - chmod +x ./ci/build.sh && ./ci/build.sh
-    - dotnet-sonarscanner end /d:sonar.login=${SONAR_TOKEN}
   artifacts:
     paths:
       - $UNITY_DIR/Builds/
@@ -167,27 +156,18 @@ test-editmode-with-junit-reports:
 
 sonarcloud-check-paper-vr:
   stage: build_and_test
-  image:
-    # name: mcr.microsoft.com/dotnet/sdk:5.0
-    name: sonarsource/sonar-scanner-cli:latest
-    entrypoint: [""]
-  cache:
-    key: "${CI_JOB_NAME}"
-    paths:
-      - .sonar/cache
+  <<: *unity_defaults
   script:
-    # - apt-get update && apt-get dist-upgrade && apt-get install -y openjdk-11-jre
-    # - apt-get update && apt-get dist-upgrade && apt-get install -y dotnet6-runtime
-    - apk add dotnet6-runtime
+    - apt-get update && apt-get install -y dotnet-sdk-6.0
     - export PATH="$PATH:/root/.dotnet/tools"
-    # - dotnet tool install --global dotnet-sonarscanner --version 5.3.1
-    # - dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.8.12
-    - echo 'ANALYSE CODE:'
-    - echo ${CI_DEFAULT_BRANCH}
-    - echo ${CI_COMMIT_BRANCH}
-    - sonar-scanner -Dsonar.sources=Paper_VR/Assets/Scripts -Dsonar-brach.name=${CI_COMMIT_BRANCH} -Dsonar.organization=paridon -Dsonar.projectKey=paridon_paper-vr -Dsonar.host.url=https://sonarcloud.io
-  # - dotnet-sonarscanner -Dsonar.sources=Paper_VR/Assets/Scripts -Dsonar-brach.name=${CI_COMMIT_BRANCH} -Dsonar.organization=paridon -Dsonar.projectKey=paridon_paper-vr -Dsonar.host.url=https://sonarcloud.io
-  
+    # 6.2.0 = Latest dotnet-sonarscanner
+    # - dotnet tool install --global dotnet-sonarscanner --version 5.3.1 
+    - dotnet tool install --global dotnet-sonarscanner --version 6.2.0 
+    - dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.8.12
+    - dotnet-sonarscanner begin /k:paridon_paper-vr /o:paridon /d:sonar.login=${SONAR_TOKEN} /d:sonar.sources=Paper_VR/Assets/Scripts /d:sonar-brach.name=${CI_COMMIT_BRANCH} /d:sonar.host.url=https://sonarcloud.io
+    - dotnet build Paper_VR/Paper_VR.sln
+    - dotnet-sonarscanner end /d:sonar.login=${SONAR_TOKEN}
+    
 # build-StandaloneLinux64:
 #   <<: *build
 #   variables:
