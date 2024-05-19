@@ -164,8 +164,10 @@ sonarcloud-check-paper-vr:
     paths:
       - .sonar/cache
   script:
-    - echo 'ANALYSE CODE: CI_DEFAULT_BRANCH=${CI_DEFAULT_BRANCH}, CI_COMMIT_BRANCH=${CI_COMMIT_BRANCH}'
-    - sonar-scanner -Dsonar.sources=Paper_VR/Assets/Scripts -Dsonar-brach.name="22-software-metrics" -Dsonar.organization=paridon -Dsonar.projectKey=paridon_paper-vr -Dsonar.host.url=https://sonarcloud.io
+    - echo 'ANALYSE CODE:'
+    - echo ${CI_DEFAULT_BRANCH}
+    - echo ${CI_COMMIT_BRANCH}
+    - sonar-scanner -Dsonar.sources=Paper_VR/Assets/Scripts -Dsonar-brach.name=22-software-metrics -Dsonar.organization=paridon -Dsonar.projectKey=paridon_paper-vr -Dsonar.host.url=https://sonarcloud.io
   
 # build-StandaloneLinux64:
 #   <<: *build
