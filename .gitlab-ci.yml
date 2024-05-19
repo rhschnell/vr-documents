@@ -157,17 +157,21 @@ test-editmode-with-junit-reports:
 sonarcloud-check-paper-vr:
   stage: build_and_test
   image:
-    name: sonarsource/sonar-scanner-cli:latest
-    entrypoint: [""]
+    name: mcr.microsoft.com/dotnet/sdk:8.0
+    # name: sonarsource/sonar-scanner-cli:latest
+    # entrypoint: [""]
   cache:
     key: "${CI_JOB_NAME}"
     paths:
       - .sonar/cache
   script:
+    - apt-get update && apt-get dist-upgrade && apt-get install -y openjdk-11-jre
+    - dotnet tool install --global dotnet-sonarscanner --version 5.3.1
+    - dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.8.12
     - echo 'ANALYSE CODE:'
     - echo ${CI_DEFAULT_BRANCH}
     - echo ${CI_COMMIT_BRANCH}
-    - sonar-scanner -Dsonar.sources=Paper_VR/Assets/Scripts -Dsonar-brach.name=22-software-metrics -Dsonar.organization=paridon -Dsonar.projectKey=paridon_paper-vr -Dsonar.host.url=https://sonarcloud.io
+    - sonar-scanner -Dsonar.sources=Paper_VR/Assets/Scripts -Dsonar-brach.name=${CI_COMMIT_BRANCH} -Dsonar.organization=paridon -Dsonar.projectKey=paridon_paper-vr -Dsonar.host.url=https://sonarcloud.io
   
 # build-StandaloneLinux64:
 #   <<: *build
