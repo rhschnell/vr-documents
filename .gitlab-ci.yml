@@ -195,6 +195,7 @@ build-WebGL:
 code-analysis:
   stage: build_and_test
   <<: *unity_defaults
+  image: mcr.microsoft.com/dotnet/sdk:8.0
   # needs: 
   #  - job: build-WebGL
   script:
