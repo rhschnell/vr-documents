@@ -9,7 +9,7 @@ using UnityEngine;
 public class EnvironmentInformation : MonoBehaviour
 {
     private string environmentName;
-    private List<int> floatingDocuments;
+    private List<FloatingDocument> floatingDocuments = new List<FloatingDocument>();
     private List<string> importList;
     private Color backgroundColor;
 
@@ -56,7 +56,7 @@ public class EnvironmentInformation : MonoBehaviour
     /// Returns the floating documents of the environment.
     /// </summary>
     /// <returns>The floating documents of the environment.</returns>
-    public List<int> GetFloatingDocuments()
+    public List<FloatingDocument> GetFloatingDocuments()
     {
         // Returns the floating documents of the environment.
         return this.floatingDocuments;
@@ -66,7 +66,7 @@ public class EnvironmentInformation : MonoBehaviour
     /// Sets the environment floating documents to the new floating documents.
     /// </summary>
     /// <param name="floatingDocuments">The new environment floating documents.</param>
-    public void SetFloatingDocuments(List<int> floatingDocuments)
+    public void SetFloatingDocuments(List<FloatingDocument> floatingDocuments)
     {
         // Sets the environment floating documents to the new floating documents.
         this.floatingDocuments = floatingDocuments;
