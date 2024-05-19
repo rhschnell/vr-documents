@@ -145,7 +145,7 @@ test-editmode-with-junit-reports:
   stage: build_and_test
   <<: *unity_defaults
   script:
-    - apt-get update && apt-get install -y dotnet-runtime-5.0
+    - apt-get update && apt-get install -y dotnet-runtime-6.0
     - export PATH="$PATH:/root/.dotnet/tools"
     # 6.2.0 = Latest dotnet-sonarscanner
     # - dotnet tool install --global dotnet-sonarscanner --version 5.3.1 
