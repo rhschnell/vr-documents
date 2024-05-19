@@ -194,11 +194,14 @@ build-WebGL:
 
 code-analysis:
   stage: build_and_test
-  needs:
-    - job: build-WebGL
+  # needs: 
+  #  - job: build-WebGL
   image: $IMAGE:$UNITY_VERSION-webgl-$IMAGE_VERSION
   script:
     - echo 'ANALYSE CODE'
+    - msbuild /t:Metrics
+    - ls
+    - echo 'READY CODE'
         
     
 # build-android:
