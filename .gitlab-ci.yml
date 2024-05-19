@@ -165,7 +165,7 @@ sonarcloud-check-paper-vr:
       - .sonar/cache
   script:
     - echo 'ANALYSE CODE'
-    - sonar-scanner -Dsonar.sources=Paper_VR/Assets/Scripts -Dsonar.organization=paridon -Dsonar.projectKey=paridon_paper-vr
+    - sonar-scanner -Dsonar.sources=Paper_VR/Assets/Scripts -Dsonar.organization=paridon -Dsonar.projectKey=paridon_paper-vr -Dsonar.host.url=https://sonarcloud.io
   
 # build-StandaloneLinux64:
 #   <<: *build
