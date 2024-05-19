@@ -194,10 +194,11 @@ build-WebGL:
 
 code-analysis:
   stage: build_and_test
+  <<: *unity_defaults
   # needs: 
   #  - job: build-WebGL
-  image: $IMAGE:$UNITY_VERSION-webgl-$IMAGE_VERSION
   script:
+    # - apt-get update && apt-get install -y dotnet
     - echo 'ANALYSE CODE'
     - dotnet build /t:Metrics
     - ls
