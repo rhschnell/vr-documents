@@ -166,6 +166,7 @@ sonarcloud-check-paper-vr:
       - .sonar/cache
   script:
     - apt-get update && apt-get dist-upgrade && apt-get install -y openjdk-11-jre
+    - export PATH="$PATH:/root/.dotnet/tools"
     - dotnet tool install --global dotnet-sonarscanner --version 5.3.1
     - dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.8.12
     - echo 'ANALYSE CODE:'
