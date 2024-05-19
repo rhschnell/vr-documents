@@ -47,16 +47,18 @@ public class EnvironmentInformationTest
     public void GetAndSetFloatingDocumentsTest()
     {
         EnvironmentInformation envInf = new EnvironmentInformation();
-        List<int> floatingDocuments = new List<int>();
-        floatingDocuments.Add(1);
-        floatingDocuments.Add(2);
+        List<FloatingDocument> floatingDocuments = new ()
+        {
+            new FloatingDocument(null, "googledrive", "exam_noanswers2", new int[3] { 1, 2, 3 }),
+            new FloatingDocument(null, "googledrive", "exam_noanswers2", new int[3] { 4, 5, 6 }),
+        };
 
         envInf.SetFloatingDocuments(floatingDocuments);
 
-        List<int> newfloatingDocuments = envInf.GetFloatingDocuments();
+        List<FloatingDocument> newfloatingDocuments = envInf.GetFloatingDocuments();
         Assert.AreEqual(newfloatingDocuments, floatingDocuments);
-        Assert.IsTrue(newfloatingDocuments.Contains(1));
-        Assert.IsTrue(newfloatingDocuments.Contains(2));
+        Assert.IsTrue(newfloatingDocuments.Contains(new FloatingDocument(null, "googledrive", "exam_noanswers2", new int[3] { 1, 2, 3 })));
+        Assert.IsTrue(newfloatingDocuments.Contains(new FloatingDocument(null, "googledrive", "exam_noanswers2", new int[3] { 4, 5, 6 })));
         Assert.AreEqual(newfloatingDocuments.Count, 2);
     }
 
@@ -83,7 +85,10 @@ public class EnvironmentInformationTest
 
         oldEnvironmentInformation.SetBackgroundColor(Color.red);
 
-        List<int> floatingDocuments = new List<int> { 1, 2 };
+        List<FloatingDocument> floatingDocuments = new List<FloatingDocument>();
+        floatingDocuments.Add(new FloatingDocument(null, "googledrive", "exam_noanswers2", new int[3] { 1, 2, 3 }));
+        floatingDocuments.Add(new FloatingDocument(null, "googledrive", "exam_noanswers2", new int[3] { 4, 5, 6 }));
+
         oldEnvironmentInformation.SetFloatingDocuments(floatingDocuments);
 
         List<string> importList = new List<string> { "a", "b" };
@@ -96,7 +101,7 @@ public class EnvironmentInformationTest
         EnvironmentInformation newEnvironmentInformation = newEnvironmentGO.AddComponent<EnvironmentInformation>();
         newEnvironmentInformation.LoadNewInformation(oldEnvironmentInformation);
 
-        List<int> newfloatingDocuments = newEnvironmentInformation.GetFloatingDocuments();
+        List<FloatingDocument> newfloatingDocuments = newEnvironmentInformation.GetFloatingDocuments();
         List<string> newImportList = newEnvironmentInformation.GetImportList();
 
         Assert.AreEqual("jan", newEnvironmentInformation.GetName());
@@ -105,8 +110,8 @@ public class EnvironmentInformationTest
         Assert.IsTrue(newImportList.Contains("b"));
         Assert.AreEqual(2, newImportList.Count);
         Assert.AreEqual(floatingDocuments, newfloatingDocuments);
-        Assert.IsTrue(newfloatingDocuments.Contains(1));
-        Assert.IsTrue(newfloatingDocuments.Contains(2));
+        Assert.IsTrue(newfloatingDocuments.Contains(new FloatingDocument(null, "googledrive", "exam_noanswers2", new int[3] { 1, 2, 3 })));
+        Assert.IsTrue(newfloatingDocuments.Contains(new FloatingDocument(null, "googledrive", "exam_noanswers2", new int[3] { 4, 5, 6 })));
         Assert.AreEqual(2, newfloatingDocuments.Count);
         Assert.AreEqual(Color.red, newEnvironmentInformation.GetBackgroundColor());
 
