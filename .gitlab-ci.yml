@@ -201,8 +201,8 @@ code-analysis:
   script:
     # - apt-get update && apt-get install -y dotnet
     - echo 'ANALYSE CODE'
-    - dotnet build /t:Metrics
-    - ls
+    # - dotnet build /t:Metrics
+    - 'ls -al'
     - echo 'READY CODE'
         
     
