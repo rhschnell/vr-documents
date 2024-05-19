@@ -157,7 +157,7 @@ test-editmode-with-junit-reports:
 sonarcloud-check-paper-vr:
   stage: build_and_test
   image:
-    name: mcr.microsoft.com/dotnet/sdk:8.0
+    name: mcr.microsoft.com/dotnet/sdk:5.0
     # name: sonarsource/sonar-scanner-cli:latest
     # entrypoint: [""]
   cache:
