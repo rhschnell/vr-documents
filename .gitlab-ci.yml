@@ -15,7 +15,7 @@ variables:
   VERSION_NUMBER_VAR: $CI_COMMIT_REF_SLUG-$CI_PIPELINE_ID-$CI_JOB_ID
   VERSION_BUILD_VAR: $CI_PIPELINE_IID
   # SONARQUBE  
-  SONAR_TOKEN: 46965acdb8f02cb0891791ebde3d9bfe44881e46
+  SONAR_TOKEN: f555041c7dd5d46fc9463d7ec27540ccd39f2ca6
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
   GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
 
