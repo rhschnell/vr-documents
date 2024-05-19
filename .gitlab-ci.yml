@@ -165,6 +165,7 @@ sonarcloud-check-paper-vr:
     - dotnet tool install --global dotnet-sonarscanner --version 6.2.0 
     - dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.8.12
     - dotnet-sonarscanner begin /k:paridon_paper-vr /o:paridon /d:sonar.login=${SONAR_TOKEN} /d:sonar.sources=Paper_VR/Assets/Scripts /d:sonar-brach.name=${CI_COMMIT_BRANCH} /d:sonar.host.url=https://sonarcloud.io
+    - ls -al $UNITY_DIR
     - dotnet build $UNITY_DIR/Paper_VR.sln
     - dotnet-sonarscanner end /d:sonar.login=${SONAR_TOKEN}
     
