@@ -168,7 +168,6 @@ sonarcloud-check-paper-vr:
     # - apt-get update && apt-get dist-upgrade && apt-get install -y openjdk-11-jre
     # - apt-get update && apt-get dist-upgrade && apt-get install -y dotnet6-runtime
     - apk add dotnet6-runtime
-    - apk add dotnet5-runtime
     - export PATH="$PATH:/root/.dotnet/tools"
     # - dotnet tool install --global dotnet-sonarscanner --version 5.3.1
     # - dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.8.12
