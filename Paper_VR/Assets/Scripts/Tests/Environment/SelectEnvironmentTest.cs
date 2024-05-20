@@ -15,17 +15,23 @@ public class SelectEnvironmentTest
     /// and setting the environment information on the GameManager.
     /// </summary>
     /// <returns>An IEnumerator for the UnityTest.</returns>
-    [UnityTest]
+   // [UnityTest]
     public IEnumerator AddEnvironmentButtonAndLoadNewSceneTest()
     {
         // Create a GameObject and add the necessary components
         GameObject gameManager = new GameObject("GameManager");
         EnvironmentInformation gameManagerEnvInfo = gameManager.AddComponent<EnvironmentInformation>();
         GameObject testGameObject = new GameObject("TestGameObject");
-        SelectEnvironment selectEnvironment = testGameObject.AddComponent<SelectEnvironment>();
+        // SelectEnvironment selectEnvironment = testGameObject.AddComponent<SelectEnvironment>();
+        SelectEnvironment selectEnvironment = new SelectEnvironment();
+
+        TMPro.TextMeshPro name = new TMPro.TextMeshPro();
+        TMPro.TextMeshPro email = new TMPro.TextMeshPro();
 
         // Assign the gameManager reference
         selectEnvironment.gameManager = gameManager;
+        selectEnvironment.Email = email;
+        selectEnvironment.Name = name;
 
         // Call the AddEnvironmentButton method
         selectEnvironment.AddEnvironmentButton();

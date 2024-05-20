@@ -1,24 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using TMPro;
 using Microsoft.MixedReality.Toolkit.Experimental.UI;
+using TMPro;
+using UnityEngine;
 
+/// <summary>
+/// the keyboard doing to basic logic for the keyboard to show in VR
+/// </summary>
 public class ShowKeyboard : MonoBehaviour
 {
-
     private TMP_InputField inputField;
+
+    /// <summary>
+    /// Opens the keyboard
+    /// </summary>
+    public void OpenKeyboard()
+    {
+        NonNativeKeyboard.Instance.InputField = this.inputField;
+        NonNativeKeyboard.Instance.PresentKeyboard(this.inputField.text);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        inputField = GetComponent<TMP_InputField>();
-        inputField.onSelect.AddListener(x => OpenKeyboard());
-    }
-
-
-    public void OpenKeyboard()
-    {
-        NonNativeKeyboard.Instance.InputField = inputField;
-        NonNativeKeyboard.Instance.PresentKeyboard(inputField.text);
+        this.inputField = this.GetComponent<TMP_InputField>();
+        this.inputField.onSelect.AddListener(x => this.OpenKeyboard());
     }
 }

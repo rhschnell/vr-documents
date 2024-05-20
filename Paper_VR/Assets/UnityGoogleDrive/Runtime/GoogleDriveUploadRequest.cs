@@ -55,6 +55,8 @@ namespace UnityGoogleDrive
             }
         }
 
+        public GoogleDriveUploadRequest() { }
+
         protected override UnityWebRequest CreateWebRequest ()
         {
             var webRequest = base.CreateWebRequest();

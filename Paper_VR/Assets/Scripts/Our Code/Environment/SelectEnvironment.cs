@@ -21,6 +21,16 @@ public class SelectEnvironment : MonoBehaviour
     /// The manager of the game, containing all inportant information.
     /// </summary>
     public GameObject gameManager;
+
+    /// <summary>
+    /// The name textbox
+    /// </summary>
+    public TMP_Text Name;
+
+    /// <summary>
+    /// The email textbox
+    /// </summary>
+    public TMP_Text Email;
     private GoogleDriveSettings GoogleDriveSettings;
     private GoogleDriveRequest LoginRequest;
     private GoogleDriveFiles.ListRequest requestList;
@@ -43,9 +53,9 @@ public class SelectEnvironment : MonoBehaviour
     }
 
     /// <summary>
-    /// WILLEM PLEASE DOCUMENT
+    /// finds all PDF files inside a selected folder
     /// </summary>
-    /// <returns>WILLEM PLEASE DOCUMENT.</returns>
+    /// <returns>waits for the request</returns>
     public IEnumerator FindPDF()
     {
         int selectedIndex = this.dropdown.value;
@@ -61,17 +71,19 @@ public class SelectEnvironment : MonoBehaviour
     }
 
     /// <summary>
-    /// WILLEM PLEASE DOCUMENT
+    /// Calls a refresh on the list of folders and the name and email
     /// </summary>
     public void Refresh()
     {
-        // this.StartCoroutine(this.UpdateList());
+        this.Name.text = "Name: " + GoogleLogin.name;
+        this.Email.text = "Email: " + GoogleLogin.email;
+        this.StartCoroutine(this.UpdateList());
     }
 
     /// <summary>
-    /// WILLEM PLEASE DOCUMENT
+    /// finds all folders under the main folder and lists their names
     /// </summary>
-    /// <returns>WILLEM PLEASE DOCUMENT.</returns>
+    /// <returns>Waits for the request to finish</returns>
     public IEnumerator UpdateList()
     {
         this.requestList = new GoogleDriveFiles.ListRequest();
@@ -79,15 +91,17 @@ public class SelectEnvironment : MonoBehaviour
         this.requestList.Q = $"'{GoogleLogin.folderID}' in parents and trashed = false and mimeType = 'application/vnd.google-apps.folder'";
 
         yield return this.requestList.Send();
-
-        List<string> environmentNames = new List<string>();
-        foreach (var folder in this.requestList.ResponseData.Files)
+        if (!this.requestList.IsError)
         {
-            environmentNames.Add(folder.Name);
-        }
+            List<string> environmentNames = new List<string>();
+            foreach (var folder in this.requestList.ResponseData.Files)
+            {
+                environmentNames.Add(folder.Name);
+            }
 
-        this.dropdown.ClearOptions();
-        this.dropdown.AddOptions(environmentNames);
+            this.dropdown.ClearOptions();
+            this.dropdown.AddOptions(environmentNames);
+        }
     }
 
     /// <summary>
@@ -105,12 +119,9 @@ public class SelectEnvironment : MonoBehaviour
         SceneManager.LoadScene("Environment");
     }
 
-    /// <summary>
-    /// WILLEM PLEASE DOCUMENT
-    /// </summary>
-    private void Awake()
+    void Start()
     {
         // this.StartCoroutine(this.UpdateList());
-        // this.Refresh();
+        this.Refresh();
     }
 }

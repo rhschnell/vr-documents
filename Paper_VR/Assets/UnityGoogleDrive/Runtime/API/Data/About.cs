@@ -89,6 +89,6 @@ namespace UnityGoogleDrive.Data
         /// <summary>
         /// The authenticated user.
         /// </summary>
-        public User User { get; private set; }
+        public virtual User User { get; set; }
     }
 }
