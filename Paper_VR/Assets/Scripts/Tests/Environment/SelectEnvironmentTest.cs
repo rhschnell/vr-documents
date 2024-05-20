@@ -37,7 +37,8 @@ public class SelectEnvironmentTest
         selectEnvironment.AddEnvironmentButton();
 
         // Wait for the scene to load
-        yield return new WaitForSeconds(1);
+        //yield return null;
+        yield return new WaitForSeconds(0.1f);
 
         // Verify the scene has loaded
         Assert.AreEqual("Environment", SceneManager.GetActiveScene().name);

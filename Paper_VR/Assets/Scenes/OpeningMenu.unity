@@ -246,7 +246,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60f931c08ba59d442b2d12964a040581, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  folderName: PaperVR
+  once: 1
 --- !u!4 &1383464473
 Transform:
   m_ObjectHideFlags: 0

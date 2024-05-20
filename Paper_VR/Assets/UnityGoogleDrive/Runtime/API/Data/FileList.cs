@@ -17,7 +17,7 @@ namespace UnityGoogleDrive.Data
         /// The list of files. If nextPageToken is populated, then this list may be incomplete
         /// and an additional page of results should be fetched.
         /// </summary>
-        public virtual List<File> Files { get; private set; }
+        public virtual List<File> Files { get; set; }
         /// <summary>
         /// Whether the search process was incomplete. If true, then some search results
         /// may be missing, since all documents were not searched. This may occur when searching

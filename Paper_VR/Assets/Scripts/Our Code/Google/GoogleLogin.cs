@@ -47,12 +47,12 @@ public class GoogleLogin : MonoBehaviour
     /// <summary>
     /// Gets all the files of a drive or folder
     /// </summary>
-    public virtual GoogleDriveFiles.ListRequest RequestList { get; private set; }
+    public virtual GoogleDriveFiles.ListRequest RequestList { get; set; }
 
     /// <summary>
     /// Gets a create request to create a folder
     /// </summary>
-    public virtual GoogleDriveFiles.CreateRequest CreateRequest { get; private set; }
+    public virtual GoogleDriveFiles.CreateRequest CreateRequest { get; set; }
 
     /// <summary>
     /// setter of the coroutinerunner

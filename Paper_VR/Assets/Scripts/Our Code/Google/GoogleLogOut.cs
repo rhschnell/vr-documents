@@ -9,9 +9,9 @@ using UnityGoogleDrive;
 /// </summary>
 public class GoogleLogOut : MonoBehaviour
 {
-    private GoogleDriveSettings settings;
-    private GoogleDriveAbout.GetRequest request;
-    GoogleLogin GoogleLogin = new GoogleLogin();
+    public GoogleDriveSettings settings;
+    public GoogleDriveAbout.GetRequest request;
+    public GoogleLogin GoogleLogin = new GoogleLogin();
 
     /// <summary>
     /// Logs the user out, then triggers a new login
