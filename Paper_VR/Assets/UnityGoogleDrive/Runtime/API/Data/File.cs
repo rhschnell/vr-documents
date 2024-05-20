@@ -269,7 +269,7 @@ namespace UnityGoogleDrive.Data
         /// <summary>
         /// The ID of the file.
         /// </summary>
-        public string Id { get; set; }
+        public virtual string Id { get; set; }
         /// <summary>
         /// The raw content of the file.
         /// </summary>
@@ -297,7 +297,7 @@ namespace UnityGoogleDrive.Data
         /// type, the uploaded content will be imported if possible. The supported import
         /// formats are published in the About resource.
         /// </summary>
-        public string MimeType { get; set; }
+        public virtual string MimeType { get; set; }
         /// <summary>
         /// The full file extension extracted from the name field. May contain multiple concatenated
         /// extensions, such as "tar.gz". This is only available for files with binary content

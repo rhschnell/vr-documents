@@ -29,13 +29,15 @@ namespace UnityGoogleDrive
         public override bool IsDone => GoogleDriveRequest.IsDone;
         public override bool keepWaiting => !IsDone;
         public float Progress => GoogleDriveRequest.Progress;
-        public GoogleDriveRequest<TResponse> GoogleDriveRequest { get; private set; }
+        public virtual GoogleDriveRequest<TResponse> GoogleDriveRequest { get; private set; }
 
         public GoogleDriveRequestYieldInstruction (GoogleDriveRequest<TResponse> googleDriveRequest)
         {
             GoogleDriveRequest = googleDriveRequest;
             GoogleDriveRequest.OnDone += HandleRequestDone;
         }
+
+        public GoogleDriveRequestYieldInstruction() { }
 
         private void HandleRequestDone (TResponse responseData)
         {

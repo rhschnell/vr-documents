@@ -77,6 +77,8 @@ namespace UnityGoogleDrive
 
             public CreateRequest (Data.File file, string uploadMimeType = null) : base(file.Content != null ? "https://www.googleapis.com/upload/drive/v3/files" :
                 "https://www.googleapis.com/drive/v3/files", UnityWebRequest.kHttpVerbPOST, file, file.Content, uploadMimeType ?? file.MimeType) { }
+            public CreateRequest() { }
+
         }
 
         /// <summary>

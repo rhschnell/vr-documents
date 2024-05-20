@@ -30,6 +30,8 @@ namespace UnityGoogleDrive
         public abstract T GetResponseData<T> () where T : Data.ResourceData;
         public abstract void Abort ();
         public abstract void Dispose ();
+
+        
     }
 
     /// <summary>
@@ -117,6 +119,8 @@ namespace UnityGoogleDrive
             if (Settings == null) Settings = GoogleDriveSettings.LoadFromResources();
         }
 
+        public GoogleDriveRequest() { }
+
         /// <summary>
         /// Begin communicating with the Google Drive API to execute the request.
         /// </summary>
@@ -124,7 +128,7 @@ namespace UnityGoogleDrive
         /// A yield instruction indicating the progress/completion state of the request.
         /// Yield this object to wait until the request <see cref="IsDone"/> or use <see cref="OnDone"/> event.
         /// </returns>
-        public GoogleDriveRequestYieldInstruction<TResponse> Send ()
+        public virtual GoogleDriveRequestYieldInstruction<TResponse> Send ()
         {
             if (!IsRunning)
             {
