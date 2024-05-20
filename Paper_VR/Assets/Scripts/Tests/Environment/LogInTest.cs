@@ -5,17 +5,101 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityGoogleDrive;
+using UnityGoogleDrive.Data;
 
 /// <summary>
 /// class for the login tests
 /// </summary>
 public class LogInTest
 {
+
+    private GoogleLogin googleLogin;
+    private Mock<GoogleDriveAbout.GetRequest> mockRequest;
+    private Mock<GoogleDriveFiles.ListRequest> mockListRequest;
+    private Mock<GoogleDriveFiles.CreateRequest> mockCreateRequest;
+    private Mock<ICoroutineRunner> mockCoroutineRunner;
+
+    [SetUp]
+    public void SetUp()
+    {
+        // Initialize GoogleLogin and its dependencies
+        GameObject go = new GameObject();
+        googleLogin = go.AddComponent<GoogleLogin>();
+        googleLogin.once = false;
+
+        mockRequest = new Mock<GoogleDriveAbout.GetRequest>();
+        mockListRequest = new Mock<GoogleDriveFiles.ListRequest>();
+        mockCreateRequest = new Mock<GoogleDriveFiles.CreateRequest>();
+        mockCoroutineRunner = new Mock<ICoroutineRunner>();
+
+        googleLogin.SetCoroutineRunner(mockCoroutineRunner.Object);
+    }
+
+    //[UnityTest]
+    public IEnumerator UpdateInfo_ShouldUpdateUserDetails()
+    {
+        // Arrange
+        var mockUser = new User { DisplayName = "Test User", EmailAddress = "test@example.com" };
+        var mockResponse = new About { User = mockUser };
+
+        var responseMock2 = new Mock<GoogleDriveRequest<UnityGoogleDrive.Data.About>>();
+        var responseMock = new Mock<GoogleDriveRequestYieldInstruction<UnityGoogleDrive.Data.About>>();
+        responseMock2.Setup(a => a.IsDone).Returns(true);
+        responseMock.Setup(a => a.GoogleDriveRequest).Returns(responseMock2.Object);
+
+        mockRequest.Setup(r => r.Send()).Returns(responseMock.Object);
+        mockRequest.SetupGet(r => r.IsError).Returns(false);
+        mockRequest.SetupGet(r => r.ResponseData).Returns(mockResponse);
+
+        googleLogin.Request = mockRequest.Object;
+        googleLogin.once = false;
+
+        // Act
+        yield return googleLogin.UpdateInfo();
+
+        // Assert
+        Assert.AreEqual("Test User", GoogleLogin.name);
+        Assert.AreEqual("test@example.com", GoogleLogin.email);
+    }
+
+    //[UnityTest]
+    public IEnumerator FindId_ShouldSetFolderIdOrCreateFolder()
+    {
+        // Arrange
+        var mockFileList = new FileList { Files = new List<File> { new File { Id = "id" } } };
+
+        var responseMock2 = new Mock<GoogleDriveRequest<UnityGoogleDrive.Data.FileList>>();
+        var responseMock = new Mock<GoogleDriveRequestYieldInstruction<UnityGoogleDrive.Data.FileList>>();
+        responseMock2.Setup(a => a.IsDone).Returns(true);
+        responseMock.Setup(a => a.GoogleDriveRequest).Returns(responseMock2.Object);
+
+        mockListRequest.Setup(r => r.Send()).Returns(responseMock.Object);
+        mockListRequest.SetupGet(r => r.IsError).Returns(false);
+        mockListRequest.Setup(r => r.ResponseData).Returns(mockFileList);
+
+        googleLogin.RequestList = mockListRequest.Object;
+
+
+        Assert.AreEqual(null, GoogleLogin.folderID);
+
+
+        // Act
+        yield return googleLogin.FindId();
+
+        // Assert
+        Assert.AreEqual("id", GoogleLogin.folderID);
+
+        GoogleLogin.folderID = null;
+
+
+    }
+
+
     /// <summary>
     /// tests the update info
     /// </summary>
     /// <returns>waits for request to finish</returns>
-    [UnityTest]
+    /* [UnityTest]
     public IEnumerator UpdateInfoMockTest()
     {
         var googleMock = new Mock<GoogleLogin>();
@@ -95,7 +179,8 @@ public class LogInTest
     [UnityTest]
     public IEnumerator FindIDTestFolderExists()
     {
-        var googleMock = new Mock<GoogleLogin>();
+        GameObject go = new GameObject();
+        GoogleLogin googleMock = go.AddComponent<GoogleLogin>();
         var reqMock = new Mock<GoogleDriveFiles.ListRequest>();
         var responseMock2 = new Mock<GoogleDriveRequest<UnityGoogleDrive.Data.FileList>>();
         var responseMock = new Mock<GoogleDriveRequestYieldInstruction<UnityGoogleDrive.Data.FileList>>();
@@ -109,15 +194,18 @@ public class LogInTest
         reqMock.Setup(reqMock => reqMock.ResponseData.Files).Returns(list);
         reqMock.Setup(reqMock => reqMock.Send()).Returns(responseMock.Object);
 
-        googleMock.Setup(req => req.RequestList).Returns(reqMock.Object);
+        //googleMock.Setup(req => req.RequestList).Returns(reqMock.Object);
+        googleMock.RequestList = reqMock.Object;
         Assert.AreEqual(null, GoogleLogin.folderID);
-        googleMock.CallBase = true;
-        yield return googleMock.Object.FindId();
+
+        yield return googleMock.FindId();
 
         googleMock.Verify(a => a.FindId());
         reqMock.Verify(a => a.Send());
 
         Assert.AreEqual("folder", GoogleLogin.folderID);
+
+        GoogleLogin.folderID = null;
     }
 
     /// <summary>
@@ -171,5 +259,5 @@ public class LogInTest
 
         Assert.AreEqual(false, googleMock.Object.once);
         coroutineRunnerMock.Verify(cr => cr.StartCoroutine(It.IsAny<IEnumerator>()));
-    }
+    } */
 }

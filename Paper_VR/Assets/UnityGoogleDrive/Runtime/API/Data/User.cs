@@ -19,12 +19,12 @@ namespace UnityGoogleDrive.Data
         /// <summary>
         /// A plain text displayable name for this user.
         /// </summary>
-        public virtual string DisplayName { get; private set; }
+        public virtual string DisplayName { get; set; }
         /// <summary>
         /// The email address of the user. This may not be present in certain contexts if
         /// the user has not made their email address visible to the requester.
         /// </summary>
-        public virtual string EmailAddress { get; private set; }
+        public virtual string EmailAddress { get; set; }
         /// <summary>
         /// Whether this user is the requesting user.
         /// </summary>

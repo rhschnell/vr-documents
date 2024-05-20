@@ -80,7 +80,7 @@ namespace UnityGoogleDrive
         /// <summary>
         /// Removes cached access and refresh tokens forcing user to login on the next request.
         /// </summary>
-        public void DeleteCachedAuthTokens ()
+        public virtual void DeleteCachedAuthTokens ()
         {
             if (PlayerPrefs.HasKey(accessTokenPrefsKey))
                 PlayerPrefs.DeleteKey(accessTokenPrefsKey);
@@ -91,7 +91,7 @@ namespace UnityGoogleDrive
         /// <summary>
         /// Whether access or refresh tokens are currently cached in <see cref="PlayerPrefs"/>.
         /// </summary>
-        public bool IsAnyAuthTokenCached ()
+        public virtual bool IsAnyAuthTokenCached ()
         {
             return PlayerPrefs.HasKey(accessTokenPrefsKey) || PlayerPrefs.HasKey(refreshTokenPrefsKey);
         }
