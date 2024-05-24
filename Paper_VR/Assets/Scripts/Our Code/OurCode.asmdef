@@ -9,7 +9,8 @@
         "Elringus.UnityGoogleDrive.Editor",
         "Elringus.UnityGoogleDrive.Runtime",
         "Unity.VisualStudio.Editor",
-        "KeyBoard"
+        "KeyBoard",
+        "WanzyeeStudio.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [
