@@ -1,35 +1,89 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// The class containing all information of the environment and
-/// makes it such that th game manager will not be destroyed on load.
+/// makes it such that the game manager will not be destroyed on load.
 /// </summary>
 public class EnvironmentInformation : MonoBehaviour
 {
+    /// <summary>
+    /// This is the prefab for all the floating documents.
+    /// </summary>
+    public GameObject docPrefab;
+
+    /// <summary>
+    /// This is the path to the images.
+    /// </summary>
+    private static string imagePath = "Sprites";
+
     private string environmentName;
-    private List<FloatingDocument> floatingDocuments = new List<FloatingDocument>();
+    private List<FloatingDocument> floatingDocuments;
     private List<string> importList;
     private Color backgroundColor;
+
+    /// <summary>
+    /// This method creates a new floating document in the scene.
+    /// </summary>
+    /// <param name="pos">The position of the floating document</param>
+    /// <param name="rotation">The rotation of the floating document</param>
+    /// <param name="scale">The scale of the floating document</param>
+    /// <param name="pdfPath">The path where the pdf is stored</param>
+    /// <param name="pdfName">The name of the pdf</param>
+    /// <param name="pages">The pages as a list of numbers</param>
+    /// <returns>A floating document</returns>
+    public FloatingDocument CreateDocument(Vector3 pos, Quaternion rotation, Vector3 scale, string pdfPath, string pdfName, int[] pages)
+    {
+        Debug.Log("Creating document");
+        // Create a new canvas
+        GameObject instance = Instantiate(this.docPrefab, pos, rotation);
+        instance.transform.localScale = scale;
+
+        // Update the child of the prefab to have to the correct first image
+        string spritePath = imagePath + "\\" + pdfName + "\\" + pdfName + "-" + pages[0];
+        var sprite = Resources.Load<Sprite>(spritePath);
+        Debug.Log(sprite);
+        instance.transform.GetChild(0).GetComponent<Image>().sprite = sprite;
+
+        // Create a new floating document
+        FloatingDocument doc = new FloatingDocument(instance, pdfPath, pdfName, pages);
+
+        return doc;
+    }
 
     /// <summary>
     /// Loads the new environment information on this instance of the class.
     /// </summary>
     /// <param name="newEnvironmentInformation">the information of the new environment.</param>
-    public void LoadNewInformation(EnvironmentInformation newEnvironmentInformation)
+    public void LoadNewInformation(EnvironmentInfo newEnvironmentInformation)
     {
         // Sets the environment name to the new name.
-        this.environmentName = newEnvironmentInformation.GetName();
+        this.environmentName = newEnvironmentInformation.environmentName;
 
         // Sets the floating documents to the new floating documents.
-        this.floatingDocuments = newEnvironmentInformation.GetFloatingDocuments();
+        this.floatingDocuments = new List<FloatingDocument>();
+        foreach (FloatingDocumentInfo floatingDocument in newEnvironmentInformation.floatingDocuments)
+        {
+            this.floatingDocuments.Add(
+                this.CreateDocument(
+                    floatingDocument.position,
+                    floatingDocument.rotation,
+                    floatingDocument.scale,
+                    floatingDocument.pdfPath,
+                    floatingDocument.pdfName,
+                    floatingDocument.pages));
+        }
 
         // Sets the import list to the new import list.
-        this.importList = newEnvironmentInformation.GetImportList();
+        this.importList = newEnvironmentInformation.importList;
 
         // Sets the beckground color to the new background color.
-        this.backgroundColor = newEnvironmentInformation.GetBackgroundColor();
+        this.backgroundColor = newEnvironmentInformation.backgroundColor;
     }
 
     /// <summary>

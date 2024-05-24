@@ -49,7 +49,7 @@ public class SelectEnvironment : MonoBehaviour
         // EnvironmentInformation envInfo = getSceneInfo(environmentInformation)
 
         // A placeholder for the environment information.
-        EnvironmentInformation envInfo = new EnvironmentInformation();
+        EnvironmentInfo envInfo = new EnvironmentInfo();
 
         // Load the new scene using the environment information
         parentId = this.requestList.ResponseData.Files[this.dropdown.value].Id;
@@ -98,7 +98,7 @@ public class SelectEnvironment : MonoBehaviour
     /// This method will set the environment information to the new environment information and load the scene.
     /// </summary>
     /// <param name="envInfo">The environment info needed for loading the scene.</param>
-    private void LoadNewScene(EnvironmentInformation envInfo)
+    private void LoadNewScene(EnvironmentInfo envInfo)
     {
         // Gets the environment information component of the game manager and loads the new
         // Environment information on to it.

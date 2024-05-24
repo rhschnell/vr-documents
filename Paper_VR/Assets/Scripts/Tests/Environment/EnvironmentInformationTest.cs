@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
+using UnityEngine.UI;
 
 /// <summary>
 /// The testing class for EnvironmentInformation.
@@ -15,7 +16,7 @@ public class EnvironmentInformationTest
     [Test]
     public void GetAndSetNameTest()
     {
-        EnvironmentInformation envInf = new EnvironmentInformation();
+        EnvironmentInformation envInf = this.CreateObjectEnv();
         envInf.SetName("jan");
         Assert.AreEqual("jan", envInf.GetName());
     }
@@ -26,10 +27,8 @@ public class EnvironmentInformationTest
     [Test]
     public void GetAndSetImportListTest()
     {
-        EnvironmentInformation envInf = new EnvironmentInformation();
-        List<string> importList = new List<string>();
-        importList.Add("a");
-        importList.Add("b");
+        EnvironmentInformation envInf = this.CreateObjectEnv();
+        List<string> importList = new () { "a", "b" };
 
         envInf.SetImportList(importList);
 
@@ -46,7 +45,7 @@ public class EnvironmentInformationTest
     [Test]
     public void GetAndSetFloatingDocumentsTest()
     {
-        EnvironmentInformation envInf = new EnvironmentInformation();
+        EnvironmentInformation envInf = this.CreateObjectEnv();
         List<FloatingDocument> floatingDocuments = new ()
         {
             new FloatingDocument(null, "googledrive", "exam_noanswers2", new int[3] { 1, 2, 3 }),
@@ -68,7 +67,7 @@ public class EnvironmentInformationTest
     [Test]
     public void GetAndSetBackgroundColorTest()
     {
-        EnvironmentInformation envInf = new EnvironmentInformation();
+        EnvironmentInformation envInf = this.CreateObjectEnv();
         envInf.SetBackgroundColor(Color.red);
         Assert.AreEqual(Color.red, envInf.GetBackgroundColor());
     }
@@ -80,26 +79,33 @@ public class EnvironmentInformationTest
     public void LoadNewInformationTest()
     {
         // Create a GameObject and add the EnvironmentInformation component to it
-        GameObject oldEnvironmentGO = new GameObject("OldEnvironment");
-        EnvironmentInformation oldEnvironmentInformation = oldEnvironmentGO.AddComponent<EnvironmentInformation>();
+        EnvironmentInformation oldEnvironmentInformation = this.CreateObjectEnv();
 
         oldEnvironmentInformation.SetBackgroundColor(Color.red);
 
-        List<FloatingDocument> floatingDocuments = new List<FloatingDocument>();
-        floatingDocuments.Add(new FloatingDocument(null, "googledrive", "exam_noanswers2", new int[3] { 1, 2, 3 }));
-        floatingDocuments.Add(new FloatingDocument(null, "googledrive", "exam_noanswers2", new int[3] { 4, 5, 6 }));
+        // Create a new prefab for the document
+        GameObject docPrefab = this.CreatePrefab();
+
+        // Set the prefab for the document
+        oldEnvironmentInformation.docPrefab = docPrefab;
+
+        List<FloatingDocument> floatingDocuments = new ()
+        {
+            new FloatingDocument(docPrefab, "googledrive", "exam_noanswers2", new int[3] { 1, 2, 3 }),
+            new FloatingDocument(docPrefab, "googledrive", "exam_noanswers2", new int[3] { 4, 5, 6 }),
+        };
 
         oldEnvironmentInformation.SetFloatingDocuments(floatingDocuments);
 
-        List<string> importList = new List<string> { "a", "b" };
+        List<string> importList = new () { "a", "b" };
         oldEnvironmentInformation.SetImportList(importList);
-
         oldEnvironmentInformation.SetName("jan");
 
         // Create a new GameObject and add the EnvironmentInformation component to it
-        GameObject newEnvironmentGO = new GameObject("NewEnvironment");
-        EnvironmentInformation newEnvironmentInformation = newEnvironmentGO.AddComponent<EnvironmentInformation>();
-        newEnvironmentInformation.LoadNewInformation(oldEnvironmentInformation);
+        EnvironmentInformation newEnvironmentInformation = this.CreateObjectEnv();
+        newEnvironmentInformation.docPrefab = docPrefab;
+
+        newEnvironmentInformation.LoadNewInformation(new EnvironmentInfo(oldEnvironmentInformation));
 
         List<FloatingDocument> newfloatingDocuments = newEnvironmentInformation.GetFloatingDocuments();
         List<string> newImportList = newEnvironmentInformation.GetImportList();
@@ -110,13 +116,133 @@ public class EnvironmentInformationTest
         Assert.IsTrue(newImportList.Contains("b"));
         Assert.AreEqual(2, newImportList.Count);
         Assert.AreEqual(floatingDocuments, newfloatingDocuments);
-        Assert.IsTrue(newfloatingDocuments.Contains(new FloatingDocument(null, "googledrive", "exam_noanswers2", new int[3] { 1, 2, 3 })));
-        Assert.IsTrue(newfloatingDocuments.Contains(new FloatingDocument(null, "googledrive", "exam_noanswers2", new int[3] { 4, 5, 6 })));
+        Assert.IsTrue(newfloatingDocuments.Contains(new FloatingDocument(docPrefab, "googledrive", "exam_noanswers2", new int[3] { 1, 2, 3 })));
+        Assert.IsTrue(newfloatingDocuments.Contains(new FloatingDocument(docPrefab, "googledrive", "exam_noanswers2", new int[3] { 4, 5, 6 })));
         Assert.AreEqual(2, newfloatingDocuments.Count);
         Assert.AreEqual(Color.red, newEnvironmentInformation.GetBackgroundColor());
+    }
 
-        // Clean up the GameObjects after the test
-        Object.DestroyImmediate(oldEnvironmentGO);
-        Object.DestroyImmediate(newEnvironmentGO);
+    /// <summary>
+    /// This Test checks if the EnvironmentInformation can be saved to a JSON file.
+    /// And then loaded back from the JSON file.
+    /// </summary>
+    [Test]
+    public void SaveAndLoadJson()
+    {
+        // Create a GameObject and add the EnvironmentInformation component to it
+        EnvironmentInformation environmentInformation = this.CreateObjectEnv();
+        environmentInformation.SetBackgroundColor(Color.red);
+
+        // Create a new prefab for the document
+        GameObject docPrefab = this.CreatePrefab();
+
+        environmentInformation.docPrefab = docPrefab;
+
+        // Create new floating documents
+        FloatingDocument doc = environmentInformation.CreateDocument(
+            new Vector3(1, 2, 3),
+            Quaternion.identity,
+            new Vector3(1, 1, 1),
+            "googledrive",
+            "exam_noanswers2",
+            new int[3] { 1, 2, 3 });
+
+        FloatingDocument doc2 = environmentInformation.CreateDocument(
+            new Vector3(0, 0, 0),
+            new Quaternion(2, 3, 4, 5),
+            new Vector3(1, 1, 1),
+            "googledrive",
+            "exam_noanswers2",
+            new int[3] { 4, 5, 6 });
+
+        List<FloatingDocument> floatingDocuments = new List<FloatingDocument>
+        {
+            doc,
+            doc2,
+        };
+
+        environmentInformation.SetFloatingDocuments(floatingDocuments);
+
+        List<string> importList = new () { "a", "b" };
+        environmentInformation.SetImportList(importList);
+        environmentInformation.SetName("jan");
+
+        // Save the EnvironmentInformation to a JSON file
+        EnvironmentInfo environmentInfo = new EnvironmentInfo(environmentInformation);
+        string json = environmentInfo.SaveToJson();
+
+        // Load the EnvironmentInformation from the JSON file
+        EnvironmentInfo loadedEnvironmentInfo = EnvironmentInfo.LoadFromJson(json);
+
+        Debug.Log(json);
+
+        // Create a GameObject and add the EnvironmentInformation component to it
+        GameObject environmentGO2 = new GameObject("Environment");
+        EnvironmentInformation environmentInformation2 = environmentGO2.AddComponent<EnvironmentInformation>();
+        environmentInformation2.docPrefab = docPrefab;
+
+        // Load the EnvironmentInformation to the EnvironmentInformation component
+        environmentInformation2.LoadNewInformation(loadedEnvironmentInfo);
+
+        // Assert that environmentInformation2 has the same information as environmentInformation
+        Assert.IsNotNull(environmentInformation2);
+        Assert.AreEqual("jan", environmentInformation2.GetName());
+        Assert.AreEqual(importList, environmentInformation2.GetImportList());
+        Assert.IsTrue(environmentInformation2.GetImportList().Contains("a"));
+        Assert.IsTrue(environmentInformation2.GetImportList().Contains("b"));
+        Assert.AreEqual(2, environmentInformation2.GetImportList().Count);
+        Assert.AreEqual(floatingDocuments, environmentInformation2.GetFloatingDocuments());
+
+        // Get the first floating document
+        FloatingDocument doc3 = environmentInformation2.GetFloatingDocuments()[0];
+        Assert.AreEqual(doc.canvas.transform.position, doc3.canvas.transform.position);
+        Assert.AreEqual(doc.canvas.transform.rotation, doc3.canvas.transform.rotation);
+        Assert.AreEqual(doc.canvas.transform.localScale, doc3.canvas.transform.localScale);
+
+        // Get the second floating document
+        FloatingDocument doc4 = environmentInformation2.GetFloatingDocuments()[1];
+        Assert.AreEqual(doc2.canvas.transform.position, doc4.canvas.transform.position);
+        Assert.AreEqual(doc2.canvas.transform.rotation, doc4.canvas.transform.rotation);
+        Assert.AreEqual(doc2.canvas.transform.localScale, doc4.canvas.transform.localScale);
+
+        Assert.IsTrue(environmentInformation2.GetFloatingDocuments().Contains(doc));
+        Assert.IsTrue(environmentInformation2.GetFloatingDocuments().Contains(doc2));
+        Assert.AreEqual(2, environmentInformation2.GetFloatingDocuments().Count);
+        Assert.AreEqual(Color.red, environmentInformation2.GetBackgroundColor());
+    }
+
+    /// <summary>
+    /// This method creates an empty EnvironmentInformation object.
+    /// </summary>
+    /// <returns>
+    /// An empty EnvironmentInformation object.
+    /// </returns>
+    private EnvironmentInformation CreateObjectEnv()
+    {
+        // Create a GameObject and add the EnvironmentInformation component to it
+        GameObject gameObject = new GameObject("Environment");
+        EnvironmentInformation environmentInformation = gameObject.AddComponent<EnvironmentInformation>();
+
+        return environmentInformation;
+    }
+
+    /// <summary>
+    /// This method creates a new prefab for the document.
+    /// </summary>
+    /// <returns>
+    /// The new prefab for the document.
+    /// </returns>
+    private GameObject CreatePrefab()
+    {
+        // Create a new prefab for the document
+        GameObject docPrefab = new GameObject();
+        docPrefab.AddComponent<Canvas>();
+
+        // Add an image to the canvas as a child
+        GameObject image = new GameObject();
+        image.AddComponent<Image>();
+        image.transform.SetParent(docPrefab.transform);
+
+        return docPrefab;
     }
 }
