@@ -5,6 +5,9 @@ using UnityEngine;
 using UnityGoogleDrive;
 using UnityGoogleDrive.Data;
 
+/// <summary>
+/// Class that deals with importing the list of PDFs from the selected environment.
+/// </summary>
 public class ImportList : MonoBehaviour
 {
     /// <summary>
@@ -12,8 +15,14 @@ public class ImportList : MonoBehaviour
     /// </summary>
     public TMP_Dropdown dropdown;
 
+    /// <summary>
+    /// The list of pdfs in this folder
+    /// </summary>
     public List<File> PDFs;
 
+    /// <summary>
+    /// the list request for the environment
+    /// </summary>
     public GoogleDriveFiles.ListRequest envReq;
 
     /// <summary>
@@ -37,15 +46,13 @@ public class ImportList : MonoBehaviour
     /// <returns>waits for the request</returns>
     public IEnumerator FindPDF()
     {
-        // string selectedEnvironmentName = this.dropdown.options[selectedIndex].text;
-
         string parentId = SelectEnvironment.parentId;
-        envReq.Fields = new List<string> { "files(id, name)" };
-        envReq.Q = $"'{parentId}' in parents and name contains '.pdf' and trashed = false";
-        yield return envReq.Send();
-        if (!envReq.IsError)
+        this.envReq.Fields = new List<string> { "files(id, name)" };
+        this.envReq.Q = $"'{parentId}' in parents and name contains '.pdf' and trashed = false";
+        yield return this.envReq.Send();
+        if (!this.envReq.IsError)
         {
-            this.PDFs = envReq.ResponseData.Files;
+            this.PDFs = this.envReq.ResponseData.Files;
 
             this.UpdateList();
         }
@@ -55,8 +62,7 @@ public class ImportList : MonoBehaviour
     {
         if (SelectEnvironment.parentId != "" && SelectEnvironment.parentId != null)
         {
-            print("parent = " + SelectEnvironment.parentId);
-            envReq = new GoogleDriveFiles.ListRequest();
+            this.envReq = new GoogleDriveFiles.ListRequest();
             this.StartCoroutine(this.FindPDF());
         }
     }

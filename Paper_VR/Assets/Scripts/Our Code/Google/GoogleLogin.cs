@@ -45,16 +45,6 @@ public class GoogleLogin : MonoBehaviour
     public virtual GoogleDriveAbout.GetRequest Request { get; set; }
 
     /// <summary>
-    /// Gets all the files of a drive or folder
-    /// </summary>
-    public virtual GoogleDriveFiles.ListRequest RequestList { get; set; }
-
-    /// <summary>
-    /// Gets a create request to create a folder
-    /// </summary>
-    public virtual GoogleDriveFiles.CreateRequest CreateRequest { get; set; }
-
-    /// <summary>
     /// setter of the coroutinerunner
     /// </summary>
     /// <param name="runner">the runner to set</param>
@@ -64,14 +54,23 @@ public class GoogleLogin : MonoBehaviour
     }
 
     /// <summary>
+    /// getter of the coroutinerunner
+    /// </summary>
+    /// <returns>the runner</returns>
+    public ICoroutineRunner GetCoroutineRunner()
+    {
+        return this.coroutineRunner;
+    }
+
+    /// <summary>
     /// the logic being called in the update function, so that its more easily testable
     /// </summary>
     public void UpdateLogic()
     {
-        if (this.Request.IsDone && this.once)
+        if (this.Request != null && this.Request.IsDone && this.once)
         {
-           this.once = false;
-           this.coroutineRunner.StartCoroutine(this.FindId());
+            this.once = false;
+            this.coroutineRunner.StartCoroutine(this.FindId(new GoogleDriveFiles.ListRequest(), false));
         }
     }
 
@@ -79,37 +78,41 @@ public class GoogleLogin : MonoBehaviour
     /// creates the get request and send it, prompting the user to login, then getting the name and email
     /// </summary>
     /// <returns>waits until the request is done to continue</returns>
-    public virtual IEnumerator UpdateInfo()
+    /// <param name="r">the request to send</param>
+    public virtual IEnumerator UpdateInfo(GoogleDriveAbout.GetRequest r)
     {
         AuthController.CancelAuth();
 
-        this.Request = GoogleDriveAbout.Get();
-        this.Request.Fields = new List<string> { "user" };
-        yield return this.Request.Send();
-
-        name = this.Request.ResponseData.User.DisplayName;
-        email = this.Request.ResponseData.User.EmailAddress;
+        r.Fields = new List<string> { "user" };
+        yield return r.Send();
+        name = r.ResponseData.User.DisplayName;
+        email = r.ResponseData.User.EmailAddress;
+        this.Request = r;
     }
 
     /// <summary>
     /// find the ID if the PaperVR folder and if it doesnt exsits yet, create it
     /// </summary>
     /// <returns>waits for things to be done until it continues</returns>
-    public virtual IEnumerator FindId()
+    /// <param name="r">the request to send</param>
+    /// <param name="testing">if its in testing mode</param>
+    public virtual IEnumerator FindId(GoogleDriveFiles.ListRequest r, bool testing)
     {
-        this.RequestList = new GoogleDriveFiles.ListRequest();
-        this.RequestList.Fields = new List<string> { "files(id)" };
-        this.RequestList.Q = $"'root' in parents and name = '{folderName}' and trashed = false";
-        yield return this.RequestList.Send();
+        r.Fields = new List<string> { "files(id)" };
+        r.Q = $"'root' in parents and name = '{folderName}' and trashed = false";
+        yield return r.Send();
         // if 0 => make one
-        if (this.RequestList.ResponseData.Files.Count == 0)
+        if (r.ResponseData.Files.Count == 0)
         {
-            yield return this.CreateFolder();
+            yield return this.CreateFolder(testing);
         }
         else
         {
-            folderID = this.RequestList.ResponseData.Files[0].Id;
-            SceneManager.LoadSceneAsync(1);
+            folderID = r.ResponseData.Files[0].Id;
+            if (!testing)
+            {
+                SceneManager.LoadSceneAsync("EnviromentMenu");
+            }
         }
     }
 
@@ -117,13 +120,27 @@ public class GoogleLogin : MonoBehaviour
     /// creates a PaperVR folder
     /// </summary>
     /// <returns>wait until things are done before it continues</returns>
-    public virtual IEnumerator CreateFolder()
+    /// <param name="testing">if its in testing mode</param>
+    public virtual IEnumerator CreateFolder(bool testing)
+    {
+        GoogleDriveFiles.CreateRequest r = this.MakeCreateRequest();
+        yield return r.Send();
+        folderID = r.ResponseData.Id;
+        if (!testing)
+        {
+            SceneManager.LoadSceneAsync("EnviromentMenu");
+        }
+    }
+
+    /// <summary>
+    /// Creates a request to create a folder
+    /// </summary>
+    /// <returns>the new request</returns>
+    public virtual GoogleDriveFiles.CreateRequest MakeCreateRequest()
     {
         UnityGoogleDrive.Data.File newFile = new UnityGoogleDrive.Data.File { Name = folderName, MimeType = "application/vnd.google-apps.folder" };
         newFile.Parents = new List<string> { "root" };
-        this.CreateRequest = GoogleDriveFiles.Create(newFile);
-        yield return this.CreateRequest.Send();
-        yield return this.FindId();
+        return GoogleDriveFiles.Create(newFile);
     }
 
     private void Awake()
@@ -135,7 +152,7 @@ public class GoogleLogin : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        this.coroutineRunner.StartCoroutine(this.UpdateInfo());
+        this.coroutineRunner.StartCoroutine(this.UpdateInfo(GoogleDriveAbout.Get()));
     }
 
     // Update is called once per frame
