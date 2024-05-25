@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -13,6 +14,11 @@ using UnityGoogleDrive.Data;
 /// </summary>
 public class SelectEnvironment : MonoBehaviour
 {
+    /// <summary>
+    /// The parent id of the selected environment.
+    /// </summary>
+    public static string parentId;
+
     /// <summary>
     /// The dropdown containing all environments.
     /// </summary>
@@ -32,11 +38,21 @@ public class SelectEnvironment : MonoBehaviour
     /// The email textbox
     /// </summary>
     public TMP_Text Email;
-    private GoogleDriveSettings GoogleDriveSettings;
-    private GoogleDriveRequest LoginRequest;
-    private GoogleDriveFiles.ListRequest requestList;
 
-    public static string parentId;
+    /// <summary>
+    /// boolean to indicate if the script is being tested, to make sure requests are not sent.
+    /// </summary>
+    public bool testing = false;
+
+    /// <summary>
+    /// Gets or sets The request list to get the list of folders.
+    /// </summary>
+    public virtual GoogleDriveFiles.ListRequest RequestList { get; set; }
+
+    /// <summary>
+    /// Gets or sets A coroutine runner to run the coroutines.
+    /// </summary>
+    public virtual ICoroutineRunner CoroutineRunner { get; set; }
 
     /// <summary>
     /// When the select button is clicked, this method will be called. This will result in the
@@ -51,13 +67,10 @@ public class SelectEnvironment : MonoBehaviour
         // A placeholder for the environment information.
         EnvironmentInfo envInfo = new EnvironmentInfo();
 
-        // Load the new scene using the environment information
-        parentId = this.requestList.ResponseData.Files[this.dropdown.value].Id;
+        parentId = this.RequestList.ResponseData.Files[this.dropdown.value].Id;
 
         this.LoadNewScene(envInfo);
     }
-
-
 
     /// <summary>
     /// Calls a refresh on the list of folders and the name and email
@@ -66,25 +79,27 @@ public class SelectEnvironment : MonoBehaviour
     {
         this.Name.text = "Name: " + GoogleLogin.name;
         this.Email.text = "Email: " + GoogleLogin.email;
-        this.StartCoroutine(this.UpdateList());
+        if (!this.testing)
+        {
+            this.CoroutineRunner.StartCoroutine(this.UpdateList(new GoogleDriveFiles.ListRequest()));
+        }
     }
 
     /// <summary>
     /// finds all folders under the main folder and lists their names
     /// </summary>
     /// <returns>Waits for the request to finish</returns>
-    public IEnumerator UpdateList()
+    /// <param name="r">The request to get the list of folders</param>
+    public IEnumerator UpdateList(GoogleDriveFiles.ListRequest r)
     {
-        this.requestList = new GoogleDriveFiles.ListRequest();
-        this.requestList.Fields = new List<string> { "files(id, name)" };
-        this.requestList.Q = $"'{GoogleLogin.folderID}' in parents and trashed = false and mimeType = 'application/vnd.google-apps.folder'";
+        r.Fields = new List<string> { "files(id, name)" };
+        r.Q = $"'{GoogleLogin.folderID}' in parents and trashed = false and mimeType = 'application/vnd.google-apps.folder'";
+        yield return r.Send();
 
-        yield return this.requestList.Send();
-
-        if (!this.requestList.IsError)
+        if (!r.IsError)
         {
             List<string> environmentNames = new List<string>();
-            foreach (var folder in this.requestList.ResponseData.Files)
+            foreach (var folder in r.ResponseData.Files)
             {
                 environmentNames.Add(folder.Name);
             }
@@ -92,6 +107,8 @@ public class SelectEnvironment : MonoBehaviour
             this.dropdown.ClearOptions();
             this.dropdown.AddOptions(environmentNames);
         }
+
+        this.RequestList = r;
     }
 
     /// <summary>
@@ -102,17 +119,17 @@ public class SelectEnvironment : MonoBehaviour
     {
         // Gets the environment information component of the game manager and loads the new
         // Environment information on to it.
-        EnvironmentInformation envInformation = this.gameManager.GetComponent<EnvironmentInformation>();
+        EnvironmentInformation envInformation = this.gameManager.GetComponent<EnvironmentInformation>()
+            ?? this.gameManager.AddComponent<EnvironmentInformation>();
         envInformation.LoadNewInformation(envInfo);
 
         // Loads the environment scene.
         SceneManager.LoadSceneAsync("Environment");
-
     }
 
     void Start()
     {
-        // this.StartCoroutine(this.UpdateList());
+        this.CoroutineRunner = this.GetComponent<ICoroutineRunner>() ?? this.gameObject.AddComponent<CoroutineRunner>();
         this.Refresh();
     }
 }

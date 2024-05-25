@@ -9,9 +9,20 @@ using UnityGoogleDrive;
 /// </summary>
 public class GoogleLogOut : MonoBehaviour
 {
-    public GoogleDriveSettings settings;
-    public GoogleDriveAbout.GetRequest request;
-    public GoogleLogin GoogleLogin = new GoogleLogin();
+    /// <summary>
+    /// Gets or sets the settings for the google drive
+    /// </summary>
+    public virtual GoogleDriveSettings Settings { get; set; }
+
+    /// <summary>
+    /// Gets or sets the google login
+    /// </summary>
+    public virtual GoogleLogin GoogleLogin { get; set; }
+
+    /// <summary>
+    /// Gets or sets the coroutine runner
+    /// </summary>
+    public virtual ICoroutineRunner CoroutineRunner { get; set; }
 
     /// <summary>
     /// Logs the user out, then triggers a new login
@@ -19,11 +30,11 @@ public class GoogleLogOut : MonoBehaviour
     public void LogOut()
     {
         bool once = true;
-        this.settings.DeleteCachedAuthTokens();
-        while (!this.settings.IsAnyAuthTokenCached() && once)
+        this.Settings.DeleteCachedAuthTokens();
+        while (!this.Settings.IsAnyAuthTokenCached() && once)
         {
             once = false;
-            this.StartCoroutine(this.LogIn());
+            this.CoroutineRunner.StartCoroutine(this.LogIn());
         }
     }
 
@@ -33,19 +44,15 @@ public class GoogleLogOut : MonoBehaviour
     /// <returns>waits until the request is finished to continue</returns>
     public IEnumerator LogIn()
     {
-        AuthController.CancelAuth();
-        this.request = GoogleDriveAbout.Get();
-        this.request.Fields = new List<string> { "user" };
-        yield return this.request.Send();
-
-        GoogleLogin.name = this.request.ResponseData.User.DisplayName;
-        GoogleLogin.email = this.request.ResponseData.User.EmailAddress;
-        this.StartCoroutine(this.GoogleLogin.FindId());
+        yield return this.GoogleLogin.UpdateInfo(new GoogleDriveAbout.GetRequest());
+        this.CoroutineRunner.StartCoroutine(this.GoogleLogin.FindId(new GoogleDriveFiles.ListRequest(), false));
     }
 
     // Start is called before the first frame update
     void Awake()
     {
-        this.settings = GoogleDriveSettings.LoadFromResources();
+        this.Settings = GoogleDriveSettings.LoadFromResources();
+        this.CoroutineRunner = this.CoroutineRunner = this.GetComponent<ICoroutineRunner>() ?? this.gameObject.AddComponent<CoroutineRunner>();
+        this.GoogleLogin = new GoogleLogin();
     }
 }

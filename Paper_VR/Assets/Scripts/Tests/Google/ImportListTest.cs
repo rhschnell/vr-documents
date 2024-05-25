@@ -8,31 +8,50 @@ using UnityEngine.TestTools;
 using UnityGoogleDrive;
 using UnityGoogleDrive.Data;
 
+/// <summary>
+/// Testing the ImportList class
+/// </summary>
 public class ImportListTest
 {
+    private GameObject go;
     private ImportList importList;
     private Mock<TMP_Dropdown> mockDropdown;
     private List<File> mockPDFs;
 
+    /// <summary>
+    /// setUp the test
+    /// </summary>
     [SetUp]
     public void SetUp()
     {
         // Initialize ImportList and its dependencies
-        GameObject go = new GameObject();
-        importList = go.AddComponent<ImportList>();
+        this.go = new GameObject();
+        this.importList = this.go.AddComponent<ImportList>();
 
-        mockDropdown = new Mock<TMP_Dropdown>();
-        importList.dropdown = mockDropdown.Object;
+        this.mockDropdown = new Mock<TMP_Dropdown>();
+        this.importList.dropdown = this.mockDropdown.Object;
 
-        mockPDFs = new List<File>
+        this.mockPDFs = new List<File>
         {
             new File { Name = "Document1.pdf" },
-            new File { Name = "Document2.pdf" }
+            new File { Name = "Document2.pdf" },
         };
 
-        importList.PDFs = mockPDFs;
+        this.importList.PDFs = this.mockPDFs;
     }
 
+    /// <summary>
+    /// Tear down the test
+    /// </summary>
+    [TearDown]
+    public void TearDown()
+    {
+        GameObject.DestroyImmediate(this.go);
+    }
+
+    /// <summary>
+    /// Makes sure that the update list function works as expected
+    /// </summary>
     [Test]
     public void UpdateList_ShouldUpdateDropdownOptions()
     {
@@ -44,6 +63,10 @@ public class ImportListTest
         Assert.AreEqual(this.mockDropdown.Object.options[1].text, "Document2");
     }
 
+    /// <summary>
+    /// Makes sure that the find PDF function works as expected
+    /// </summary>
+    /// <returns>Its a unity test</returns>
     [UnityTest]
     public IEnumerator FindPDF_ShouldUpdatePDFListAndCallUpdateList()
     {
@@ -59,16 +82,16 @@ public class ImportListTest
         var mockRequest = new Mock<GoogleDriveFiles.ListRequest>();
         mockRequest.Setup(r => r.Send()).Returns(responseMock.Object);
         mockRequest.SetupGet(r => r.IsError).Returns(false);
-        mockRequest.SetupGet(r => r.ResponseData).Returns(new FileList { Files = mockPDFs });
+        mockRequest.SetupGet(r => r.ResponseData).Returns(new FileList { Files = this.mockPDFs });
 
         GoogleDriveFiles.ListRequest a = mockRequest.Object;
-        importList.envReq = a;
+        this.importList.envReq = a;
 
         // Act
-        yield return importList.FindPDF();
+        yield return this.importList.FindPDF();
 
         // Assert
-        Assert.AreEqual(mockPDFs, importList.PDFs);
+        Assert.AreEqual(this.mockPDFs, this.importList.PDFs);
         Assert.AreEqual(this.mockDropdown.Object.options[0].text, "Document1");
         Assert.AreEqual(this.mockDropdown.Object.options[1].text, "Document2");
 

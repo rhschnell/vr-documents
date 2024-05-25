@@ -1,10 +1,8 @@
 ﻿using System.Collections;
+using Moq;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using Moq;
-
-
 
 /// <summary>
 /// Example PlayModeTests class that contains simple tests.
@@ -36,5 +34,4 @@ public class PlayModeTests
         yield return null;
         Assert.True(true);
     }
-
 }

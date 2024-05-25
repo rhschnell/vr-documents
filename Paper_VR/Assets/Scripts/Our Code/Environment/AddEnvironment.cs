@@ -13,7 +13,11 @@ public class AddEnvironment : MonoBehaviour
     /// The input field where the environment name should be inserted.
     /// </summary>
     public TMP_InputField InputField;
-    private SelectEnvironment SelectEnvironment;
+
+    /// <summary>
+    /// the error message text field
+    /// </summary>
+    public TMP_Text error;
 
     /// <summary>
     /// Adds an environment
@@ -23,15 +27,26 @@ public class AddEnvironment : MonoBehaviour
         string environmentName = this.InputField.text;
         if (environmentName == "")
         {
-            print("Name must not be empty!");
+            this.error.text = "Name must not be empty!";
         }
         else
         {
+            this.error.text = "";
             // Create a new environment folder in the PaperVR folder
-            UnityGoogleDrive.Data.File newFile = new UnityGoogleDrive.Data.File { Name = environmentName, MimeType = "application/vnd.google-apps.folder" };
-            newFile.Parents = new List<string> { GoogleLogin.folderID };
-            GoogleDriveFiles.CreateRequest createRequest = GoogleDriveFiles.Create(newFile);
+            GoogleDriveFiles.CreateRequest createRequest = this.MakeRequest(environmentName);
             createRequest.Send();
         }
+    }
+
+    /// <summary>
+    /// Makes a request to create a new environment folder
+    /// </summary>
+    /// <param name="name">the name of the new folder</param>
+    /// <returns>a new create file request</returns>
+    public virtual GoogleDriveFiles.CreateRequest MakeRequest(string name)
+    {
+        UnityGoogleDrive.Data.File newFile = new UnityGoogleDrive.Data.File { Name = name, MimeType = "application/vnd.google-apps.folder" };
+        newFile.Parents = new List<string> { GoogleLogin.folderID };
+        return GoogleDriveFiles.Create(newFile);
     }
 }
