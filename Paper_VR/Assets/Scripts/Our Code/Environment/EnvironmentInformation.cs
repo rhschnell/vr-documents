@@ -1,10 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
+using System.Text;
 using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityGoogleDrive;
 
 /// <summary>
 /// The class containing all information of the environment and
@@ -22,10 +23,10 @@ public class EnvironmentInformation : MonoBehaviour
     /// </summary>
     private static string imagePath = "Sprites";
 
-    private string environmentName;
-    private List<FloatingDocument> floatingDocuments;
-    private List<string> importList;
-    private Color backgroundColor;
+    private string environmentName = "New Environment";
+    private List<FloatingDocument> floatingDocuments = new List<FloatingDocument>();
+    private List<string> importList = new List<string>();
+    private Color backgroundColor = Color.white;
 
     /// <summary>
     /// This method creates a new floating document in the scene.
@@ -84,6 +85,35 @@ public class EnvironmentInformation : MonoBehaviour
 
         // Sets the beckground color to the new background color.
         this.backgroundColor = newEnvironmentInformation.backgroundColor;
+    }
+
+    /// <summary>
+    /// This method saves the environment information to a json file.
+    /// And sends it to google drive.
+    /// </summary>
+    /// <param name="googleMethods">The google methods object</param>
+    /// <returns>An IEnumerator</returns>
+    public virtual IEnumerator SaveEnvironment(GoogleMethods googleMethods)
+    {
+        // Find the folder id of the folder with the name of the environment.
+        yield return googleMethods.FindEnviormentId(this.environmentName, new GoogleDriveFiles.ListRequest());
+        string folderId = googleMethods.currentEnvId;
+
+        // Delete the old environment file.
+        yield return googleMethods.DeleteFile("Environment.json", folderId, new GoogleDriveFiles.ListRequest(), false);
+
+        // Create a new environment information object.
+        EnvironmentInfo environmentInfo = new EnvironmentInfo(this);
+
+        // Serialize the environment information object to a json string.
+        string json = JsonConvert.SerializeObject(environmentInfo);
+
+        // Create a new json file
+        var content = Encoding.ASCII.GetBytes(json);
+
+        // Send the json file to google drive.
+        GoogleDriveFiles.CreateRequest request = new GoogleDriveFiles.CreateRequest();
+        yield return googleMethods.CreateJsonFile(folderId, content, request, false);
     }
 
     /// <summary>
@@ -169,9 +199,9 @@ public class EnvironmentInformation : MonoBehaviour
     /// <summary>
     /// The awake method, it makes sure that the object will not be destroyed when loading a new scene.
     /// </summary>
-    private void Awake()
+    void Awake()
     {
-        // Destroys this game object when a new scene is loaded.
+        // Does not destroy this game object when a new scene is loaded.
         DontDestroyOnLoad(this.gameObject);
     }
 }

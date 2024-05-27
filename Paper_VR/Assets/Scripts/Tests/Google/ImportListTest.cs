@@ -25,6 +25,16 @@ public class ImportListTest
     public void SetUp()
     {
         // Initialize ImportList and its dependencies
+        GameObject go = new GameObject();
+        this.importList = go.AddComponent<ImportList>();
+
+        // Create a GameManeger object
+        GameObject gameManager = new GameObject("GameManager");
+        gameManager.AddComponent<EnvironmentInformation>();
+
+        this.mockDropdown = new Mock<TMP_Dropdown>();
+        this.importList.dropdown = this.mockDropdown.Object;
+
         this.go = new GameObject();
         this.importList = this.go.AddComponent<ImportList>();
 

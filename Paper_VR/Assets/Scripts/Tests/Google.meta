@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Paper_VR/Assets/WanzyeeStudio.meta
+guid: d3edb3f39a2ad62459167091378bbde1
+========
 guid: 391873dec3b87204787913b340e6cb45
+>>>>>>>> 1a13d9192235feb1987ba5b19532f824a151693e:Paper_VR/Assets/Scripts/Tests/Google.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

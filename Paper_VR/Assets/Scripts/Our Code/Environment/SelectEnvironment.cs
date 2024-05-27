@@ -1,12 +1,9 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
 using UnityGoogleDrive;
-using UnityGoogleDrive.Data;
 
 /// <summary>
 /// This class is responsible for selecting the environment, it creates a dropdown containing all existing
@@ -44,6 +41,9 @@ public class SelectEnvironment : MonoBehaviour
     /// </summary>
     public bool testing = false;
 
+    private GoogleDriveSettings GoogleDriveSettings;
+    private GoogleDriveRequest LoginRequest;
+
     /// <summary>
     /// Gets or sets The request list to get the list of folders.
     /// </summary>
@@ -59,15 +59,54 @@ public class SelectEnvironment : MonoBehaviour
     /// the yaml file being received that corresponds to the selected dropwon item, the conversion to environment information
     /// and the loading of the scene using this environment information.
     /// </summary>
-    public void AddEnvironmentButton()
+    public void SelectEnvironmentButton()
     {
-        // Yamlfile environmentInformation = StartCoroutine(FindPDF());
-        // EnvironmentInformation envInfo = getSceneInfo(environmentInformation)
+        // Load the new scene using the environment information
+        parentId = this.RequestList.ResponseData.Files[this.dropdown.value].Id;
 
         // A placeholder for the environment information.
         EnvironmentInfo envInfo = new EnvironmentInfo();
 
-        parentId = this.RequestList.ResponseData.Files[this.dropdown.value].Id;
+        string envName = this.dropdown.options[this.dropdown.value].text;
+
+        Debug.Log("Selected environment: " + envName);
+        Debug.Log("Selected environment id: " + parentId);
+
+        this.CoroutineRunner.StartCoroutine(this.GetEnvironment(parentId, envName));
+    }
+
+    /// <summary>
+    /// This method will get the environment information from the selected environment and load the scene.
+    /// </summary>
+    /// <param name="id">The id of the folder</param>
+    /// <param name="envName">the name of the enviorment</param>
+    /// <returns>An IEnumerator</returns>
+    public IEnumerator GetEnvironment(string id, string envName)
+    {
+        // Find the json file of the selected environment
+        this.RequestList = new GoogleDriveFiles.ListRequest();
+        this.RequestList.Fields = new List<string> { "files(id, name)" };
+        this.RequestList.Q = $"'{id}' in parents and name contains 'Environment.pdf' and trashed = false";
+
+        yield return this.RequestList.Send();
+
+        EnvironmentInfo envInfo = new EnvironmentInfo();
+
+        // Check if the file exists, if not create an empty environment
+        if (this.RequestList.ResponseData.Files.Count == 0)
+        {
+            envInfo.environmentName = envName;
+            envInfo.floatingDocuments = new List<FloatingDocumentInfo>();
+            envInfo.importList = new List<string>();
+            envInfo.backgroundColor = Color.white;
+        }
+        else
+        {
+            // Get the json from the request
+            var content = this.RequestList.ResponseData.Files[0].Content;
+            string json = System.Text.Encoding.ASCII.GetString(content);
+            envInfo = EnvironmentInfo.LoadFromJson(json);
+        }
 
         this.LoadNewScene(envInfo);
     }
