@@ -38,6 +38,15 @@ public class ImportList : MonoBehaviour
 
         this.dropdown.ClearOptions();
         this.dropdown.AddOptions(environmentNames);
+
+        // Find the game object called GameManeger
+        GameObject gameManager = GameObject.Find("GameManager");
+
+        // Get the GameManager component with the environment script
+        EnvironmentInformation environment = gameManager.GetComponent<EnvironmentInformation>();
+
+        // Set the import list
+        environment.SetImportList(environmentNames);
     }
 
     /// <summary>

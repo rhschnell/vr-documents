@@ -32,6 +32,12 @@ public class SelectEnvironmentTest
         this.selectEnvironment = this.gameObject.AddComponent<SelectEnvironment>();
         this.selectEnvironment.testing = true;
         this.mockDropdown = new Mock<TMP_Dropdown>();
+        List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>
+        {
+            new TMP_Dropdown.OptionData("env1"),
+            new TMP_Dropdown.OptionData("env2"),
+        };
+        this.mockDropdown.Object.options = options;
         this.mockNameText = new Mock<TMP_Text>();
         this.mockEmailText = new Mock<TMP_Text>();
         this.mockListRequest = new Mock<GoogleDriveFiles.ListRequest>();
@@ -69,7 +75,7 @@ public class SelectEnvironmentTest
         this.selectEnvironment.RequestList = this.mockListRequest.Object;
         this.mockDropdown.Object.value = 0;
 
-        this.selectEnvironment.AddEnvironmentButton();
+        this.selectEnvironment.SelectEnvironmentButton();
 
         Assert.AreEqual("123", SelectEnvironment.parentId);
         SelectEnvironment.parentId = null;
@@ -126,5 +132,82 @@ public class SelectEnvironmentTest
         Assert.True(this.mockDropdown.Object.options.Exists(option => option.text == "Env2"));
 
         yield return new WaitForSeconds(1);
+    }
+
+    /// <summary>
+    /// This test the get environment method.
+    /// </summary>
+    /// <returns>IEnumerator</returns>
+    [UnityTest]
+    public IEnumerator GetEnvironmentTest()
+    {
+        // Create a Select Environment mock
+        var mock = new Mock<SelectEnvironment>();
+        mock.Setup(m => m.RequestList).Returns(this.mockListRequest.Object);
+        mock.Object.gameManager = new GameObject("GameManager");
+
+        // Create a json file of a EnvironmentInfo object
+        EnvironmentInfo environmentInfo = new EnvironmentInfo();
+        environmentInfo.environmentName = "Env1";
+        environmentInfo.floatingDocuments = new List<FloatingDocumentInfo>();
+        environmentInfo.importList = new List<string>();
+        environmentInfo.backgroundColor = Color.red;
+        string json = environmentInfo.SaveToJson();
+        var content = System.Text.Encoding.ASCII.GetBytes(json);
+
+        // Create a mock response
+        var mockFiles = new List<UnityGoogleDrive.Data.File>
+        {
+            new UnityGoogleDrive.Data.File { Name = "Env1", Content = content },
+            new UnityGoogleDrive.Data.File { Name = "Env2", Content = content },
+        };
+        var responseMock = new Mock<GoogleDriveRequestYieldInstruction<UnityGoogleDrive.Data.FileList>>();
+        responseMock.Setup(a => a.GoogleDriveRequest).Returns(this.mockListRequest.Object);
+
+        this.mockListRequest.Setup(req => req.Send()).Returns(responseMock.Object);
+        this.mockListRequest.Setup(req => req.ResponseData.Files).Returns(mockFiles);
+        this.mockListRequest.Setup(req => req.IsError).Returns(false);
+
+        yield return mock.Object.GetEnvironment("123", "Env1");
+
+        // Verify that the request was sent
+        this.mockListRequest.Verify(req => req.Send());
+
+        // Assert that the environment was loaded
+        EnvironmentInformation env = mock.Object.gameManager.GetComponent<EnvironmentInformation>();
+        Assert.AreEqual("Env1", env.GetName());
+        Assert.AreEqual(Color.red, env.GetBackgroundColor());
+    }
+
+    /// <summary>
+    /// This test the get environment method.
+    /// </summary>
+    /// <returns>IEnumerator</returns>
+    [UnityTest]
+    public IEnumerator GetEnvironmentTestNoFiles()
+    {
+        // Create a Select Environment mock
+        var mock = new Mock<SelectEnvironment>();
+        mock.Setup(m => m.RequestList).Returns(this.mockListRequest.Object);
+        mock.Object.gameManager = new GameObject("GameManager");
+
+        // Create a mock response
+        var mockFiles = new List<UnityGoogleDrive.Data.File>();
+        var responseMock = new Mock<GoogleDriveRequestYieldInstruction<UnityGoogleDrive.Data.FileList>>();
+        responseMock.Setup(a => a.GoogleDriveRequest).Returns(this.mockListRequest.Object);
+
+        this.mockListRequest.Setup(req => req.Send()).Returns(responseMock.Object);
+        this.mockListRequest.Setup(req => req.ResponseData.Files).Returns(mockFiles);
+        this.mockListRequest.Setup(req => req.IsError).Returns(false);
+
+        yield return mock.Object.GetEnvironment("123", "Env1");
+
+        // Verify that the request was sent
+        this.mockListRequest.Verify(req => req.Send());
+
+        // Assert that the environment was loaded
+        EnvironmentInformation env = mock.Object.gameManager.GetComponent<EnvironmentInformation>();
+        Assert.AreEqual("Env1", env.GetName());
+        Assert.AreEqual(Color.white, env.GetBackgroundColor());
     }
 }

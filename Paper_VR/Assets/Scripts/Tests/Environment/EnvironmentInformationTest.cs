@@ -1,9 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Moq;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 using UnityEngine.UI;
+using UnityEngine.WSA;
+using UnityGoogleDrive;
+using UnityGoogleDrive.Data;
 
 /// <summary>
 /// The testing class for EnvironmentInformation.
@@ -209,6 +214,46 @@ public class EnvironmentInformationTest
         Assert.IsTrue(environmentInformation2.GetFloatingDocuments().Contains(doc2));
         Assert.AreEqual(2, environmentInformation2.GetFloatingDocuments().Count);
         Assert.AreEqual(Color.red, environmentInformation2.GetBackgroundColor());
+    }
+
+    /// <summary>
+    /// This test will check if the json file is saved to the google drive.
+    /// </summary>
+    /// <returns>IEnumerator</returns>
+    [UnityTest]
+    public IEnumerator SaveToDrive()
+    {
+        // Create a GameObject and add the EnvironmentInformation component to it
+        EnvironmentInformation environmentInformation = this.CreateObjectEnv();
+        environmentInformation.SetName("Environment");
+
+        // Create a new prefab for the document
+        GameObject docPrefab = this.CreatePrefab();
+        environmentInformation.docPrefab = docPrefab;
+
+        // Create a response mock
+        var responseMock = new Mock<GoogleDriveRequestYieldInstruction<UnityGoogleDrive.Data.FileList>>();
+
+        // Mock the google methods
+        Mock<GoogleMethods> googleMethods = new Mock<GoogleMethods>();
+        googleMethods.Object.currentEnvId = "id";
+
+        // Set up the google methods
+        googleMethods.Setup(a => a.FindEnviormentId("Environment", It.IsAny<GoogleDriveFiles.ListRequest>())).Returns(responseMock.Object);
+        googleMethods.Setup(a => a.DeleteFile("Environment.json", "id", It.IsAny<GoogleDriveFiles.ListRequest>(), false)).Returns(responseMock.Object);
+        googleMethods.Setup(a => a.CreateJsonFile("id", It.IsAny<byte[]>(), It.IsAny<GoogleDriveFiles.CreateRequest>(), false)).Returns(responseMock.Object);
+
+        // Save the EnvironmentInformation to the google drive
+        yield return environmentInformation.SaveEnvironment(googleMethods.Object);
+
+        // Verify that the findEnvid method is called
+        googleMethods.Verify(a => a.FindEnviormentId("Environment", It.IsAny<GoogleDriveFiles.ListRequest>()));
+
+        // Verify that the delete file method is called
+        googleMethods.Verify(a => a.DeleteFile("Environment.json", "id", It.IsAny<GoogleDriveFiles.ListRequest>(), false));
+
+        // Verify that that the create json file method is called
+        googleMethods.Verify(a => a.CreateJsonFile("id", It.IsAny<byte[]>(), It.IsAny<GoogleDriveFiles.CreateRequest>(), false));
     }
 
     /// <summary>
