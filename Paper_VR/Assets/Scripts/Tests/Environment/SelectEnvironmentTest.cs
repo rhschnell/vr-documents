@@ -210,4 +210,86 @@ public class SelectEnvironmentTest
         Assert.AreEqual("Env1", env.GetName());
         Assert.AreEqual(Color.white, env.GetBackgroundColor());
     }
+
+    /// <summary>
+    /// Tests the make create request method.
+    /// </summary>
+    [Test]
+    public void MakeRequestTest()
+    {
+        var r = this.selectEnvironment.MakeRequest("123");
+
+        Assert.AreEqual("Saved Documents", r.RequestData.Name);
+        Assert.AreEqual("application/vnd.google-apps.folder", r.RequestData.MimeType);
+        Assert.AreEqual("123", r.RequestData.Parents[0]);
+    }
+
+    /// <summary>
+    /// Tests the create saved doc folder method.
+    /// </summary>
+    /// <returns>its a unity test</returns>
+    [UnityTest]
+    public IEnumerator CreateSavedDocFolderTest()
+    {
+        var mock = new Mock<SelectEnvironment>();
+        var requestMock = new Mock<GoogleDriveFiles.CreateRequest>();
+        var responseMock = new Mock<GoogleDriveRequestYieldInstruction<UnityGoogleDrive.Data.File>>();
+
+        responseMock.Setup(a => a.GoogleDriveRequest).Returns(requestMock.Object);
+        requestMock.Setup(req => req.Send()).Returns(responseMock.Object);
+
+        mock.Setup(m => m.MakeRequest("123")).Returns(requestMock.Object);
+        mock.CallBase = true;
+
+        yield return mock.Object.CreateSavedDocFolder("123");
+
+        requestMock.Verify(req => req.Send());
+    }
+
+    /// <summary>
+    /// Tests the HasSavedDocFolder method.
+    /// </summary>
+    /// <returns>Its a unity test</returns>
+    [UnityTest]
+    public IEnumerator HasSavedDocFolderTest()
+    {
+        var mock = new Mock<SelectEnvironment>();
+        var requestMock = new Mock<GoogleDriveFiles.ListRequest>();
+        var responseMock = new Mock<GoogleDriveRequestYieldInstruction<UnityGoogleDrive.Data.FileList>>();
+
+        responseMock.Setup(a => a.GoogleDriveRequest).Returns(requestMock.Object);
+        requestMock.Setup(req => req.Send()).Returns(responseMock.Object);
+        requestMock.Setup(req => req.ResponseData.Files).Returns(new List<UnityGoogleDrive.Data.File> { new UnityGoogleDrive.Data.File() });
+
+        mock.CallBase = true;
+
+        yield return mock.Object.HasSavedDocFolder("123", requestMock.Object);
+
+        requestMock.Verify(req => req.Send());
+    }
+
+    /// <summary>
+    /// Tests the HasSavedDocFolder method with no files.
+    /// </summary>
+    /// <returns>Its a unity test</returns>
+    [UnityTest]
+    public IEnumerator HasSavedDocFolderTestNoFiles()
+    {
+        var mock = new Mock<SelectEnvironment>();
+        var requestMock = new Mock<GoogleDriveFiles.ListRequest>();
+        var responseMock = new Mock<GoogleDriveRequestYieldInstruction<UnityGoogleDrive.Data.FileList>>();
+        var coroutineRunnerMock = new Mock<ICoroutineRunner>();
+        mock.Object.CoroutineRunner = coroutineRunnerMock.Object;
+        mock.Setup(m => m.CoroutineRunner).Returns(coroutineRunnerMock.Object);
+
+        responseMock.Setup(a => a.GoogleDriveRequest).Returns(requestMock.Object);
+        requestMock.Setup(req => req.Send()).Returns(responseMock.Object);
+        requestMock.Setup(req => req.ResponseData.Files).Returns(new List<UnityGoogleDrive.Data.File>());
+
+        mock.CallBase = true;
+
+        yield return mock.Object.HasSavedDocFolder("123", requestMock.Object);
+
+        requestMock.Verify(req => req.Send());
+    }
 }
