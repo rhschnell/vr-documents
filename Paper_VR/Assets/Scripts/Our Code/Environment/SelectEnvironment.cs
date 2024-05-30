@@ -140,6 +140,7 @@ public class SelectEnvironment : MonoBehaviour
             List<string> environmentNames = new List<string>();
             foreach (var folder in r.ResponseData.Files)
             {
+                this.CoroutineRunner.StartCoroutine(this.HasSavedDocFolder(folder.Id, new GoogleDriveFiles.ListRequest()));
                 environmentNames.Add(folder.Name);
             }
 
@@ -148,6 +149,45 @@ public class SelectEnvironment : MonoBehaviour
         }
 
         this.RequestList = r;
+    }
+
+    /// <summary>
+    /// Checks if the Saved Documents folder exists in the selected folder, if not it will create it.
+    /// </summary>
+    /// <param name="parentID">The id of the folder to check</param>
+    /// <param name="r">the new request, done for testing</param>
+    /// <returns>so you can wait</returns>
+    public virtual IEnumerator HasSavedDocFolder(string parentID, GoogleDriveFiles.ListRequest r)
+    {
+        r.Fields = new List<string> { "files(id, name)" };
+        r.Q = $"'{parentID}' in parents and trashed = false and mimeType = 'application/vnd.google-apps.folder'";
+        yield return r.Send();
+        if (r.ResponseData.Files.Count == 0)
+        {
+            this.CoroutineRunner.StartCoroutine(this.CreateSavedDocFolder(parentID));
+        }
+    }
+
+    /// <summary>
+    /// Creates the Saved Documents folder in the selected folder
+    /// </summary>
+    /// <param name="parentID">the folder to create it in</param>
+    /// <returns>so it can wait</returns>
+    public virtual IEnumerator CreateSavedDocFolder(string parentID)
+    {
+        GoogleDriveFiles.CreateRequest r = this.MakeRequest(parentID);
+        yield return r.Send();
+    }
+
+    /// <summary>
+    /// Creates the request to create the Saved Documents folder
+    /// </summary>
+    /// <param name="parentID">The parent ID</param>
+    /// <returns>A waitable object</returns>
+    public virtual GoogleDriveFiles.CreateRequest MakeRequest(string parentID)
+    {
+        UnityGoogleDrive.Data.File folder = new UnityGoogleDrive.Data.File { Name = "Saved Documents", MimeType = "application/vnd.google-apps.folder", Parents = new List<string> { parentID } };
+        return new GoogleDriveFiles.CreateRequest(folder);
     }
 
     /// <summary>
