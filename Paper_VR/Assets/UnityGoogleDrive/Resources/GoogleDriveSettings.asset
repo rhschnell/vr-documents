@@ -24,8 +24,8 @@ MonoBehaviour:
     - http://localhost:8000
     - http://localhost:8000/
     - http://localhost:60606/
-    - https://tychograpendaal.github.io/webxr/
     - http://localhost
+    - https://tychograpendaal.github.io/webxr/
   uriSchemeClientCredentials:
     clientId: 285080822982-56c4ltqu2q9n68rmooapv5ejoq2v5b0b.apps.googleusercontent.com
     reversedClientId: 
