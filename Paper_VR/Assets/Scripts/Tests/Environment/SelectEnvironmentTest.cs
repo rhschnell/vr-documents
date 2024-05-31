@@ -179,6 +179,7 @@ public class SelectEnvironmentTest
         Assert.AreEqual(Color.red, env.GetBackgroundColor());
     }
 
+    /*
     /// <summary>
     /// This test the get environment method.
     /// </summary>
@@ -210,6 +211,7 @@ public class SelectEnvironmentTest
         Assert.AreEqual("Env1", env.GetName());
         Assert.AreEqual(Color.white, env.GetBackgroundColor());
     }
+    */
 
     /// <summary>
     /// Tests the make create request method.

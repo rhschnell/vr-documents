@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
@@ -36,7 +37,7 @@ public class FloatingDocumentInfo
     /// <summary>
     /// an array of the pages of the PDF file.
     /// </summary>
-    public int[] pages;
+    public List<int> pages;
 
     /// <summary>
     /// The current page of the PDF file.
@@ -46,14 +47,12 @@ public class FloatingDocumentInfo
     /// <summary>
     /// The width of the PDF file.
     /// </summary>
-    public int width;
+    public float width;
 
     /// <summary>
     /// The height of the PDF file.
     /// </summary>
-    public int height;
-
-    private string imagePath = "Sprites";
+    public float height;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FloatingDocumentInfo"/> class.
@@ -77,7 +76,7 @@ public class FloatingDocumentInfo
         this.pdfPath = doc.pdfPath;
         this.pdfName = doc.pdfName;
         this.pages = doc.pages;
-        this.currentPage = doc.currentPage;
+        this.currentPage = doc.currentPageIndex;
         this.width = doc.width;
         this.height = doc.height;
     }

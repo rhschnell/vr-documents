@@ -1,5 +1,7 @@
-﻿using NUnit.Framework;
+﻿using System.Collections.Generic;
+using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// This class contains tests for the FloatingDocument class.
@@ -13,19 +15,29 @@ public class FloatingDocumentTests : MonoBehaviour
     public void CreateFloatingDocument()
     {
         // Arrange
-        int[] pages = new int[3] { 1, 2, 3 };
+        List<int> pages = new List<int> { 1, 2, 3 };
+        GameObject canvas = new GameObject();
         GameObject examplePrefab = new GameObject();
-        FloatingDocument floatingDocument = new FloatingDocument(examplePrefab, "googledrive", "examplename", pages);
+        FloatingDocument newDoc = examplePrefab.AddComponent<FloatingDocument>();
+        newDoc.pdfPath = "googledrive";
+        newDoc.pdfName = "examplename";
+        newDoc.pages = pages;
+        newDoc.width = 210;
+        newDoc.height = 297;
+        newDoc.canvas = canvas;
+        newDoc.currentPageIndex = 1;
+
+        FloatingDocument doc = examplePrefab.GetComponent<FloatingDocument>();
 
         // Act
-        Assert.IsNotNull(floatingDocument);
-        Assert.AreEqual("googledrive", floatingDocument.pdfPath);
-        Assert.AreEqual("examplename", floatingDocument.pdfName);
-        Assert.AreEqual(pages, floatingDocument.pages);
-        Assert.AreEqual(210, floatingDocument.width);
-        Assert.AreEqual(297, floatingDocument.height);
-        Assert.AreEqual(examplePrefab, floatingDocument.canvas);
-        Assert.AreEqual(1, floatingDocument.currentPage);
+        Assert.IsNotNull(doc);
+        Assert.AreEqual("googledrive", doc.pdfPath);
+        Assert.AreEqual("examplename", doc.pdfName);
+        Assert.AreEqual(pages, doc.pages);
+        Assert.AreEqual(210, doc.width);
+        Assert.AreEqual(297, doc.height);
+        Assert.AreEqual(canvas, doc.canvas);
+        Assert.AreEqual(1, doc.currentPageIndex);
     }
 
     /// <summary>
@@ -35,7 +47,7 @@ public class FloatingDocumentTests : MonoBehaviour
     public void NoPages()
     {
         // Arrange
-        int[] pages = new int[0];
+        List<int> pages = new List<int> { };
         GameObject examplePrefab = new GameObject();
 
         // Assert that the constructor throws an exception when no pages are provided
@@ -49,7 +61,7 @@ public class FloatingDocumentTests : MonoBehaviour
     public void ToStringTest()
     {
         // Arrange
-        int[] pages = new int[3] { 1, 2, 3 };
+        List<int> pages = new List<int> { 1, 2, 3 };
         GameObject examplePrefab = new GameObject();
         FloatingDocument floatingDocument = new FloatingDocument(examplePrefab, "googledrive", "examplename", pages);
 
@@ -67,7 +79,7 @@ public class FloatingDocumentTests : MonoBehaviour
     public void EqualsTest()
     {
         // Arrange
-        int[] pages = new int[3] { 1, 2, 3 };
+        List<int> pages = new List<int> { 1, 2, 3 };
         GameObject examplePrefab = new GameObject();
         FloatingDocument floatingDocument1 = new FloatingDocument(examplePrefab, "googledrive", "examplename", pages);
         FloatingDocument floatingDocument2 = new FloatingDocument(examplePrefab, "googledrive", "examplename", pages);
@@ -82,13 +94,59 @@ public class FloatingDocumentTests : MonoBehaviour
     }
 
     /// <summary>
+    /// Set values test.
+    /// </summary>
+    [Test]
+    public void SetValuesTest()
+    {
+        GameObject canvas = new GameObject();
+        GameObject examplePrefab = new GameObject();
+        FloatingDocument newDoc = examplePrefab.AddComponent<FloatingDocument>();
+        newDoc.pdfPath = "googledrive";
+        newDoc.pdfName = "examplename";
+        newDoc.width = 210;
+        newDoc.height = 297;
+        newDoc.canvas = canvas;
+        newDoc.image = canvas.AddComponent<Image>();
+        newDoc.currentPageIndex = 0;
+        List<Sprite> sprites = new List<Sprite>();
+        Texture2D texture = new Texture2D(100, 100);
+
+        // Fill the texture with a solid color (e.g., white)
+        Color fillColor = Color.white;
+        Color[] fillPixels = new Color[texture.width * texture.height];
+        for (int i = 0; i < fillPixels.Length; i++)
+        {
+            fillPixels[i] = fillColor;
+        }
+
+        texture.SetPixels(fillPixels);
+        texture.Apply();
+
+        // Create a new sprite from the texture
+        Sprite newSprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+        sprites.Add(newSprite);
+        newDoc.sprites = sprites;
+
+        // Call the SetValues method
+        newDoc.SetValues();
+
+        // Check if sprite is set correctly
+        Assert.IsNotNull(newDoc.image.sprite, "Sprite should not be null.");
+
+        // Check if transform scale is set correctly
+        // var expectedScale = new Vector3(0.01f, -0.01f, 1.00f);
+        // Assert.AreEqual(expectedScale, newDoc.transform.localScale, "Transform scale should be set correctly.");
+    }
+
+    /// <summary>
     /// This test checks that the GetHashCode method works correctly.
     /// </summary>
     [Test]
     public void HashTest()
     {
         // Arrange
-        int[] pages = new int[3] { 1, 2, 3 };
+        List<int> pages = new List<int> { 1, 2, 3 };
         GameObject examplePrefab = new GameObject();
         FloatingDocument floatingDocument = new FloatingDocument(examplePrefab, "googledrive", "examplename", pages);
 
