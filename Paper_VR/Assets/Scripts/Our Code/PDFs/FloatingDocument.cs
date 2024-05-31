@@ -1,17 +1,29 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
 
 /// <summary>
 /// This class is used to represent a floating document in the scene.
 /// It has a reference to the PDF file that it represents.
 /// </summary>
-public class FloatingDocument
+public class FloatingDocument : MonoBehaviour
 {
+    /// <summary>
+    /// The list with all pages as sprites.
+    /// </summary>
+    public List<Sprite> sprites;
+
     /// <summary>
     /// The canvas of the PDF file.
     /// </summary>
     public GameObject canvas;
+
+    /// <summary>
+    /// The canvas of the PDF file.
+    /// </summary>
+    public Image image;
 
     /// <summary>
     /// The path to the PDF file.
@@ -24,26 +36,24 @@ public class FloatingDocument
     public string pdfName;
 
     /// <summary>
-    /// an array of the pages of the PDF file.
+    /// an array of the page numbers of the PDF file in the order of the floating doc.
     /// </summary>
-    public int[] pages;
+    public List<int> pages;
 
     /// <summary>
     /// The current page of the PDF file.
     /// </summary>
-    public int currentPage;
+    public int currentPageIndex;
 
     /// <summary>
     /// The width of the PDF file.
     /// </summary>
-    public int width;
+    public float width;
 
     /// <summary>
     /// The height of the PDF file.
     /// </summary>
-    public int height;
-
-    private string imagePath = "Sprites";
+    public float height;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FloatingDocument"/> class.
@@ -53,7 +63,7 @@ public class FloatingDocument
     /// <param name="pdfPath">The path to the pdf</param>
     /// <param name="pdfName">The name of the pdf</param>
     /// <param name="pages">The pages of the pdf</param>
-    public FloatingDocument(GameObject canvas, string pdfPath, string pdfName, int[] pages)
+    public FloatingDocument(GameObject canvas, string pdfPath, string pdfName, List<int> pages)
     {
         // set the attributes of the pdf
         this.canvas = canvas;
@@ -62,12 +72,12 @@ public class FloatingDocument
         this.pages = pages;
         this.width = 210;
         this.height = 297;
-        if (pages.Length <= 0)
+        if (pages.Count <= 0)
         {
             throw new System.ArgumentException("The number of pages must be greater than 0");
         }
 
-        this.currentPage = pages[0];
+        this.currentPageIndex = 0;
     }
 
     /// <summary>
@@ -79,7 +89,7 @@ public class FloatingDocument
         // return the attributes of the pdf
         return "PDF Path: " + this.pdfPath +
             ", PDF Name: " + this.pdfName +
-            ", Number of Pages: " + this.pages.Length +
+            ", Number of Pages: " + this.pages.Count +
             ", Width: " + this.width +
             ", Height: " + this.height;
     }
@@ -103,7 +113,7 @@ public class FloatingDocument
         return this.pdfPath == other.pdfPath &&
             this.pdfName == other.pdfName &&
             Enumerable.SequenceEqual(this.pages, other.pages) &&
-            this.currentPage == other.currentPage &&
+            this.currentPageIndex == other.currentPageIndex &&
             this.width == other.width &&
             this.height == other.height;
     }
@@ -118,5 +128,25 @@ public class FloatingDocument
     {
         // return the hash code of the pdf
         return base.GetHashCode();
+    }
+
+    /// <summary>
+    /// Set the values of the canvas.
+    /// </summary>
+    public void SetValues()
+    {
+        this.image.sprite = this.sprites[this.currentPageIndex];
+        RectTransform rt = this.GetComponent<RectTransform>();
+        Vector2 dimensions = this.CalculateWidthAndHeight(this.width, this.height);
+        this.transform.localScale = new Vector3(dimensions.x, -dimensions.y, this.transform.localScale.z);
+    }
+
+    private Vector2 CalculateWidthAndHeight(float width, float height)
+    {
+        Vector2 dimensions = new ();
+        dimensions.x = Mathf.Sqrt(0.0001f * width / height);
+        dimensions.y = 0.0001f / dimensions.x;
+
+        return dimensions;
     }
 }

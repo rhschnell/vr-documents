@@ -53,16 +53,16 @@ public class EnvironmentInformationTest
         EnvironmentInformation envInf = this.CreateObjectEnv();
         List<FloatingDocument> floatingDocuments = new ()
         {
-            new FloatingDocument(null, "googledrive", "exam_noanswers2", new int[3] { 1, 2, 3 }),
-            new FloatingDocument(null, "googledrive", "exam_noanswers2", new int[3] { 4, 5, 6 }),
+            new FloatingDocument(null, "googledrive", "exam_noanswers2", new List<int> { 1, 2, 3 }),
+            new FloatingDocument(null, "googledrive", "exam_noanswers2", new List<int> { 4, 5, 6 }),
         };
 
         envInf.SetFloatingDocuments(floatingDocuments);
 
         List<FloatingDocument> newfloatingDocuments = envInf.GetFloatingDocuments();
         Assert.AreEqual(newfloatingDocuments, floatingDocuments);
-        Assert.IsTrue(newfloatingDocuments.Contains(new FloatingDocument(null, "googledrive", "exam_noanswers2", new int[3] { 1, 2, 3 })));
-        Assert.IsTrue(newfloatingDocuments.Contains(new FloatingDocument(null, "googledrive", "exam_noanswers2", new int[3] { 4, 5, 6 })));
+        Assert.IsTrue(newfloatingDocuments.Contains(new FloatingDocument(null, "googledrive", "exam_noanswers2", new List<int> { 1, 2, 3 })));
+        Assert.IsTrue(newfloatingDocuments.Contains(new FloatingDocument(null, "googledrive", "exam_noanswers2", new List<int> { 4, 5, 6 })));
         Assert.AreEqual(newfloatingDocuments.Count, 2);
     }
 
@@ -96,8 +96,8 @@ public class EnvironmentInformationTest
 
         List<FloatingDocument> floatingDocuments = new ()
         {
-            new FloatingDocument(docPrefab, "googledrive", "exam_noanswers2", new int[3] { 1, 2, 3 }),
-            new FloatingDocument(docPrefab, "googledrive", "exam_noanswers2", new int[3] { 4, 5, 6 }),
+            new FloatingDocument(docPrefab, "googledrive", "exam_noanswers2", new List<int> { 1, 2, 3 }),
+            new FloatingDocument(docPrefab, "googledrive", "exam_noanswers2", new List<int> { 4, 5, 6 }),
         };
 
         oldEnvironmentInformation.SetFloatingDocuments(floatingDocuments);
@@ -121,8 +121,8 @@ public class EnvironmentInformationTest
         Assert.IsTrue(newImportList.Contains("b"));
         Assert.AreEqual(2, newImportList.Count);
         Assert.AreEqual(floatingDocuments, newfloatingDocuments);
-        Assert.IsTrue(newfloatingDocuments.Contains(new FloatingDocument(docPrefab, "googledrive", "exam_noanswers2", new int[3] { 1, 2, 3 })));
-        Assert.IsTrue(newfloatingDocuments.Contains(new FloatingDocument(docPrefab, "googledrive", "exam_noanswers2", new int[3] { 4, 5, 6 })));
+        Assert.IsTrue(newfloatingDocuments.Contains(new FloatingDocument(docPrefab, "googledrive", "exam_noanswers2", new List<int> { 1, 2, 3 })));
+        Assert.IsTrue(newfloatingDocuments.Contains(new FloatingDocument(docPrefab, "googledrive", "exam_noanswers2", new List<int> { 4, 5, 6 })));
         Assert.AreEqual(2, newfloatingDocuments.Count);
         Assert.AreEqual(Color.red, newEnvironmentInformation.GetBackgroundColor());
     }
@@ -150,7 +150,7 @@ public class EnvironmentInformationTest
             new Vector3(1, 1, 1),
             "googledrive",
             "exam_noanswers2",
-            new int[3] { 1, 2, 3 });
+            new List<int> { 1, 2, 3 });
 
         FloatingDocument doc2 = environmentInformation.CreateDocument(
             new Vector3(0, 0, 0),
@@ -158,7 +158,7 @@ public class EnvironmentInformationTest
             new Vector3(1, 1, 1),
             "googledrive",
             "exam_noanswers2",
-            new int[3] { 4, 5, 6 });
+            new List<int> { 4, 5, 6 });
 
         List<FloatingDocument> floatingDocuments = new List<FloatingDocument>
         {

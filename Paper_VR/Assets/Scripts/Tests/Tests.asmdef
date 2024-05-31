@@ -7,7 +7,15 @@
         "OurCode",
         "Elringus.UnityGoogleDrive.Editor",
         "Elringus.UnityGoogleDrive.Runtime",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "WanzyeeStudio.Runtime",
+        "Unity.VisualStudio.Editor",
+        "Unity.InputSystem",
+        "Unity.InputSystem.TestFramework",
+        "WebXR.InputSystem",
+        "Unity.InputSystem.ForUI",
+        "Unity.InputSystem.IntegrationTests",
+        "UnityEditor.XR.LegacyInputHelpers.Tests"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -15,7 +23,9 @@
     "overrideReferences": true,
     "precompiledReferences": [
         "nunit.framework.dll",
-        "Moq.dll"
+        "Moq.dll",
+        "PDFtoImage.dll",
+        "SkiaSharp.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [

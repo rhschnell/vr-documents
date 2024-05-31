@@ -17,6 +17,8 @@
     "com.unity.xr.interaction.toolkit": "2.5.4",
     "com.unity.xr.management": "4.4.1",
     "com.unity.xr.openxr": "1.10.0",
+    "de.sungaila.pdftoimage": "https://github.com/sungaila/PDFtoImage.git?path=etc/UnityPackage",
+    "nuget.moq": "1.0.0",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
@@ -47,8 +49,7 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0",
-    "nuget.moq": "1.0.0"
+    "com.unity.modules.xr": "1.0.0"
   },
   "scopedRegistries": [
     {

@@ -10,13 +10,22 @@
         "Elringus.UnityGoogleDrive.Runtime",
         "Unity.VisualStudio.Editor",
         "KeyBoard",
-        "WanzyeeStudio.Runtime"
+        "WanzyeeStudio.Runtime",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Moq.dll",
+        "PDFtoImage.dll",
+        "nunit.framework.dll",
+        "System.Drawing.Common.dll",
+        "SkiaSharp.dll",
+        "Newtonsoft.Json.dll",
+        ""
+    ],
     "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],

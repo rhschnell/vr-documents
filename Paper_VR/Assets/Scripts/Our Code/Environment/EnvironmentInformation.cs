@@ -38,7 +38,7 @@ public class EnvironmentInformation : MonoBehaviour
     /// <param name="pdfName">The name of the pdf</param>
     /// <param name="pages">The pages as a list of numbers</param>
     /// <returns>A floating document</returns>
-    public FloatingDocument CreateDocument(Vector3 pos, Quaternion rotation, Vector3 scale, string pdfPath, string pdfName, int[] pages)
+    public FloatingDocument CreateDocument(Vector3 pos, Quaternion rotation, Vector3 scale, string pdfPath, string pdfName, List<int> pages)
     {
         Debug.Log("Creating document");
         // Create a new canvas
