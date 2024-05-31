@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using TMPro;
 using UnityEngine;
 using UnityGoogleDrive;
@@ -25,12 +26,24 @@ public class GoogleLogOut : MonoBehaviour
     public virtual ICoroutineRunner CoroutineRunner { get; set; }
 
     /// <summary>
+    /// Opens a new tab with the given url, only works in WebGL
+    /// </summary>
+    /// <param name="url">the url path to open</param>
+    public void OpenIt(string url)
+    {
+#if !UNITY_EDITOR && UNITY_WEBGL
+             OpenNewTab(url);
+#endif
+    }
+
+    /// <summary>
     /// Logs the user out, then triggers a new login
     /// </summary>
     public void LogOut()
     {
         bool once = true;
         this.Settings.DeleteCachedAuthTokens();
+        this.OpenIt(" ");
         while (!this.Settings.IsAnyAuthTokenCached() && once)
         {
             once = false;
@@ -44,9 +57,16 @@ public class GoogleLogOut : MonoBehaviour
     /// <returns>waits until the request is finished to continue</returns>
     public IEnumerator LogIn()
     {
-        yield return this.GoogleLogin.UpdateInfo(new GoogleDriveAbout.GetRequest());
+        yield return this.CoroutineRunner.StartCoroutine(this.GoogleLogin.UpdateInfo(new GoogleDriveAbout.GetRequest()));
         this.CoroutineRunner.StartCoroutine(this.GoogleLogin.FindId(new GoogleDriveFiles.ListRequest(), false));
     }
+
+    /// <summary>
+    /// Imports the javascript function to open a new tab
+    /// </summary>
+    /// <param name="url">the url to change the current page to</param>
+    [DllImport("__Internal")]
+    private static extern void OpenNewTab(string url);
 
     // Start is called before the first frame update
     void Awake()
