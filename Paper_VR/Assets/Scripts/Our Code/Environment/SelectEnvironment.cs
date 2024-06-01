@@ -37,6 +37,11 @@ public class SelectEnvironment : MonoBehaviour
     public TMP_Text Email;
 
     /// <summary>
+    /// The delete textbox information
+    /// </summary>
+    public TMP_Text DeleteText;
+
+    /// <summary>
     /// boolean to indicate if the script is being tested, to make sure requests are not sent.
     /// </summary>
     public bool testing = false;
@@ -73,6 +78,35 @@ public class SelectEnvironment : MonoBehaviour
         Debug.Log("Selected environment id: " + parentId);
 
         this.CoroutineRunner.StartCoroutine(this.GetEnvironment(parentId, envName));
+    }
+
+    /// <summary>
+    /// Changes the DeleteText to the selected environment to include the environments name that has to be deleted.
+    /// </summary>
+    public void ChangeDeleteText()
+    {
+        string n = this.RequestList.ResponseData.Files[this.dropdown.value].Id;
+        this.DeleteText.text = "Are you sure you want to delete " + this.dropdown.options[this.dropdown.value].text + "?";
+    }
+
+    /// <summary>
+    /// Is called when the button is pressed, finding the correct ID and then creating the delete request
+    /// </summary>
+    public void DeleteEnvironmentButton()
+    {
+        string s = this.RequestList.ResponseData.Files[this.dropdown.value].Id;
+        this.CoroutineRunner.StartCoroutine(this.DeleteEnvironmenet(new GoogleDriveFiles.DeleteRequest(s)));
+    }
+
+    /// <summary>
+    /// Deletes the selected environment
+    /// </summary>
+    /// <param name="r">the request</param>
+    /// <returns>Needs to wait for request return</returns>
+    public IEnumerator DeleteEnvironmenet(GoogleDriveFiles.DeleteRequest r)
+    {
+        yield return r.Send();
+        this.CoroutineRunner.StartCoroutine(this.UpdateList(new GoogleDriveFiles.ListRequest()));
     }
 
     /// <summary>

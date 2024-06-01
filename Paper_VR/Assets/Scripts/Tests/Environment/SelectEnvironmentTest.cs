@@ -294,4 +294,66 @@ public class SelectEnvironmentTest
 
         requestMock.Verify(req => req.Send());
     }
+
+    /// <summary>
+    /// Test for the ChangeDeleteText method, checks if the text is changed as expected
+    /// </summary>
+    [Test]
+    public void ChangeDeleteTextTest()
+    {
+        Mock<TMPro.TextMeshPro> mockText = new Mock<TMPro.TextMeshPro>();
+        this.selectEnvironment.DeleteText = mockText.Object;
+        mockText.Object.text = "nothing";
+        mockText.CallBase = true;
+
+        var mockFiles = new List<UnityGoogleDrive.Data.File> { new UnityGoogleDrive.Data.File { Name = "Env1", Id = "123" } };
+        this.mockListRequest.Setup(req => req.ResponseData.Files).Returns(mockFiles);
+
+        this.selectEnvironment.RequestList = this.mockListRequest.Object;
+        this.mockDropdown.Object.value = 0;
+        this.mockDropdown.Object.options = new List<TMP_Dropdown.OptionData> { new TMP_Dropdown.OptionData("Env1") };
+
+        this.selectEnvironment.ChangeDeleteText();
+        Assert.AreEqual("Are you sure you want to delete Env1?", mockText.Object.text);
+    }
+
+    /// <summary>
+    /// Test for when the button is pressed and correct methods are called after
+    /// </summary>
+    [Test]
+    public void DeleteEnvironmentButtonTest()
+    {
+        var mock = new Mock<SelectEnvironment>();
+        var mockFiles = new List<UnityGoogleDrive.Data.File> { new UnityGoogleDrive.Data.File { Name = "Env1", Id = "123" } };
+        this.mockListRequest.Setup(req => req.ResponseData.Files).Returns(mockFiles);
+
+        mock.Setup(m => m.RequestList).Returns(this.mockListRequest.Object);
+        mock.Object.dropdown = this.mockDropdown.Object;
+        mock.Setup(m => m.CoroutineRunner).Returns(this.mockCoroutineRunner.Object);
+        this.mockDropdown.Object.value = 0;
+
+        mock.Object.DeleteEnvironmentButton();
+        this.mockCoroutineRunner.Verify(runner => runner.StartCoroutine(It.IsAny<IEnumerator>()));
+    }
+
+    /// <summary>
+    /// Testing the delete environment method, checks if the request is send and if the next method is called.
+    /// </summary>
+    /// <returns>its a unity test</returns>
+    [UnityTest]
+    public IEnumerator DeleteEnvironmentTest()
+    {
+        var mock = new Mock<SelectEnvironment>();
+        var mockFiles = new List<UnityGoogleDrive.Data.File> { new UnityGoogleDrive.Data.File { Name = "Env1", Id = "123" } };
+        this.mockListRequest.Setup(req => req.ResponseData.Files).Returns(mockFiles);
+
+        mock.Setup(m => m.RequestList).Returns(this.mockListRequest.Object);
+        mock.Setup(m => m.CoroutineRunner).Returns(this.mockCoroutineRunner.Object);
+
+        var mockRequest = new Mock<GoogleDriveFiles.DeleteRequest>("123");
+
+        yield return mock.Object.DeleteEnvironmenet(mockRequest.Object);
+
+        this.mockCoroutineRunner.Verify(runner => runner.StartCoroutine(It.IsAny<IEnumerator>()));
+    }
 }
