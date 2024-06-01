@@ -111,6 +111,15 @@ public class ImportList : MonoBehaviour
             Sprite frontPage = sprites[0];
             script.width = frontPage.rect.width;
             script.height = frontPage.rect.height;
+            List<int> pages = new List<int>();
+            int count = 0;
+            foreach (Sprite sprite in sprites)
+            {
+                pages.Add(count);
+                count++;
+            }
+
+            script.pages = pages;
             script.SetValues();
         }
         else

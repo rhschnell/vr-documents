@@ -94,11 +94,30 @@ public class FloatingDocumentTests : MonoBehaviour
     }
 
     /// <summary>
-    /// Set values test.
+    /// This test checks that the GetHashCode method works correctly.
+    /// </summary>
+    [Test]
+    public void HashTest()
+    {
+        // Arrange
+        List<int> pages = new List<int> { 1, 2, 3 };
+        GameObject examplePrefab = new GameObject();
+        FloatingDocument floatingDocument = new FloatingDocument(examplePrefab, "googledrive", "examplename", pages);
+
+        // Act
+        int result = floatingDocument.GetHashCode();
+
+        // Assert that the hash code is a number
+        Assert.IsInstanceOf<int>(result);
+    }
+
+    /// <summary>
+    /// Test the SetValues method.
     /// </summary>
     [Test]
     public void SetValuesTest()
     {
+        // Arrange
         GameObject canvas = new GameObject();
         GameObject examplePrefab = new GameObject();
         FloatingDocument newDoc = examplePrefab.AddComponent<FloatingDocument>();
@@ -128,32 +147,122 @@ public class FloatingDocumentTests : MonoBehaviour
         sprites.Add(newSprite);
         newDoc.sprites = sprites;
 
-        // Call the SetValues method
+        // Act
         newDoc.SetValues();
 
-        // Check if sprite is set correctly
+        // Assert
         Assert.IsNotNull(newDoc.image.sprite, "Sprite should not be null.");
-
-        // Check if transform scale is set correctly
-        // var expectedScale = new Vector3(0.01f, -0.01f, 1.00f);
-        // Assert.AreEqual(expectedScale, newDoc.transform.localScale, "Transform scale should be set correctly.");
     }
 
     /// <summary>
-    /// This test checks that the GetHashCode method works correctly.
+    /// Test the ScrollUp method.
     /// </summary>
     [Test]
-    public void HashTest()
+    public void ScrollUpTest()
     {
         // Arrange
-        List<int> pages = new List<int> { 1, 2, 3 };
+        List<Sprite> sprites = new List<Sprite> { null, null, null };
+        List<int> pages = new List<int> { 0, 1, 2 };
         GameObject examplePrefab = new GameObject();
-        FloatingDocument floatingDocument = new FloatingDocument(examplePrefab, "googledrive", "examplename", pages);
+        FloatingDocument newDoc = examplePrefab.AddComponent<FloatingDocument>();
+        newDoc.pages = pages;
+        newDoc.image = examplePrefab.AddComponent<Image>();
+        newDoc.currentPageIndex = 1;
+        newDoc.sprites = sprites;
 
         // Act
-        int result = floatingDocument.GetHashCode();
+        newDoc.ScrollUp();
 
-        // Assert that the hash code is a number
-        Assert.IsInstanceOf<int>(result);
+        // Assert
+        Assert.AreEqual(0, newDoc.currentPageIndex, "Current page index should be decremented.");
+
+        // Act
+        newDoc.ScrollUp();
+
+        // Assert
+        Assert.AreEqual(0, newDoc.currentPageIndex, "Current page index should not go below 0.");
+    }
+
+    /// <summary>
+    /// Test the ScrollDown method.
+    /// </summary>
+    [Test]
+    public void ScrollDownTest()
+    {
+        // Arrange
+        List<Sprite> sprites = new List<Sprite> { null, null, null };
+        List<int> pages = new List<int> { 0, 1, 2 };
+        GameObject examplePrefab = new GameObject();
+        FloatingDocument newDoc = examplePrefab.AddComponent<FloatingDocument>();
+        newDoc.pages = pages;
+        newDoc.image = examplePrefab.AddComponent<Image>();
+        newDoc.currentPageIndex = 1;
+        newDoc.sprites = sprites;
+
+        // Act
+        newDoc.ScrollDown();
+
+        // Assert
+        Assert.AreEqual(2, newDoc.currentPageIndex, "Current page index should be incremented.");
+
+        // Act
+        newDoc.ScrollDown();
+
+        // Assert
+        Assert.AreEqual(2, newDoc.currentPageIndex, "Current page index should not exceed the last page index.");
+    }
+
+    /// <summary>
+    /// Test the SetSprite method.
+    /// </summary>
+    [Test]
+    public void SetSpriteTest()
+    {
+        // Arrange
+        List<int> pages = new List<int> { 0, 1, 2 };
+        GameObject canvas = new GameObject();
+        GameObject examplePrefab = new GameObject();
+        FloatingDocument newDoc = examplePrefab.AddComponent<FloatingDocument>();
+        newDoc.pages = pages;
+        newDoc.currentPageIndex = 1;
+        newDoc.image = canvas.AddComponent<Image>();
+        List<Sprite> sprites = new List<Sprite>();
+        Texture2D texture = new Texture2D(100, 100);
+        Sprite sprite1 = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+        Sprite sprite2 = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+        Sprite sprite3 = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+        sprites.Add(sprite1);
+        sprites.Add(sprite2);
+        sprites.Add(sprite3);
+        newDoc.sprites = sprites;
+
+        // Act
+        newDoc.SetSprite();
+
+        // Assert
+        Assert.AreEqual(sprite2, newDoc.image.sprite, "Sprite should be set to the current page sprite.");
+    }
+
+    /// <summary>
+    /// Test the IsHovering method.
+    /// </summary>
+    [Test]
+    public void IsHoveringTest()
+    {
+        // Arrange
+        GameObject examplePrefab = new GameObject();
+        FloatingDocument newDoc = examplePrefab.AddComponent<FloatingDocument>();
+
+        // Act
+        newDoc.IsHovering(true);
+
+        // Assert
+        Assert.IsTrue(newDoc.isHovering, "isHovering should be true.");
+
+        // Act
+        newDoc.IsHovering(false);
+
+        // Assert
+        Assert.IsFalse(newDoc.isHovering, "isHovering should be false.");
     }
 }

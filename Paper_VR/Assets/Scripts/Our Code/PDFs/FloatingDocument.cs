@@ -1,6 +1,8 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
 
@@ -10,6 +12,16 @@ using static UnityEngine.GraphicsBuffer;
 /// </summary>
 public class FloatingDocument : MonoBehaviour
 {
+    /// <summary>
+    /// The input refernce of the up action.
+    /// </summary>
+    public InputActionReference inputActionReference;
+
+    /// <summary>
+    /// The time that needs to be waited between scrolls.
+    /// </summary>
+    public float scrollWaitingTime = 0.2f;
+
     /// <summary>
     /// The list with all pages as sprites.
     /// </summary>
@@ -54,6 +66,13 @@ public class FloatingDocument : MonoBehaviour
     /// The height of the PDF file.
     /// </summary>
     public float height;
+
+    /// <summary>
+    /// Whether there is being hovered.
+    /// </summary>
+    public bool isHovering = false;
+    private bool available;
+    private Vector2 joystickValue;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FloatingDocument"/> class.
@@ -141,6 +160,57 @@ public class FloatingDocument : MonoBehaviour
         this.transform.localScale = new Vector3(dimensions.x, -dimensions.y, this.transform.localScale.z);
     }
 
+    /// <summary>
+    /// When called, we scroll up.
+    /// </summary>
+    public void ScrollUp()
+    {
+        Debug.Log("up");
+        if (this.currentPageIndex - 1 >= 0)
+        {
+            this.currentPageIndex--;
+            this.SetSprite();
+        }
+
+        Debug.Log("Current page: " + this.currentPageIndex + " - 1 > = 0");
+    }
+
+    /// <summary>
+    /// When called, we scroll down.
+    /// </summary>
+    public void ScrollDown()
+    {
+        if (this.currentPageIndex + 1 < this.pages.Count)
+        {
+            this.currentPageIndex++;
+            this.SetSprite();
+        }
+    }
+
+    /// <summary>
+    /// Sets the sprite to the current pages sprite.
+    /// </summary>
+    public void SetSprite()
+    {
+        this.image.sprite = this.sprites[this.pages[this.currentPageIndex]];
+    }
+
+    /// <summary>
+    /// Set the hovering value to the hovering value passed through.
+    /// </summary>
+    /// <param name="isHovering">The is hovering value.</param>
+    public void IsHovering(bool isHovering)
+    {
+        Debug.Log("set hovering to " + isHovering.ToString());
+        this.isHovering = isHovering;
+    }
+
+    /// <summary>
+    /// Method that calculates the width and height based on relation between width and height.
+    /// </summary>
+    /// <param name="width">Old width</param>
+    /// <param name="height">Old height.</param>
+    /// <returns>The new width and height.</returns>
     private Vector2 CalculateWidthAndHeight(float width, float height)
     {
         Vector2 dimensions = new ();
@@ -148,5 +218,50 @@ public class FloatingDocument : MonoBehaviour
         dimensions.y = 0.0001f / dimensions.x;
 
         return dimensions;
+    }
+
+    private void Update()
+    {
+        this.SetJoystickValue();
+        this.ScrollCheck();
+    }
+
+    private void Awake()
+    {
+        this.available = true;
+    }
+
+    private void SetJoystickValue()
+    {
+        if (this.inputActionReference != null)
+        {
+            this.joystickValue = this.inputActionReference.action.ReadValue<Vector2>();
+        }
+    }
+
+    private void ScrollCheck()
+    {
+        if (this.available && this.isHovering)
+        {
+            if (this.joystickValue.y < -0.5f)
+            {
+                this.ScrollDown();
+                this.StartCoroutine(this.LockAndUnlock());
+            }
+            else if (this.joystickValue.y > 0.5f)
+            {
+                this.ScrollUp();
+                this.StartCoroutine(this.LockAndUnlock());
+            }
+        }
+    }
+
+    IEnumerator LockAndUnlock()
+    {
+        this.available = false;
+
+        yield return new WaitForSeconds(this.scrollWaitingTime);
+
+        this.available = true;
     }
 }
