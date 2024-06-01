@@ -277,7 +277,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &5327262367509388410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -392,12 +392,36 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 4861588978349422206}
+        m_TargetAssemblyTypeName: FloatingDocument, OurCode
+        m_MethodName: IsHovering
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   m_HoverExited:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 8277029973491486100}
         m_TargetAssemblyTypeName: DocumentMenu, Assembly-CSharp
         m_MethodName: OnHover
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 4861588978349422206}
+        m_TargetAssemblyTypeName: FloatingDocument, OurCode
+        m_MethodName: IsHovering
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -552,6 +576,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputActionReference: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   menu: {fileID: 5844786527756617074}
+  hover: 0
 --- !u!114 &4861588978349422206
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -564,8 +589,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aae350482005a874fafe16e2873234a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inputActionReference: {fileID: 875253871413052681, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  scrollWaitingTime: 0.2
   sprites: []
-  canvas: {fileID: 0}
+  canvas: {fileID: 9011475466499275803}
   image: {fileID: 2438461603572710812}
   pdfPath: 
   pdfName: 
