@@ -30,7 +30,6 @@ public class FloatingDocumentTests : MonoBehaviour
         FloatingDocument doc = examplePrefab.GetComponent<FloatingDocument>();
 
         // Act
-        Assert.IsNotNull(doc);
         Assert.AreEqual("googledrive", doc.pdfPath);
         Assert.AreEqual("examplename", doc.pdfName);
         Assert.AreEqual(pages, doc.pages);

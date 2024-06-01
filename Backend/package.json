@@ -1,0 +1,21 @@
+{
+  "name": "pdf-operations-api",
+  "version": "1.0.0",
+  "description": "This is a simple API that performs operations on PDF files: Like splitting, merging, and converting PDF files to images.",
+  "main": "server.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "pdf-poppler": "^0.2.1"
+  },
+  "devDependencies": {
+    "chai": "^4.4.1",
+    "chai-http": "^4.3.0",
+    "mocha": "^10.4.0",
+    "supertest": "^6.3.4"
+  }
+}

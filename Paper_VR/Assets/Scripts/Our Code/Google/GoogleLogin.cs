@@ -109,6 +109,7 @@ public class GoogleLogin : MonoBehaviour
         else
         {
             folderID = r.ResponseData.Files[0].Id;
+
             if (!testing)
             {
                 SceneManager.LoadSceneAsync("EnviromentMenu");

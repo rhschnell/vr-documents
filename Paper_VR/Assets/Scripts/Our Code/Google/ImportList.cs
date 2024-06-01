@@ -42,6 +42,13 @@ public class ImportList : MonoBehaviour
     public GameObject pdfPrefab;
 
     /// <summary>
+    /// The pdf converter object.
+    /// This object converts the pdf to sprites.
+    /// and creates a floating document.
+    /// </summary>
+    public ConvertPDF pdfConverter;
+
+    /// <summary>
     /// finds all folders under the main folder and lists their names
     /// </summary>
     public void UpdateList()
@@ -99,7 +106,7 @@ public class ImportList : MonoBehaviour
     {
         if (file != null)
         {
-            List<Sprite> sprites = ConvertPDF.Convert(file);
+            // Create a new floating document
             float spawnDistance = 2.0f;
             Vector3 offset = new Vector3(0.0f, 0.0f, 0.0f);
             Vector3 spawnPosition = this.characterTransform.position + (this.characterTransform.forward * spawnDistance) + offset;
@@ -107,27 +114,26 @@ public class ImportList : MonoBehaviour
             Quaternion lookRotation = Quaternion.LookRotation(direction);
             GameObject pdf = Instantiate(this.pdfPrefab, spawnPosition, lookRotation);
             FloatingDocument script = pdf.GetComponent<FloatingDocument>();
-            script.sprites = sprites;
-            Sprite frontPage = sprites[0];
-            script.width = frontPage.rect.width;
-            script.height = frontPage.rect.height;
-            List<int> pages = new List<int>();
-            int count = 0;
-            foreach (Sprite sprite in sprites)
-            {
-                pages.Add(count);
-                count++;
-            }
 
-            script.pages = pages;
-            script.SetValues();
+            // Find the game object called GameManeger
+            GameObject gameManager = GameObject.Find("GameManager");
+
+            // Get the GameManager component with the environment script
+            EnvironmentInformation environment = gameManager.GetComponent<EnvironmentInformation>();
+
+            environment.GetFloatingDocuments().Add(script);
+
+            // Convert the pdf to sprites and set the first page of the floating document to the first sprite
+            this.pdfConverter.Convert(file, script);
         }
         else
         {
-            Debug.Log("no file found");
+            // If the file is null, throw an error
+            Debug.LogError("File is null");
         }
     }
 
+    // Start is called before the first frame update
     void Start()
     {
         if (SelectEnvironment.parentId != "" && SelectEnvironment.parentId != null)
