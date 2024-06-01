@@ -257,6 +257,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 67810179}
   m_CullTransparentMesh: 1
+--- !u!1 &123434355
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 123434357}
+  - component: {fileID: 123434356}
+  m_Layer: 0
+  m_Name: pdfConvert
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &123434356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 123434355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4311ea6f51d066443853326285c10661, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &123434357
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 123434355}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.06310575, y: 2.1065075, z: 1.3514293}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &127561048
 GameObject:
   m_ObjectHideFlags: 0
@@ -4083,6 +4127,7 @@ MonoBehaviour:
   image: {fileID: 0}
   dropdown: {fileID: 1293429607}
   pdfPrefab: {fileID: 9011475466499275803, guid: 58084e1130b3f0e478498923d9d05aba, type: 3}
+  pdfConverter: {fileID: 123434356}
 --- !u!114 &2041929406
 MonoBehaviour:
   m_ObjectHideFlags: 0

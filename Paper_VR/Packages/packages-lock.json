@@ -250,13 +250,6 @@
       },
       "url": "https://packages.unity.com"
     },
-    "de.sungaila.pdftoimage": {
-      "version": "https://github.com/sungaila/PDFtoImage.git?path=etc/UnityPackage",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "47d348c88e3df486e18b31e3dbdb92b7bda0865c"
-    },
     "nuget.castle-core": {
       "version": "1.0.1",
       "depth": 1,

@@ -4,7 +4,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using static UnityEngine.GraphicsBuffer;
 
 /// <summary>
 /// This class is used to represent a floating document in the scene.
@@ -157,7 +156,7 @@ public class FloatingDocument : MonoBehaviour
         this.image.sprite = this.sprites[this.currentPageIndex];
         RectTransform rt = this.GetComponent<RectTransform>();
         Vector2 dimensions = this.CalculateWidthAndHeight(this.width, this.height);
-        this.transform.localScale = new Vector3(dimensions.x, -dimensions.y, this.transform.localScale.z);
+        this.transform.localScale = new Vector3(dimensions.x, dimensions.y, this.transform.localScale.z);
     }
 
     /// <summary>
