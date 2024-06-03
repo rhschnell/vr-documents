@@ -200,7 +200,7 @@ public class FloatingDocument : MonoBehaviour
     /// <param name="isHovering">The is hovering value.</param>
     public void IsHovering(bool isHovering)
     {
-        Debug.Log("set hovering to " + isHovering.ToString());
+        // Debug.Log("set hovering to " + isHovering.ToString());
         this.isHovering = isHovering;
     }
 
