@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Moq;
 using NUnit.Framework;
 using TMPro;
@@ -16,8 +15,33 @@ using UnityGoogleDrive.Data;
 /// </summary>
 public class ConvertPDFTest
 {
+    private GameObject gameManager;
+    private EnvironmentInformation env;
+
     /// <summary>
-    /// This tests checks that if the user presses the button on the import list
+    /// Set up the test environment.
+    /// </summary>
+    [SetUp]
+    public void Setup()
+    {
+        // Create a GameManager object and set up the environment
+        this.gameManager = new GameObject("GameManager");
+        this.env = this.gameManager.AddComponent<EnvironmentInformation>();
+        this.env.SetFloatingDocuments(new List<FloatingDocument>());
+    }
+
+    /// <summary>
+    /// Clean up the test environment.
+    /// </summary>
+    [TearDown]
+    public void Teardown()
+    {
+        // Destroy the GameManager object
+        Object.DestroyImmediate(this.gameManager);
+    }
+
+    /// <summary>
+    /// This test checks that if the user presses the button on the import list
     /// A new game object is created and the ConvertPdf method is called.
     /// </summary>
     [Test]
@@ -32,11 +56,6 @@ public class ConvertPDFTest
         // Create a File object
         File file = new File { Name = "Document1.pdf" };
 
-        // Create a GameManeger object
-        GameObject gameManager = new GameObject("GameManager");
-        EnvironmentInformation env = gameManager.AddComponent<EnvironmentInformation>();
-        env.SetFloatingDocuments(new List<FloatingDocument>());
-
         // Set the convertPDF object as a mock object
         Mock<ConvertPDF> convertPDF = new Mock<ConvertPDF>();
         // When the Convert method is called, do nothing
@@ -50,12 +69,15 @@ public class ConvertPDFTest
         // Verify that the ConvertPdf method was called
         convertPDF.Verify(a => a.Convert(file, It.IsAny<FloatingDocument>()));
 
-        // assert that the floating document was created
-        Assert.IsNotEmpty(env.GetFloatingDocuments());
+        // Assert that the floating document was created
+        Assert.IsNotEmpty(this.env.GetFloatingDocuments());
+
+        // Cleanup
+        Object.DestroyImmediate(gameObject);
     }
 
     /// <summary>
-    /// This tests checks that an debug error is thrown if the file is null.
+    /// This test checks that a debug error is thrown if the file is null.
     /// </summary>
     [Test]
     public void TestImportListNull()
@@ -66,9 +88,12 @@ public class ConvertPDFTest
         importList.characterTransform = gameObject.transform;
         importList.pdfPrefab = new GameObject();
 
-        // Assert that an Debug error is printed
+        // Assert that a Debug error is printed
         importList.ConvertPdf(null);
         LogAssert.Expect(LogType.Error, "File is null");
+
+        // Cleanup
+        Object.DestroyImmediate(gameObject);
     }
 
     /// <summary>
