@@ -19,6 +19,11 @@ public class DocumentMenu : MonoBehaviour
     public GameObject menu;
 
     /// <summary>
+    /// The subpanel
+    /// </summary>
+    public GameObject subPanel;
+
+    /// <summary>
     /// Whether there is hovered.
     /// </summary>
     public bool hover;
@@ -47,7 +52,14 @@ public class DocumentMenu : MonoBehaviour
     {
         if (this.hover)
         {
-            this.menu.SetActive(!this.menu.activeSelf);
+            // Toggle the visibility of the subpanel when it is shown
+            if (this.subPanel.activeSelf)
+            {
+                this.subPanel.SetActive(false);
+            } else
+            {
+                this.menu.SetActive(!this.menu.activeSelf);
+            }
         }
     }
 
