@@ -10,7 +10,7 @@ public class SaveButton : MonoBehaviour
     /// <summary>
     /// The time between saves.
     /// </summary>
-    public float savingTime = 10f;
+    public float savingTime = 45f;
 
     /// <summary>
     /// This method saves the environment information when the save button is clicked.

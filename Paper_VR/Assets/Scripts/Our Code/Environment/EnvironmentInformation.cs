@@ -44,6 +44,7 @@ public class EnvironmentInformation : MonoBehaviour
         {
             // Creates a new GameObject
             GameObject instance = Instantiate(this.docPrefab, f.position, f.rotation);
+            instance.transform.localScale = f.scale;
             FloatingDocument floatDoc = instance.AddComponent<FloatingDocument>();
             floatDoc.SetAttributes(
                 f.position,

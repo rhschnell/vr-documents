@@ -106,9 +106,15 @@ public class ConvertPDF : MonoBehaviour
 
         floatingDocument.pages = pages;
 
+        Debug.Log(floatingDocument.scale.x);
         // Set the width and height of the floating document to match the size of the pdf
-        floatingDocument.width = frontPage.rect.width;
-        floatingDocument.height = frontPage.rect.height;
+        if (floatingDocument.scale.x < 0.000001 || floatingDocument.scale.x > 0.5f)
+        {
+            Debug.Log("new document!");
+            floatingDocument.scale.x = frontPage.rect.width;
+            floatingDocument.scale.y = frontPage.rect.height;
+        }
+
         floatingDocument.SetValues();
     }
 

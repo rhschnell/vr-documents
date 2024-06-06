@@ -75,7 +75,5 @@ public class FloatingDocumentInfo
         this.pdfName = doc.pdfName;
         this.pages = doc.pages;
         this.currentPage = doc.currentPageIndex;
-        this.width = doc.width;
-        this.height = doc.height;
     }
 }

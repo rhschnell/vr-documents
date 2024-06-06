@@ -111,15 +111,11 @@ public class EnvironmentInformationTest
         floatingDocument1.pages = new List<int> { 1, 2, 3 };
         floatingDocument1.pdfId = "googledrive";
         floatingDocument1.pdfName = "examplename";
-        floatingDocument1.width = 210f;
-        floatingDocument1.height = 297f;
 
         FloatingDocument floatingDocument2 = docPrefab.GetComponent<FloatingDocument>();
         floatingDocument2.pages = new List<int> { 4, 5, 6 };
         floatingDocument2.pdfId = "googledrive";
         floatingDocument2.pdfName = "examplename";
-        floatingDocument2.width = 210f;
-        floatingDocument2.height = 297f;
 
         List<FloatingDocument> floatingDocuments = new ()
         {
@@ -175,15 +171,11 @@ public class EnvironmentInformationTest
         floatingDocument1.pages = new List<int> { 1, 2, 3 };
         floatingDocument1.pdfId = "googledrive";
         floatingDocument1.pdfName = "examplename";
-        floatingDocument1.width = 210f;
-        floatingDocument1.height = 297f;
 
         FloatingDocument floatingDocument2 = docPrefab.GetComponent<FloatingDocument>();
         floatingDocument2.pages = new List<int> { 4, 5, 6 };
         floatingDocument2.pdfId = "googledrive";
         floatingDocument2.pdfName = "examplename";
-        floatingDocument2.width = 210f;
-        floatingDocument2.height = 297f;
 
         List<FloatingDocument> floatingDocuments = new List<FloatingDocument>
         {

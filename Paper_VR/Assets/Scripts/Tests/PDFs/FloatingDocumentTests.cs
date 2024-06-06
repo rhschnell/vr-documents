@@ -22,8 +22,6 @@ public class FloatingDocumentTests : MonoBehaviour
         newDoc.pdfId = "googledrive";
         newDoc.pdfName = "examplename";
         newDoc.pages = pages;
-        newDoc.width = 210;
-        newDoc.height = 297;
         newDoc.currentPageIndex = 1;
 
         FloatingDocument doc = examplePrefab.GetComponent<FloatingDocument>();
@@ -32,8 +30,6 @@ public class FloatingDocumentTests : MonoBehaviour
         Assert.AreEqual("googledrive", doc.pdfId);
         Assert.AreEqual("examplename", doc.pdfName);
         Assert.AreEqual(pages, doc.pages);
-        Assert.AreEqual(210, doc.width);
-        Assert.AreEqual(297, doc.height);
         Assert.AreEqual(1, doc.currentPageIndex);
     }
 
@@ -55,7 +51,7 @@ public class FloatingDocumentTests : MonoBehaviour
         string result = floatingDocument.ToString();
 
         // Assert
-        Assert.AreEqual("PDF Path: googledrive, PDF Name: examplename, Number of Pages: 3, Width: 0, Height: 0", result);
+        Assert.AreEqual("PDF Path: googledrive, PDF Name: examplename, Number of Pages: 3", result);
     }
 
     /// <summary>
@@ -118,12 +114,12 @@ public class FloatingDocumentTests : MonoBehaviour
         GameObject canvas = new GameObject();
         GameObject examplePrefab = new GameObject();
         FloatingDocument newDoc = examplePrefab.AddComponent<FloatingDocument>();
+        examplePrefab.AddComponent<RectTransform>();
         newDoc.pdfId = "googledrive";
         newDoc.pdfName = "examplename";
-        newDoc.width = 210;
-        newDoc.height = 297;
         newDoc.image = canvas.AddComponent<Image>();
         newDoc.currentPageIndex = 0;
+        newDoc.scale = new Vector3(0.1f, 0.1f, 0.1f);
         List<Sprite> sprites = new List<Sprite>();
         Texture2D texture = new Texture2D(100, 100);
 
