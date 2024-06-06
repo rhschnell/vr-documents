@@ -17,6 +17,21 @@ public class FloatingDocument : MonoBehaviour
     public InputActionReference inputActionReference;
 
     /// <summary>
+    /// The position of the floating document in the scene.
+    /// </summary>
+    public Vector3 position;
+
+    /// <summary>
+    /// The rotation of the floating document in the scene.
+    /// </summary>
+    public Quaternion rotation;
+
+    /// <summary>
+    /// The scale of the floating document in the scene.
+    /// </summary>
+    public Vector3 scale;
+
+    /// <summary>
     /// The time that needs to be waited between scrolls.
     /// </summary>
     public float scrollWaitingTime = 0.2f;
@@ -29,17 +44,12 @@ public class FloatingDocument : MonoBehaviour
     /// <summary>
     /// The canvas of the PDF file.
     /// </summary>
-    public GameObject canvas;
-
-    /// <summary>
-    /// The canvas of the PDF file.
-    /// </summary>
     public Image image;
 
     /// <summary>
-    /// The path to the PDF file.
+    /// The Id of the PDF file.
     /// </summary>
-    public string pdfPath;
+    public string pdfId;
 
     /// <summary>
     /// The name of the PDF file.
@@ -77,15 +87,25 @@ public class FloatingDocument : MonoBehaviour
     /// Initializes a new instance of the <see cref="FloatingDocument"/> class.
     /// Constructor for the FloatingDocument class.
     /// </summary>
-    /// <param name="canvas">The object in the scene</param>
-    /// <param name="pdfPath">The path to the pdf</param>
+    /// <param name="position">The initial position of the floating document</param>
+    /// <param name="rotation">The initial rotation of the floating document</param>
+    /// <param name="scale">The intial scale of the floating document</param>
+    /// <param name="pdfId">The ID of the pdf</param>
     /// <param name="pdfName">The name of the pdf</param>
     /// <param name="pages">The pages of the pdf</param>
-    public FloatingDocument(GameObject canvas, string pdfPath, string pdfName, List<int> pages)
+    public void SetAttributes(
+        Vector3 position,
+        Quaternion rotation,
+        Vector3 scale,
+        string pdfId,
+        string pdfName,
+        List<int> pages)
     {
         // set the attributes of the pdf
-        this.canvas = canvas;
-        this.pdfPath = pdfPath;
+        this.position = position;
+        this.rotation = rotation;
+        this.scale = scale;
+        this.pdfId = pdfId;
         this.pdfName = pdfName;
         this.pages = pages;
         this.width = 210;
@@ -105,7 +125,7 @@ public class FloatingDocument : MonoBehaviour
     public override string ToString()
     {
         // return the attributes of the pdf
-        return "PDF Path: " + this.pdfPath +
+        return "PDF Path: " + this.pdfId +
             ", PDF Name: " + this.pdfName +
             ", Number of Pages: " + this.pages.Count +
             ", Width: " + this.width +
@@ -128,7 +148,7 @@ public class FloatingDocument : MonoBehaviour
 
         // check if the attributes of the pdf are the same
         FloatingDocument other = (FloatingDocument)obj;
-        return this.pdfPath == other.pdfPath &&
+        return this.pdfId == other.pdfId &&
             this.pdfName == other.pdfName &&
             Enumerable.SequenceEqual(this.pages, other.pages) &&
             this.currentPageIndex == other.currentPageIndex &&
@@ -212,7 +232,7 @@ public class FloatingDocument : MonoBehaviour
     /// <returns>The new width and height.</returns>
     private Vector2 CalculateWidthAndHeight(float width, float height)
     {
-        Vector2 dimensions = new ();
+        Vector2 dimensions = default(Vector2);
         dimensions.x = Mathf.Sqrt(0.0001f * width / height);
         dimensions.y = 0.0001f / dimensions.x;
 

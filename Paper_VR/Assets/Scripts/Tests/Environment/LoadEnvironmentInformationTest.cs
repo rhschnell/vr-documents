@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using Moq;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
+using UnityGoogleDrive;
 
 /// <summary>
 /// The testing class for LoadEnvironmentInformation.
@@ -78,6 +80,43 @@ public class LoadEnvironmentInformationTest
         {
             SceneManager.UnloadSceneAsync("Environment");
         }
+    }
+
+    /// <summary>
+    /// Tests Load scene
+    /// </summary>
+    /// <returns>IEnumerator</returns>
+    [UnityTest]
+    public IEnumerator LoadSceneTest()
+    {
+        GameObject gameObject = new GameObject("gameManager");
+        EnvironmentInformation environment = gameObject.AddComponent<EnvironmentInformation>();
+
+        GameObject prefab = new GameObject("Prafeb");
+        List<FloatingDocument> floatingDocuments = new List<FloatingDocument>();
+        GameObject f1 = new GameObject("f1");
+
+        FloatingDocument fl1 = f1.AddComponent<FloatingDocument>();
+        fl1.SetAttributes(
+            new Vector3(0.1f, 0.4f, 0.4f),
+            new Quaternion(0.1f, 0.4f, 0.4f, 0.3f),
+            new Vector3(0.2f, 0.4f, 0.4f),
+            "id",
+            "name",
+            new List<int> { 0, 1, 2, 3 });
+        floatingDocuments.Add(fl1);
+
+        environment.docPrefab = prefab;
+        environment.docPrefab.AddComponent<FloatingDocument>();
+
+        environment.SetFloatingDocuments(floatingDocuments);
+        var responseMock = new Mock<GoogleDriveRequestYieldInstruction<UnityGoogleDrive.Data.FileList>>();
+        Mock<LoadEnvironmentInformation> mock = new Mock<LoadEnvironmentInformation>();
+        mock.Setup(a => a.AddImages(It.IsAny<FloatingDocument>())).Returns(responseMock.Object);
+        yield return mock.Object.LoadScene(environment);
+        yield return new WaitForSeconds(0.11f);
+        GameObject g = GameObject.Find("Prafeb(Clone)");
+        Assert.IsNotNull(g);
     }
 
     /// <summary>

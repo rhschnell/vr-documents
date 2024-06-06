@@ -19,38 +19,22 @@ public class FloatingDocumentTests : MonoBehaviour
         GameObject canvas = new GameObject();
         GameObject examplePrefab = new GameObject();
         FloatingDocument newDoc = examplePrefab.AddComponent<FloatingDocument>();
-        newDoc.pdfPath = "googledrive";
+        newDoc.pdfId = "googledrive";
         newDoc.pdfName = "examplename";
         newDoc.pages = pages;
         newDoc.width = 210;
         newDoc.height = 297;
-        newDoc.canvas = canvas;
         newDoc.currentPageIndex = 1;
 
         FloatingDocument doc = examplePrefab.GetComponent<FloatingDocument>();
 
         // Act
-        Assert.AreEqual("googledrive", doc.pdfPath);
+        Assert.AreEqual("googledrive", doc.pdfId);
         Assert.AreEqual("examplename", doc.pdfName);
         Assert.AreEqual(pages, doc.pages);
         Assert.AreEqual(210, doc.width);
         Assert.AreEqual(297, doc.height);
-        Assert.AreEqual(canvas, doc.canvas);
         Assert.AreEqual(1, doc.currentPageIndex);
-    }
-
-    /// <summary>
-    /// This test checks that the constructor throws an exception when no pages are provided.
-    /// </summary>
-    [Test]
-    public void NoPages()
-    {
-        // Arrange
-        List<int> pages = new List<int> { };
-        GameObject examplePrefab = new GameObject();
-
-        // Assert that the constructor throws an exception when no pages are provided
-        Assert.Throws<System.ArgumentException>(() => new FloatingDocument(examplePrefab, "googledrive", "examplename", pages));
     }
 
     /// <summary>
@@ -62,13 +46,16 @@ public class FloatingDocumentTests : MonoBehaviour
         // Arrange
         List<int> pages = new List<int> { 1, 2, 3 };
         GameObject examplePrefab = new GameObject();
-        FloatingDocument floatingDocument = new FloatingDocument(examplePrefab, "googledrive", "examplename", pages);
+        FloatingDocument floatingDocument = examplePrefab.AddComponent<FloatingDocument>();
+        floatingDocument.pages = pages;
+        floatingDocument.pdfId = "googledrive";
+        floatingDocument.pdfName = "examplename";
 
         // Act
         string result = floatingDocument.ToString();
 
         // Assert
-        Assert.AreEqual("PDF Path: googledrive, PDF Name: examplename, Number of Pages: 3, Width: 210, Height: 297", result);
+        Assert.AreEqual("PDF Path: googledrive, PDF Name: examplename, Number of Pages: 3, Width: 0, Height: 0", result);
     }
 
     /// <summary>
@@ -79,9 +66,17 @@ public class FloatingDocumentTests : MonoBehaviour
     {
         // Arrange
         List<int> pages = new List<int> { 1, 2, 3 };
-        GameObject examplePrefab = new GameObject();
-        FloatingDocument floatingDocument1 = new FloatingDocument(examplePrefab, "googledrive", "examplename", pages);
-        FloatingDocument floatingDocument2 = new FloatingDocument(examplePrefab, "googledrive", "examplename", pages);
+        GameObject examplePrefab1 = new GameObject();
+        FloatingDocument floatingDocument1 = examplePrefab1.AddComponent<FloatingDocument>();
+        floatingDocument1.pages = pages;
+        floatingDocument1.pdfId = "googledrive";
+        floatingDocument1.pdfName = "examplename";
+
+        GameObject examplePrefab2 = new GameObject();
+        FloatingDocument floatingDocument2 = examplePrefab2.AddComponent<FloatingDocument>();
+        floatingDocument2.pages = pages;
+        floatingDocument2.pdfId = "googledrive";
+        floatingDocument2.pdfName = "examplename";
 
         // Act
         bool result = floatingDocument1.Equals(floatingDocument2);
@@ -101,7 +96,10 @@ public class FloatingDocumentTests : MonoBehaviour
         // Arrange
         List<int> pages = new List<int> { 1, 2, 3 };
         GameObject examplePrefab = new GameObject();
-        FloatingDocument floatingDocument = new FloatingDocument(examplePrefab, "googledrive", "examplename", pages);
+        FloatingDocument floatingDocument = examplePrefab.AddComponent<FloatingDocument>();
+        floatingDocument.pages = pages;
+        floatingDocument.pdfId = "googledrive";
+        floatingDocument.pdfName = "examplename";
 
         // Act
         int result = floatingDocument.GetHashCode();
@@ -120,11 +118,10 @@ public class FloatingDocumentTests : MonoBehaviour
         GameObject canvas = new GameObject();
         GameObject examplePrefab = new GameObject();
         FloatingDocument newDoc = examplePrefab.AddComponent<FloatingDocument>();
-        newDoc.pdfPath = "googledrive";
+        newDoc.pdfId = "googledrive";
         newDoc.pdfName = "examplename";
         newDoc.width = 210;
         newDoc.height = 297;
-        newDoc.canvas = canvas;
         newDoc.image = canvas.AddComponent<Image>();
         newDoc.currentPageIndex = 0;
         List<Sprite> sprites = new List<Sprite>();

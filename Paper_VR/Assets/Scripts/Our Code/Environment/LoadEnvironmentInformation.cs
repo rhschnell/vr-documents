@@ -2,12 +2,65 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityGoogleDrive;
 
 /// <summary>
 /// This class is resposible for loading in the scene, using the environment information.
 /// </summary>
 public class LoadEnvironmentInformation : MonoBehaviour
 {
+    /// <summary>
+    /// The convert PDF object that will be used to convert the PDF to sprites.
+    /// </summary>
+    public ConvertPDF convertPDF;
+
+    /// <summary>
+    /// The method that adds images to the floating document.
+    /// </summary>
+    /// <param name="pdf">The pdf we want to get the images from.</param>
+    /// <returns>The IEnumerator.</returns>
+    public virtual IEnumerator AddImages(FloatingDocument pdf)
+    {
+        // Download the file from the Google Drive
+        GoogleDriveFiles.DownloadRequest request = new GoogleDriveFiles.DownloadRequest(pdf.pdfId);
+        yield return request.Send();
+        yield return this.convertPDF.AddImagesToFloatingDocument(request.ResponseData, pdf);
+    }
+
+    /// <summary>
+    /// Loads the scene with indo.
+    /// </summary>
+    /// <param name="environmentInformation">The information of the environment./param>
+    /// <returns>The IEnumerator.</returns>
+    public IEnumerator LoadScene(EnvironmentInformation environmentInformation)
+    {
+        // forloop with index
+        for (int i = 0; i < environmentInformation.GetFloatingDocuments().Count; i++)
+        {
+            FloatingDocument oldDoc = environmentInformation.GetFloatingDocuments()[i];
+            // Create a new floating document
+            GameObject instance = Instantiate(environmentInformation.docPrefab, oldDoc.position, oldDoc.rotation);
+            FloatingDocument doc = instance.GetComponent<FloatingDocument>();
+
+            doc.SetAttributes(
+                oldDoc.position,
+                oldDoc.rotation,
+                oldDoc.scale,
+                oldDoc.pdfId,
+                oldDoc.pdfName,
+                oldDoc.pages);
+
+            // Replace the old floating document with the new one
+            environmentInformation.GetFloatingDocuments()[i] = doc;
+        }
+
+        // Loop over all the floating documents and add the images
+        foreach (FloatingDocument pdf in environmentInformation.GetFloatingDocuments())
+        {
+            yield return this.AddImages(pdf);
+        }
+    }
+
     /// <summary>
     /// This method subscribes to the sceneLoaded event at the start
     /// </summary>
@@ -44,6 +97,7 @@ public class LoadEnvironmentInformation : MonoBehaviour
         {
             // Get the environment information from the selected scene
             EnvironmentInformation environmentInformation = this.gameObject.GetComponent<EnvironmentInformation>();
+            this.StartCoroutine(this.LoadScene(environmentInformation));
         }
     }
 }

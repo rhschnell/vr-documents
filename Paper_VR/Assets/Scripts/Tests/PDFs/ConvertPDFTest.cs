@@ -42,32 +42,33 @@ public class ConvertPDFTest
 
     /// <summary>
     /// This test checks that if the user presses the button on the import list
-    /// A new game object is created and the ConvertPdf method is called.
+    /// A new game object is created and the ImportPDF method is called.
     /// </summary>
-    [Test]
-    public void TestImportList()
+    [UnityTest]
+    public IEnumerator TestImportList()
     {
         // Setup the import list object
         GameObject gameObject = new GameObject();
         ImportList importList = gameObject.AddComponent<ImportList>();
         importList.characterTransform = gameObject.transform;
         importList.pdfPrefab = new GameObject();
+        importList.pdfPrefab.AddComponent<FloatingDocument>();
 
         // Create a File object
-        File file = new File { Name = "Document1.pdf" };
+        File file = new File { Name = "Document1.pdf", Id = "appel" };
 
         // Set the convertPDF object as a mock object
         Mock<ConvertPDF> convertPDF = new Mock<ConvertPDF>();
-        // When the Convert method is called, do nothing
-        convertPDF.Setup(a => a.Convert(file, It.IsAny<FloatingDocument>()));
+        // When the AddImagesToFloatingDocument method is called, do nothing
+        convertPDF.Setup(a => a.AddImagesToFloatingDocument(file, It.IsAny<FloatingDocument>()));
 
         importList.pdfConverter = convertPDF.Object;
 
         // Call the ImportList method
-        importList.ConvertPdf(file);
+        yield return importList.ImportPDF(file, "Document1.pdf");
 
-        // Verify that the ConvertPdf method was called
-        convertPDF.Verify(a => a.Convert(file, It.IsAny<FloatingDocument>()));
+        // Verify that the ImportPDF method was called
+        convertPDF.Verify(a => a.AddImagesToFloatingDocument(file, It.IsAny<FloatingDocument>()));
 
         // Assert that the floating document was created
         Assert.IsNotEmpty(this.env.GetFloatingDocuments());
@@ -79,8 +80,8 @@ public class ConvertPDFTest
     /// <summary>
     /// This test checks that a debug error is thrown if the file is null.
     /// </summary>
-    [Test]
-    public void TestImportListNull()
+    [UnityTest]
+    public IEnumerator TestImportListNull()
     {
         // Setup the import list object
         GameObject gameObject = new GameObject();
@@ -89,7 +90,8 @@ public class ConvertPDFTest
         importList.pdfPrefab = new GameObject();
 
         // Assert that a Debug error is printed
-        importList.ConvertPdf(null);
+        yield return importList.ImportPDF(null, "aoo");
+
         LogAssert.Expect(LogType.Error, "File is null");
 
         // Cleanup

@@ -266,7 +266,7 @@ public class DuplicateDocument : MonoBehaviour
 
             this.ToggleNewPanels(newFloatingDocument);
 
-            newFloatingDocument.pdfPath = floatingDocument.pdfPath;
+            newFloatingDocument.pdfId = floatingDocument.pdfId;
             newFloatingDocument.pages = new List<int> { floatingDocument.pages[floatingDocument.currentPageIndex] };
             newFloatingDocument.currentPageIndex = 0;
             newFloatingDocument.sprites = new List<Sprite> { currentPageSprite };
@@ -311,7 +311,7 @@ public class DuplicateDocument : MonoBehaviour
 
                 this.ToggleNewPanels(newFloatingDocument);
 
-                newFloatingDocument.pdfPath = floatingDocument.pdfPath;
+                newFloatingDocument.pdfId = floatingDocument.pdfId;
                 newFloatingDocument.pages = new List<int>();
                 for (int i = 0; i <= endIndex - startIndex; i++)
                 {

@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 /// <summary>
 /// This class is used to represent a floating document in the scene.
@@ -25,9 +23,9 @@ public class FloatingDocumentInfo
     public Vector3 scale;
 
     /// <summary>
-    /// The path to the PDF file.
+    /// The ID of the PDF file.
     /// </summary>
-    public string pdfPath;
+    public string pdfId;
 
     /// <summary>
     /// The name of the PDF file.
@@ -70,10 +68,10 @@ public class FloatingDocumentInfo
     public FloatingDocumentInfo(FloatingDocument doc)
     {
         // set the attributes of the pdf
-        this.position = doc.canvas.transform.position;
-        this.rotation = doc.canvas.transform.rotation;
-        this.scale = doc.canvas.transform.localScale;
-        this.pdfPath = doc.pdfPath;
+        this.position = doc.transform.position;
+        this.rotation = doc.transform.rotation;
+        this.scale = doc.transform.localScale;
+        this.pdfId = doc.pdfId;
         this.pdfName = doc.pdfName;
         this.pages = doc.pages;
         this.currentPage = doc.currentPageIndex;
