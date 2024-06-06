@@ -24,6 +24,11 @@ public class DocumentMenu : MonoBehaviour
     public GameObject subPanel;
 
     /// <summary>
+    /// The subsection panel for duplicating
+    /// </summary>
+    public GameObject duplicateSubsectionPanel;
+
+    /// <summary>
     /// Whether there is hovered.
     /// </summary>
     public bool hover;
@@ -56,7 +61,9 @@ public class DocumentMenu : MonoBehaviour
             if (this.subPanel.activeSelf)
             {
                 this.subPanel.SetActive(false);
-            } else
+                this.duplicateSubsectionPanel.SetActive(false);
+            }
+            else
             {
                 this.menu.SetActive(!this.menu.activeSelf);
             }
