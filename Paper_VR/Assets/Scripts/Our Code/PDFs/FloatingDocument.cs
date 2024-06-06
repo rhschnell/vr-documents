@@ -67,16 +67,6 @@ public class FloatingDocument : MonoBehaviour
     public int currentPageIndex;
 
     /// <summary>
-    /// The width of the PDF file.
-    /// </summary>
-    public float width;
-
-    /// <summary>
-    /// The height of the PDF file.
-    /// </summary>
-    public float height;
-
-    /// <summary>
     /// Whether there is being hovered.
     /// </summary>
     public bool isHovering = false;
@@ -108,8 +98,6 @@ public class FloatingDocument : MonoBehaviour
         this.pdfId = pdfId;
         this.pdfName = pdfName;
         this.pages = pages;
-        this.width = 210;
-        this.height = 297;
         if (pages.Count <= 0)
         {
             throw new System.ArgumentException("The number of pages must be greater than 0");
@@ -127,9 +115,7 @@ public class FloatingDocument : MonoBehaviour
         // return the attributes of the pdf
         return "PDF Path: " + this.pdfId +
             ", PDF Name: " + this.pdfName +
-            ", Number of Pages: " + this.pages.Count +
-            ", Width: " + this.width +
-            ", Height: " + this.height;
+            ", Number of Pages: " + this.pages.Count;
     }
 
     /// <summary>
@@ -151,9 +137,7 @@ public class FloatingDocument : MonoBehaviour
         return this.pdfId == other.pdfId &&
             this.pdfName == other.pdfName &&
             Enumerable.SequenceEqual(this.pages, other.pages) &&
-            this.currentPageIndex == other.currentPageIndex &&
-            this.width == other.width &&
-            this.height == other.height;
+            this.currentPageIndex == other.currentPageIndex;
     }
 
     /// <summary>
@@ -175,7 +159,7 @@ public class FloatingDocument : MonoBehaviour
     {
         this.image.sprite = this.sprites[this.currentPageIndex];
         RectTransform rt = this.GetComponent<RectTransform>();
-        Vector2 dimensions = this.CalculateWidthAndHeight(this.width, this.height);
+        Vector2 dimensions = this.CalculateWidthAndHeight(rt.rect.width, rt.rect.height);
         this.transform.localScale = new Vector3(dimensions.x, dimensions.y, this.transform.localScale.z);
     }
 
@@ -184,14 +168,11 @@ public class FloatingDocument : MonoBehaviour
     /// </summary>
     public void ScrollUp()
     {
-        Debug.Log("up");
         if (this.currentPageIndex - 1 >= 0)
         {
             this.currentPageIndex--;
             this.SetSprite();
         }
-
-        Debug.Log("Current page: " + this.currentPageIndex + " - 1 > = 0");
     }
 
     /// <summary>
