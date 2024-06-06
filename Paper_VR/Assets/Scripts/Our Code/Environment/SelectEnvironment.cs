@@ -46,13 +46,18 @@ public class SelectEnvironment : MonoBehaviour
     /// </summary>
     public bool testing = false;
 
+    /// <summary>
+    /// The google methods.
+    /// </summary>
+    public GoogleMethods googleMethods = new GoogleMethods();
     private GoogleDriveSettings GoogleDriveSettings;
     private GoogleDriveRequest LoginRequest;
 
     /// <summary>
     /// Gets or sets The request list to get the list of folders.
     /// </summary>
-    public virtual GoogleDriveFiles.ListRequest RequestList { get; set; }
+    public virtual GoogleDriveFiles.ListRequest RequestList { get; set; } = new GoogleDriveFiles.ListRequest();
+
 
     /// <summary>
     /// Gets or sets A coroutine runner to run the coroutines.
@@ -67,15 +72,10 @@ public class SelectEnvironment : MonoBehaviour
     public void SelectEnvironmentButton()
     {
         // Load the new scene using the environment information
+        Debug.Log(this.RequestList.ResponseData.Files.ToString());
         parentId = this.RequestList.ResponseData.Files[this.dropdown.value].Id;
 
-        // A placeholder for the environment information.
-        EnvironmentInfo envInfo = new EnvironmentInfo();
-
         string envName = this.dropdown.options[this.dropdown.value].text;
-
-        Debug.Log("Selected environment: " + envName);
-        Debug.Log("Selected environment id: " + parentId);
 
         this.CoroutineRunner.StartCoroutine(this.GetEnvironment(parentId, envName));
     }
@@ -110,6 +110,19 @@ public class SelectEnvironment : MonoBehaviour
     }
 
     /// <summary>
+    /// The method that downloads the file.
+    /// </summary>
+    /// <param name="id">The id of the file that needs to be downloaded.</param>
+    /// <returns>Returns the file.</returns>
+    public virtual UnityGoogleDrive.Data.File Download(string id)
+    {
+        GoogleDriveFiles.DownloadRequest req = new GoogleDriveFiles.DownloadRequest(id);
+        UnityGoogleDrive.Data.File returnFile = null;
+        req.Send().OnDone += (UnityGoogleDrive.Data.File file) => { returnFile = file; };
+        return returnFile;
+    }
+
+    /// <summary>
     /// This method will get the environment information from the selected environment and load the scene.
     /// </summary>
     /// <param name="id">The id of the folder</param>
@@ -120,7 +133,7 @@ public class SelectEnvironment : MonoBehaviour
         // Find the json file of the selected environment
         this.RequestList = new GoogleDriveFiles.ListRequest();
         this.RequestList.Fields = new List<string> { "files(id, name)" };
-        this.RequestList.Q = $"'{id}' in parents and name contains 'Environment.pdf' and trashed = false";
+        this.RequestList.Q = $"'{id}' in parents and name contains 'Environment.json' and trashed = false";
 
         yield return this.RequestList.Send();
 
@@ -136,8 +149,12 @@ public class SelectEnvironment : MonoBehaviour
         }
         else
         {
+            // Get the json file
+            yield return this.googleMethods.DownloadFile(this.RequestList.ResponseData.Files[0].Id);
+
             // Get the json from the request
-            var content = this.RequestList.ResponseData.Files[0].Content;
+            var content = this.googleMethods.returnFile.Content;
+            Debug.Log(content);
             string json = System.Text.Encoding.ASCII.GetString(content);
             envInfo = EnvironmentInfo.LoadFromJson(json);
         }
@@ -232,8 +249,9 @@ public class SelectEnvironment : MonoBehaviour
     {
         // Gets the environment information component of the game manager and loads the new
         // Environment information on to it.
-        EnvironmentInformation envInformation = this.gameManager.GetComponent<EnvironmentInformation>()
-            ?? this.gameManager.AddComponent<EnvironmentInformation>();
+        EnvironmentInformation envInformation = this.gameManager.GetComponent<EnvironmentInformation>();
+        // Debug.Log("first element is: " + envInfo.floatingDocuments[0].position.ToString());
+
         envInformation.LoadNewInformation(envInfo);
 
         // Loads the environment scene.

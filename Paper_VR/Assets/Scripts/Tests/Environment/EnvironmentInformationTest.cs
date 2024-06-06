@@ -51,18 +51,30 @@ public class EnvironmentInformationTest
     public void GetAndSetFloatingDocumentsTest()
     {
         EnvironmentInformation envInf = this.CreateObjectEnv();
+        GameObject examplePrefab1 = new GameObject();
+        FloatingDocument floatingDocument1 = examplePrefab1.AddComponent<FloatingDocument>();
+        floatingDocument1.pages = new List<int> { 1, 2, 3 };
+        floatingDocument1.pdfId = "googledrive";
+        floatingDocument1.pdfName = "examplename";
+
+        GameObject examplePrefab2 = new GameObject();
+        FloatingDocument floatingDocument2 = examplePrefab2.AddComponent<FloatingDocument>();
+        floatingDocument2.pages = new List<int> { 4, 5, 6 };
+        floatingDocument2.pdfId = "googledrive";
+        floatingDocument2.pdfName = "examplename";
+
         List<FloatingDocument> floatingDocuments = new ()
         {
-            new FloatingDocument(null, "googledrive", "exam_noanswers2", new List<int> { 1, 2, 3 }),
-            new FloatingDocument(null, "googledrive", "exam_noanswers2", new List<int> { 4, 5, 6 }),
+            floatingDocument1,
+            floatingDocument2,
         };
 
         envInf.SetFloatingDocuments(floatingDocuments);
 
         List<FloatingDocument> newfloatingDocuments = envInf.GetFloatingDocuments();
         Assert.AreEqual(newfloatingDocuments, floatingDocuments);
-        Assert.IsTrue(newfloatingDocuments.Contains(new FloatingDocument(null, "googledrive", "exam_noanswers2", new List<int> { 1, 2, 3 })));
-        Assert.IsTrue(newfloatingDocuments.Contains(new FloatingDocument(null, "googledrive", "exam_noanswers2", new List<int> { 4, 5, 6 })));
+        Assert.IsTrue(newfloatingDocuments.Contains(floatingDocument1));
+        Assert.IsTrue(newfloatingDocuments.Contains(floatingDocument2));
         Assert.AreEqual(newfloatingDocuments.Count, 2);
     }
 
@@ -94,10 +106,25 @@ public class EnvironmentInformationTest
         // Set the prefab for the document
         oldEnvironmentInformation.docPrefab = docPrefab;
 
+        // Create new floating documents
+        FloatingDocument floatingDocument1 = docPrefab.AddComponent<FloatingDocument>();
+        floatingDocument1.pages = new List<int> { 1, 2, 3 };
+        floatingDocument1.pdfId = "googledrive";
+        floatingDocument1.pdfName = "examplename";
+        floatingDocument1.width = 210f;
+        floatingDocument1.height = 297f;
+
+        FloatingDocument floatingDocument2 = docPrefab.GetComponent<FloatingDocument>();
+        floatingDocument2.pages = new List<int> { 4, 5, 6 };
+        floatingDocument2.pdfId = "googledrive";
+        floatingDocument2.pdfName = "examplename";
+        floatingDocument2.width = 210f;
+        floatingDocument2.height = 297f;
+
         List<FloatingDocument> floatingDocuments = new ()
         {
-            new FloatingDocument(docPrefab, "googledrive", "exam_noanswers2", new List<int> { 1, 2, 3 }),
-            new FloatingDocument(docPrefab, "googledrive", "exam_noanswers2", new List<int> { 4, 5, 6 }),
+            floatingDocument1,
+            floatingDocument2,
         };
 
         oldEnvironmentInformation.SetFloatingDocuments(floatingDocuments);
@@ -121,8 +148,8 @@ public class EnvironmentInformationTest
         Assert.IsTrue(newImportList.Contains("b"));
         Assert.AreEqual(2, newImportList.Count);
         Assert.AreEqual(floatingDocuments, newfloatingDocuments);
-        Assert.IsTrue(newfloatingDocuments.Contains(new FloatingDocument(docPrefab, "googledrive", "exam_noanswers2", new List<int> { 1, 2, 3 })));
-        Assert.IsTrue(newfloatingDocuments.Contains(new FloatingDocument(docPrefab, "googledrive", "exam_noanswers2", new List<int> { 4, 5, 6 })));
+        Assert.IsTrue(newfloatingDocuments.Contains(floatingDocument1));
+        Assert.IsTrue(newfloatingDocuments.Contains(floatingDocument2));
         Assert.AreEqual(2, newfloatingDocuments.Count);
         Assert.AreEqual(Color.red, newEnvironmentInformation.GetBackgroundColor());
     }
@@ -144,26 +171,24 @@ public class EnvironmentInformationTest
         environmentInformation.docPrefab = docPrefab;
 
         // Create new floating documents
-        FloatingDocument doc = environmentInformation.CreateDocument(
-            new Vector3(1, 2, 3),
-            Quaternion.identity,
-            new Vector3(1, 1, 1),
-            "googledrive",
-            "exam_noanswers2",
-            new List<int> { 1, 2, 3 });
+        FloatingDocument floatingDocument1 = docPrefab.AddComponent<FloatingDocument>();
+        floatingDocument1.pages = new List<int> { 1, 2, 3 };
+        floatingDocument1.pdfId = "googledrive";
+        floatingDocument1.pdfName = "examplename";
+        floatingDocument1.width = 210f;
+        floatingDocument1.height = 297f;
 
-        FloatingDocument doc2 = environmentInformation.CreateDocument(
-            new Vector3(0, 0, 0),
-            new Quaternion(2, 3, 4, 5),
-            new Vector3(1, 1, 1),
-            "googledrive",
-            "exam_noanswers2",
-            new List<int> { 4, 5, 6 });
+        FloatingDocument floatingDocument2 = docPrefab.GetComponent<FloatingDocument>();
+        floatingDocument2.pages = new List<int> { 4, 5, 6 };
+        floatingDocument2.pdfId = "googledrive";
+        floatingDocument2.pdfName = "examplename";
+        floatingDocument2.width = 210f;
+        floatingDocument2.height = 297f;
 
         List<FloatingDocument> floatingDocuments = new List<FloatingDocument>
         {
-            doc,
-            doc2,
+            floatingDocument1,
+            floatingDocument2,
         };
 
         environmentInformation.SetFloatingDocuments(floatingDocuments);
@@ -182,8 +207,7 @@ public class EnvironmentInformationTest
         Debug.Log(json);
 
         // Create a GameObject and add the EnvironmentInformation component to it
-        GameObject environmentGO2 = new GameObject("Environment");
-        EnvironmentInformation environmentInformation2 = environmentGO2.AddComponent<EnvironmentInformation>();
+        EnvironmentInformation environmentInformation2 = this.CreateObjectEnv();
         environmentInformation2.docPrefab = docPrefab;
 
         // Load the EnvironmentInformation to the EnvironmentInformation component
@@ -200,18 +224,18 @@ public class EnvironmentInformationTest
 
         // Get the first floating document
         FloatingDocument doc3 = environmentInformation2.GetFloatingDocuments()[0];
-        Assert.AreEqual(doc.canvas.transform.position, doc3.canvas.transform.position);
-        Assert.AreEqual(doc.canvas.transform.rotation, doc3.canvas.transform.rotation);
-        Assert.AreEqual(doc.canvas.transform.localScale, doc3.canvas.transform.localScale);
+        Assert.AreEqual(floatingDocument1.transform.position, doc3.position);
+        Assert.AreEqual(floatingDocument1.transform.rotation, doc3.rotation);
+        Assert.AreEqual(floatingDocument1.transform.localScale, doc3.scale);
 
         // Get the second floating document
         FloatingDocument doc4 = environmentInformation2.GetFloatingDocuments()[1];
-        Assert.AreEqual(doc2.canvas.transform.position, doc4.canvas.transform.position);
-        Assert.AreEqual(doc2.canvas.transform.rotation, doc4.canvas.transform.rotation);
-        Assert.AreEqual(doc2.canvas.transform.localScale, doc4.canvas.transform.localScale);
+        Assert.AreEqual(floatingDocument2.transform.position, doc4.position);
+        Assert.AreEqual(floatingDocument2.transform.rotation, doc4.rotation);
+        Assert.AreEqual(floatingDocument2.transform.localScale, doc4.scale);
 
-        Assert.IsTrue(environmentInformation2.GetFloatingDocuments().Contains(doc));
-        Assert.IsTrue(environmentInformation2.GetFloatingDocuments().Contains(doc2));
+        Assert.IsTrue(environmentInformation2.GetFloatingDocuments().Contains(floatingDocument1));
+        Assert.IsTrue(environmentInformation2.GetFloatingDocuments().Contains(floatingDocument2));
         Assert.AreEqual(2, environmentInformation2.GetFloatingDocuments().Count);
         Assert.AreEqual(Color.red, environmentInformation2.GetBackgroundColor());
     }

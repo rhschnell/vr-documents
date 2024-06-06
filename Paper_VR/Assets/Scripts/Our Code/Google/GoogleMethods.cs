@@ -24,6 +24,11 @@ public class GoogleMethods
     public string currentEnvId;
 
     /// <summary>
+    /// The returned file.
+    /// </summary>
+    public UnityGoogleDrive.Data.File returnFile;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="GoogleMethods"/> class.
     /// </summary>
     public GoogleMethods()
@@ -115,5 +120,17 @@ public class GoogleMethods
         request.Fields = new List<string> { "id" };
 
         yield return request.Send();
+    }
+
+    /// <summary>
+    /// Downloads a file using its id.
+    /// </summary>
+    /// <param name="id">The id of the file.</param>
+    /// <returns>The downloaded file.</returns>
+    public virtual IEnumerator DownloadFile(string id)
+    {
+        GoogleDriveFiles.DownloadRequest req = new GoogleDriveFiles.DownloadRequest(id);
+        yield return req.Send();
+        this.returnFile = req.ResponseData;
     }
 }

@@ -145,6 +145,7 @@ public class SelectEnvironmentTest
         var mock = new Mock<SelectEnvironment>();
         mock.Setup(m => m.RequestList).Returns(this.mockListRequest.Object);
         mock.Object.gameManager = new GameObject("GameManager");
+        mock.Object.gameManager.AddComponent<EnvironmentInformation>();
 
         // Create a json file of a EnvironmentInfo object
         EnvironmentInfo environmentInfo = new EnvironmentInfo();
@@ -155,13 +156,22 @@ public class SelectEnvironmentTest
         string json = environmentInfo.SaveToJson();
         var content = System.Text.Encoding.ASCII.GetBytes(json);
 
+        var responseMock = new Mock<GoogleDriveRequestYieldInstruction<UnityGoogleDrive.Data.FileList>>();
+
+        // Create google methods mock
+        Mock<GoogleMethods> googleMehodsMock = new Mock<GoogleMethods>();
+        googleMehodsMock.Setup(a => a.DownloadFile("Tycho")).Returns(responseMock.Object);
+
+        googleMehodsMock.Object.returnFile = new UnityGoogleDrive.Data.File { Content = content };
+
+        mock.Object.googleMethods = googleMehodsMock.Object;
+
         // Create a mock response
         var mockFiles = new List<UnityGoogleDrive.Data.File>
         {
-            new UnityGoogleDrive.Data.File { Name = "Env1", Content = content },
-            new UnityGoogleDrive.Data.File { Name = "Env2", Content = content },
+            new UnityGoogleDrive.Data.File { Name = "Env1", Content = content, Id = "Tycho" },
+            new UnityGoogleDrive.Data.File { Name = "Env2", Content = content, Id = "Pjotr" },
         };
-        var responseMock = new Mock<GoogleDriveRequestYieldInstruction<UnityGoogleDrive.Data.FileList>>();
         responseMock.Setup(a => a.GoogleDriveRequest).Returns(this.mockListRequest.Object);
 
         this.mockListRequest.Setup(req => req.Send()).Returns(responseMock.Object);
@@ -178,40 +188,6 @@ public class SelectEnvironmentTest
         Assert.AreEqual("Env1", env.GetName());
         Assert.AreEqual(Color.red, env.GetBackgroundColor());
     }
-
-    /*
-    /// <summary>
-    /// This test the get environment method.
-    /// </summary>
-    /// <returns>IEnumerator</returns>
-    [UnityTest]
-    public IEnumerator GetEnvironmentTestNoFiles()
-    {
-        // Create a Select Environment mock
-        var mock = new Mock<SelectEnvironment>();
-        mock.Setup(m => m.RequestList).Returns(this.mockListRequest.Object);
-        mock.Object.gameManager = new GameObject("GameManager");
-
-        // Create a mock response
-        var mockFiles = new List<UnityGoogleDrive.Data.File>();
-        var responseMock = new Mock<GoogleDriveRequestYieldInstruction<UnityGoogleDrive.Data.FileList>>();
-        responseMock.Setup(a => a.GoogleDriveRequest).Returns(this.mockListRequest.Object);
-
-        this.mockListRequest.Setup(req => req.Send()).Returns(responseMock.Object);
-        this.mockListRequest.Setup(req => req.ResponseData.Files).Returns(mockFiles);
-        this.mockListRequest.Setup(req => req.IsError).Returns(false);
-
-        yield return mock.Object.GetEnvironment("123", "Env1");
-
-        // Verify that the request was sent
-        this.mockListRequest.Verify(req => req.Send());
-
-        // Assert that the environment was loaded
-        EnvironmentInformation env = mock.Object.gameManager.GetComponent<EnvironmentInformation>();
-        Assert.AreEqual("Env1", env.GetName());
-        Assert.AreEqual(Color.white, env.GetBackgroundColor());
-    }
-    */
 
     /// <summary>
     /// Tests the make create request method.

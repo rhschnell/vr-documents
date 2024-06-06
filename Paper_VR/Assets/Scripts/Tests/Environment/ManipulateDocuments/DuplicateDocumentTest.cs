@@ -41,7 +41,7 @@ public class DuplicateDocumentTest : MonoBehaviour
 
         // Setup a floating document with 5 pages in the environment, this document is used for testing the duplication of a single page and the subection of a page
         var floatingDocument = this.originalPdfCanvas.AddComponent<FloatingDocument>();
-        floatingDocument.pdfPath = "some/path/to/original.pdf";
+        floatingDocument.pdfId = "some/path/to/original.pdf";
         floatingDocument.pages = new List<int> { 0, 1, 2, 3, 4 };
 
         Texture2D texture = new Texture2D(1, 1);

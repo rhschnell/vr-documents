@@ -16,12 +16,13 @@ public class ConvertPDF : MonoBehaviour
     /// <summary>
     /// This method converts pdfs to sprites.
     /// </summary>
-    /// <param name="file">The pdf being turned into a list of sprites.</param>
-    /// <param name="floatingDocument">The floating document where the sprites will be stored.</param>
-    public virtual void Convert(UnityGoogleDrive.Data.File file, FloatingDocument floatingDocument)
+    /// <param name="file">The file we want to get the sprites from.</param>
+    /// <param name="floatingDocument">The floating doc we want to use.</param>
+    /// <returns>The IENumarator.</returns>
+    public virtual IEnumerator AddImagesToFloatingDocument(UnityGoogleDrive.Data.File file, FloatingDocument floatingDocument)
     {
         // Start the coroutine to send the pdf to the server
-        this.StartCoroutine(this.SendPdfToServer(file.Content, floatingDocument));
+        yield return this.SendPdfToServer(file.Content, floatingDocument);
     }
 
     /// <summary>
@@ -90,11 +91,11 @@ public class ConvertPDF : MonoBehaviour
             sprites.Add(sprite);
         }
 
+        // Set the list of sprites in the floating document
         floatingDocument.sprites = sprites;
         Sprite frontPage = sprites[0];
-        floatingDocument.width = frontPage.rect.width;
-        floatingDocument.height = frontPage.rect.height;
 
+        // Set the list of pages in the floating document
         List<int> pages = new List<int>();
         int count = 0;
         foreach (Sprite sprite in sprites)
@@ -104,6 +105,10 @@ public class ConvertPDF : MonoBehaviour
         }
 
         floatingDocument.pages = pages;
+
+        // Set the width and height of the floating document to match the size of the pdf
+        floatingDocument.width = frontPage.rect.width;
+        floatingDocument.height = frontPage.rect.height;
         floatingDocument.SetValues();
     }
 

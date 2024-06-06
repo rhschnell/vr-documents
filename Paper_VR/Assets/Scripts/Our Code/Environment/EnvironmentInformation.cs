@@ -29,35 +29,6 @@ public class EnvironmentInformation : MonoBehaviour
     private Color backgroundColor = Color.white;
 
     /// <summary>
-    /// This method creates a new floating document in the scene.
-    /// </summary>
-    /// <param name="pos">The position of the floating document</param>
-    /// <param name="rotation">The rotation of the floating document</param>
-    /// <param name="scale">The scale of the floating document</param>
-    /// <param name="pdfPath">The path where the pdf is stored</param>
-    /// <param name="pdfName">The name of the pdf</param>
-    /// <param name="pages">The pages as a list of numbers</param>
-    /// <returns>A floating document</returns>
-    public FloatingDocument CreateDocument(Vector3 pos, Quaternion rotation, Vector3 scale, string pdfPath, string pdfName, List<int> pages)
-    {
-        Debug.Log("Creating document");
-        // Create a new canvas
-        GameObject instance = Instantiate(this.docPrefab, pos, rotation);
-        instance.transform.localScale = scale;
-
-        // Update the child of the prefab to have to the correct first image
-        string spritePath = imagePath + "\\" + pdfName + "\\" + pdfName + "-" + pages[0];
-        var sprite = Resources.Load<Sprite>(spritePath);
-        Debug.Log(sprite);
-        instance.transform.GetChild(0).GetComponent<Image>().sprite = sprite;
-
-        // Create a new floating document
-        FloatingDocument doc = new FloatingDocument(instance, pdfPath, pdfName, pages);
-
-        return doc;
-    }
-
-    /// <summary>
     /// Loads the new environment information on this instance of the class.
     /// </summary>
     /// <param name="newEnvironmentInformation">the information of the new environment.</param>
@@ -68,16 +39,20 @@ public class EnvironmentInformation : MonoBehaviour
 
         // Sets the floating documents to the new floating documents.
         this.floatingDocuments = new List<FloatingDocument>();
-        foreach (FloatingDocumentInfo floatingDocument in newEnvironmentInformation.floatingDocuments)
+
+        foreach (FloatingDocumentInfo f in newEnvironmentInformation.floatingDocuments)
         {
-            this.floatingDocuments.Add(
-                this.CreateDocument(
-                    floatingDocument.position,
-                    floatingDocument.rotation,
-                    floatingDocument.scale,
-                    floatingDocument.pdfPath,
-                    floatingDocument.pdfName,
-                    floatingDocument.pages));
+            // Creates a new GameObject
+            GameObject instance = Instantiate(this.docPrefab, f.position, f.rotation);
+            FloatingDocument floatDoc = instance.AddComponent<FloatingDocument>();
+            floatDoc.SetAttributes(
+                f.position,
+                f.rotation,
+                f.scale,
+                f.pdfId,
+                f.pdfName,
+                f.pages);
+            this.floatingDocuments.Add(floatDoc);
         }
 
         // Sets the import list to the new import list.
@@ -99,9 +74,6 @@ public class EnvironmentInformation : MonoBehaviour
         yield return googleMethods.FindEnviormentId(this.environmentName, new GoogleDriveFiles.ListRequest());
         string folderId = googleMethods.currentEnvId;
 
-        // Delete the old environment file.
-        yield return googleMethods.DeleteFile("Environment.json", folderId, new GoogleDriveFiles.ListRequest(), false);
-
         // Create a new environment information object.
         EnvironmentInfo environmentInfo = new EnvironmentInfo(this);
 
@@ -110,6 +82,9 @@ public class EnvironmentInformation : MonoBehaviour
 
         // Create a new json file
         var content = Encoding.ASCII.GetBytes(json);
+
+        // Delete the old environment file.
+        yield return googleMethods.DeleteFile("Environment.json", folderId, new GoogleDriveFiles.ListRequest(), false);
 
         // Send the json file to google drive.
         GoogleDriveFiles.CreateRequest request = new GoogleDriveFiles.CreateRequest();

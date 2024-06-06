@@ -1298,7 +1298,6 @@ GameObject:
   - component: {fileID: 340286433}
   - component: {fileID: 340286432}
   - component: {fileID: 340286431}
-  - component: {fileID: 340286430}
   m_Layer: 5
   m_Name: DeleteConfirm
   m_TagString: Untagged
@@ -1352,24 +1351,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &340286430
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 340286427}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3e7bec30e11acd4fb85fe58d84c8d3d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dropdown: {fileID: 922266061}
-  gameManager: {fileID: 0}
-  Name: {fileID: 0}
-  Email: {fileID: 0}
-  DeleteText: {fileID: 0}
-  testing: 0
 --- !u!114 &340286431
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5823,9 +5804,10 @@ GameObject:
   - component: {fileID: 1893551374}
   - component: {fileID: 1893551376}
   - component: {fileID: 1893551377}
+  - component: {fileID: 1893551378}
   m_Layer: 0
   m_Name: GameManager
-  m_TagString: Untagged
+  m_TagString: gamemanager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5857,6 +5839,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31d292e98a53cdf4ba2b4e85bea1910b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  convertPDF: {fileID: 1893551378}
 --- !u!114 &1893551377
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5869,7 +5852,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c11cb2a04dd58840a7526a6756736b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  docPrefab: {fileID: 2736266482211205315, guid: 58084e1130b3f0e478498923d9d05aba, type: 3}
+  docPrefab: {fileID: 9011475466499275803, guid: 58084e1130b3f0e478498923d9d05aba, type: 3}
+  environmentName: New Environment
+  floatingDocuments: []
+  importList: []
+--- !u!114 &1893551378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1893551373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4311ea6f51d066443853326285c10661, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1901894016
 GameObject:
   m_ObjectHideFlags: 0
@@ -7465,7 +7463,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1901894017}
         m_TargetAssemblyTypeName: SelectEnvironment, OurCode
-        m_MethodName: changeDeleteText
+        m_MethodName: ChangeDeleteText
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
