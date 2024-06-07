@@ -17,11 +17,6 @@ public class ImportList : MonoBehaviour
     public Transform characterTransform;
 
     /// <summary>
-    /// The image where we change the sprite.
-    /// </summary>
-    public Image image;
-
-    /// <summary>
     /// The dropdown containing all environments.
     /// </summary>
     public TMP_Dropdown dropdown;
@@ -46,7 +41,7 @@ public class ImportList : MonoBehaviour
     /// This object converts the pdf to sprites.
     /// and creates a floating document.
     /// </summary>
-    public ConvertPDF pdfConverter;
+    public BackendPDF pdfConverter;
 
     /// <summary>
     /// finds all folders under the main folder and lists their names
@@ -94,18 +89,30 @@ public class ImportList : MonoBehaviour
     /// </summary>
     public void Download()
     {
-        // Find the file
         string name = this.PDFs[this.dropdown.value].Name;
         GoogleDriveFiles.DownloadRequest req = new GoogleDriveFiles.DownloadRequest(this.PDFs[this.dropdown.value].Id);
         req.Send().OnDone += (UnityGoogleDrive.Data.File file) => this.StartCoroutine(this.ImportPDF(file, name));
     }
 
-/// <summary>
-/// Imports the pdf.
-/// </summary>
-/// <param name="file">The file we want to import.</param>
-/// <param name="name">The name of the file.</param>
-/// <returns>Returns the IEnumerator.</returns>
+    /// <summary>
+    /// Convert a pdf and set the image to the first page sprite.
+    /// </summary>
+    /// <param name="file">The file containing the conten of the pdf.</param>
+    /// <param name="name">The name of the pdf.</param>
+    //public void ConvertPdf(UnityGoogleDrive.Data.File file, string name)
+    //{
+     //   // Find the file
+     //   string name = this.PDFs[this.dropdown.value].Name;
+     //   GoogleDriveFiles.DownloadRequest req = new GoogleDriveFiles.DownloadRequest(this.PDFs[this.dropdown.value].Id);
+     //   req.Send().OnDone += (UnityGoogleDrive.Data.File file) => this.StartCoroutine(this.ImportPDF(file, name));
+    //}
+
+    /// <summary>
+    /// Imports the pdf.
+    /// </summary>
+    /// <param name="file">The file we want to import.</param>
+    /// <param name="name">The name of the file.</param>
+    /// <returns>Returns the IEnumerator.</returns>
     public IEnumerator ImportPDF(UnityGoogleDrive.Data.File file, string name)
     {
         if (file != null)
@@ -118,8 +125,8 @@ public class ImportList : MonoBehaviour
             Quaternion lookRotation = Quaternion.LookRotation(direction);
             GameObject pdf = Instantiate(this.pdfPrefab, spawnPosition, lookRotation);
             FloatingDocument script = pdf.GetComponent<FloatingDocument>();
-            script.pdfId = file.Id;
             script.pdfName = name;
+            script.pdfId = file.Id;
 
             // Find the game object called GameManeger
             GameObject gameManager = GameObject.Find("GameManager");

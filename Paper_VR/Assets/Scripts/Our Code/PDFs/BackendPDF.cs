@@ -2,16 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityGoogleDrive;
 
 /// <summary>
 /// Class responsible for converting pdfs to sprites.
 /// </summary>
-public class ConvertPDF : MonoBehaviour
+public class BackendPDF : MonoBehaviour
 {
     /// <summary>
-    /// The URL of the server that converts pdfs to images.
+    /// The URL for image conversion.
     /// </summary>
-    public static string serverURL = "http://localhost:3000/convert-pdf-to-image";
+    public static string imageURL = "http://localhost:3000/convert-pdf-to-image";
+
+    /// <summary>
+    /// The URL for pdf extraction.
+    /// </summary>
+    public static string extractURL = "http://localhost:3000/extract-pages";
 
     /// <summary>
     /// This method converts pdfs to sprites.
@@ -36,7 +42,7 @@ public class ConvertPDF : MonoBehaviour
     public IEnumerator SendPdfToServer(byte[] pdfBytes, FloatingDocument floatingDocument)
     {
         // Create a UnityWebRequest to send the pdf to the server
-        UnityWebRequest www = new UnityWebRequest(serverURL, "POST");
+        UnityWebRequest www = new UnityWebRequest(imageURL, "POST");
         UploadHandlerRaw uploadHandler = new UploadHandlerRaw(pdfBytes);
         uploadHandler.contentType = "application/pdf";
         www.uploadHandler = uploadHandler;
@@ -95,6 +101,9 @@ public class ConvertPDF : MonoBehaviour
         floatingDocument.sprites = sprites;
         Sprite frontPage = sprites[0];
 
+        // Remove the last sprite because it is a transparent image
+        sprites.RemoveAt(sprites.Count - 1);
+
         // Set the list of pages in the floating document
         List<int> pages = new List<int>();
         int count = 0;
@@ -116,6 +125,90 @@ public class ConvertPDF : MonoBehaviour
         }
 
         floatingDocument.SetValues();
+    }
+
+    /// <summary>
+    /// This method extacts all the pages from the pdf.
+    /// And exports the new pdf to the drive.
+    /// </summary>
+    /// <param name="id">The id of the pdf file.</param>
+    /// <param name="name">The name of the pdf file.</param>
+    /// <param name="pages">The list of pages to extract.</param>
+    /// <param name="folderId">The id of the folder to export to.</param>
+    public virtual void ExtractPDF(string id, string name, List<int> pages, string folderId)
+    {
+        // Create a new request to download the pdf
+        GoogleDriveFiles.DownloadRequest req = new GoogleDriveFiles.DownloadRequest(id);
+        req.Send().OnDone += (UnityGoogleDrive.Data.File file) => this.StartCoroutine(this.SendPDFToServerExtract(file, name, pages, folderId));
+    }
+
+    /// <summary>
+    /// This method sends the pdf to the server to be extracted.
+    /// </summary>
+    /// <param name="file">The pdf file to send to the server.</param>
+    /// <param name="name">The name of the pdf file.</param>
+    /// <param name="pages">The list of pages to extract.</param>
+    /// <param name="folderId">The id of the folder to export to.</param>
+    /// <returns>IEnumerator</returns>
+    public IEnumerator SendPDFToServerExtract(UnityGoogleDrive.Data.File file, string name, List<int> pages, string folderId)
+    {
+        // Add 1 to each page number to match the server's page numbering
+        List<int> pagesCopy = new List<int>();
+        for (int i = 0; i < pages.Count; i++)
+        {
+            pagesCopy.Add(pages[i] + 1);
+        }
+
+        // Convert the list of pages to a comma-separated string
+        string pagesString = string.Join(",", pagesCopy);
+
+        // Create a UnityWebRequest to send the pdf to the server
+        UnityWebRequest www = new UnityWebRequest(extractURL, "POST");
+        UploadHandlerRaw uploadHandler = new UploadHandlerRaw(file.Content);
+        uploadHandler.contentType = "application/pdf";
+        www.uploadHandler = uploadHandler;
+        www.downloadHandler = new DownloadHandlerBuffer();
+
+        // Set the header with the pages as a comma-separated string
+        www.SetRequestHeader("x-pdf-pages", pagesString);
+
+        yield return www.SendWebRequest();
+
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError("Error: " + www.error);
+        }
+        else
+        {
+            // Send the server response to the google drive
+            this.StartCoroutine(this.ExportPDFToDrive(folderId, name, www.downloadHandler.data, null, false));
+        }
+    }
+
+    /// <summary>
+    /// This method exports the pdf to the drive.
+    /// </summary>
+    /// <param name="folderId">the id of the folder to export to</param>
+    /// <param name="name">the name of the pdf</param>
+    /// <param name="content">the content of the pdf</param>
+    /// <param name="request">the request to use for mocking</param>
+    /// <param name="testing">the boolean to check if the method is being tested</param>
+    /// <returns>IEnumerator</returns>
+    public virtual IEnumerator ExportPDFToDrive(string folderId, string name, byte[] content, GoogleDriveFiles.CreateRequest request, bool testing)
+    {
+        // Create a new file object.
+        UnityGoogleDrive.Data.File newFile = new UnityGoogleDrive.Data.File { Name = name, Content = content, MimeType = "application/pdf" };
+        newFile.Parents = new List<string> { folderId };
+
+        // If the method is not being tested, create a new request
+        if (!testing)
+        {
+            request = GoogleDriveFiles.Create(newFile);
+        }
+
+        request.Fields = new List<string> { "id" };
+
+        yield return request.Send();
     }
 
     /// <summary>

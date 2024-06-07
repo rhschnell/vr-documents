@@ -14,6 +14,11 @@ using UnityGoogleDrive;
 public class EnvironmentInformation : MonoBehaviour
 {
     /// <summary>
+    /// This is the id of the folder where documents are saved.
+    /// </summary>
+    public static string saveFolderId;
+
+    /// <summary>
     /// This is the prefab for all the floating documents.
     /// </summary>
     public GameObject docPrefab;

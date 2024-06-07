@@ -88,7 +88,6 @@ public class DuplicateDocumentTest : MonoBehaviour
 
         var initalFloatingDocument = this.originalPdfCanvas.GetComponent<FloatingDocument>();
         this.envInfo.GetFloatingDocuments().Add(initalFloatingDocument);
-
         duplicateDocument.OnDuplicationDocumentClick();
 
         Assert.AreEqual(2, this.envInfo.GetFloatingDocuments().Count, "The duplicated PDF should be added to the environment.");

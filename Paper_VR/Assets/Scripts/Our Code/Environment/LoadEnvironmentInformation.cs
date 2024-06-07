@@ -12,7 +12,7 @@ public class LoadEnvironmentInformation : MonoBehaviour
     /// <summary>
     /// The convert PDF object that will be used to convert the PDF to sprites.
     /// </summary>
-    public ConvertPDF convertPDF;
+    public BackendPDF convertPDF;
 
     /// <summary>
     /// The method that adds images to the floating document.
@@ -28,10 +28,10 @@ public class LoadEnvironmentInformation : MonoBehaviour
     }
 
     /// <summary>
-    /// Loads the scene with indo.
+    /// Loads the scene.
     /// </summary>
-    /// <param name="environmentInformation">The information of the environment./param>
-    /// <returns>The IEnumerator.</returns>
+    /// <param name="environmentInformation">The information of the environment.</param>
+    /// <returns>The IEnumerator</returns>
     public IEnumerator LoadScene(EnvironmentInformation environmentInformation)
     {
         // forloop with index
