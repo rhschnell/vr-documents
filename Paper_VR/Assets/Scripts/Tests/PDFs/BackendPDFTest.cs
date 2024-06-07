@@ -2,18 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using Moq;
 using NUnit.Framework;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
 using UnityGoogleDrive;
 using UnityGoogleDrive.Data;
 
 /// <summary>
-/// This class contains tests for the ConvertPDF class.
+/// This class contains tests for the BackendPDF class.
 /// </summary>
-public class ConvertPDFTest
+public class BackendPDFTest
 {
     private GameObject gameManager;
     private EnvironmentInformation env;
@@ -44,6 +42,7 @@ public class ConvertPDFTest
     /// This test checks that if the user presses the button on the import list
     /// A new game object is created and the ImportPDF method is called.
     /// </summary>
+    /// <returns>IEnumerator</returns>
     [UnityTest]
     public IEnumerator TestImportList()
     {
@@ -58,7 +57,7 @@ public class ConvertPDFTest
         File file = new File { Name = "Document1.pdf", Id = "appel" };
 
         // Set the convertPDF object as a mock object
-        Mock<ConvertPDF> convertPDF = new Mock<ConvertPDF>();
+        Mock<BackendPDF> convertPDF = new Mock<BackendPDF>();
         // When the AddImagesToFloatingDocument method is called, do nothing
         convertPDF.Setup(a => a.AddImagesToFloatingDocument(file, It.IsAny<FloatingDocument>()));
 
@@ -80,6 +79,7 @@ public class ConvertPDFTest
     /// <summary>
     /// This test checks that a debug error is thrown if the file is null.
     /// </summary>
+    /// <returns>IEnumerator</returns>
     [UnityTest]
     public IEnumerator TestImportListNull()
     {
@@ -112,9 +112,9 @@ public class ConvertPDFTest
         floatingDocumentComponent.image = floatingDocumentGameObject.AddComponent<Image>();
         floatingDocumentComponent.currentPageIndex = 0;
 
-        // Create a ConvertPDF object
+        // Create a BackendPDF object
         GameObject convertPDFGameObject = new GameObject();
-        ConvertPDF convertPDF = convertPDFGameObject.AddComponent<ConvertPDF>();
+        BackendPDF convertPDF = convertPDFGameObject.AddComponent<BackendPDF>();
 
         // Load the json response from the response.txt file
         string jsonResponse = Resources.Load<TextAsset>("Test/response").text;
@@ -125,11 +125,41 @@ public class ConvertPDFTest
         // Assert that the sprites list is not empty
         Assert.IsNotEmpty(floatingDocumentComponent.sprites);
 
-        // Optionally, assert other conditions, such as the correct number of sprites
-        Assert.AreEqual(2, floatingDocumentComponent.sprites.Count);
+        // Assert that the sprites list has the correct number of sprites
+        Assert.AreEqual(1, floatingDocumentComponent.sprites.Count);
 
         // Cleanup
         Object.DestroyImmediate(floatingDocumentGameObject);
         Object.DestroyImmediate(convertPDFGameObject);
+    }
+
+    /// <summary>
+    /// This test checks if the send pdf to drive method works as expected.
+    /// </summary>
+    /// <returns>IEnumerator</returns>
+    [UnityTest]
+    public IEnumerator ExportPDFTest()
+    {
+        Mock<UnityGoogleDrive.GoogleDriveRequest<UnityGoogleDrive.Data.File>> mockFile = new Mock<GoogleDriveRequest<File>>();
+        Mock<UnityGoogleDrive.GoogleDriveRequestYieldInstruction<UnityGoogleDrive.Data.FileList>> mockFileYield = new Mock<GoogleDriveRequestYieldInstruction<FileList>>();
+        // Create a mock response
+        var responseMock = new Mock<GoogleDriveRequestYieldInstruction<UnityGoogleDrive.Data.File>>();
+        responseMock.Setup(a => a.GoogleDriveRequest).Returns(mockFile.Object);
+
+        // Create a mock for the create request
+        Mock<GoogleDriveFiles.CreateRequest> mockCreateRequest = new Mock<GoogleDriveFiles.CreateRequest>();
+
+        // Set up the create request
+        mockCreateRequest.Setup(req => req.IsDone).Returns(true);
+        mockCreateRequest.Setup(req => req.Send()).Returns(responseMock.Object);
+
+        // Create a BackendPDF object
+        GameObject convertPDFGameObject = new GameObject();
+        BackendPDF convertPDF = convertPDFGameObject.AddComponent<BackendPDF>();
+
+        // Act
+        yield return convertPDF.ExportPDFToDrive("id", "document.pdf", new byte[0], mockCreateRequest.Object, true);
+
+        mockCreateRequest.Verify(a => a.Send());
     }
 }

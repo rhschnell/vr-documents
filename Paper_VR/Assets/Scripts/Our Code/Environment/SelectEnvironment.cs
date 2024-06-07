@@ -22,6 +22,11 @@ public class SelectEnvironment : MonoBehaviour
     public TMP_Dropdown dropdown;
 
     /// <summary>
+    /// This list contains all the ids of the savedDocument folders.
+    /// </summary>
+    public List<string> savedFolderIds;
+
+    /// <summary>
     /// The manager of the game, containing all inportant information.
     /// </summary>
     public GameObject gameManager;
@@ -58,7 +63,6 @@ public class SelectEnvironment : MonoBehaviour
     /// </summary>
     public virtual GoogleDriveFiles.ListRequest RequestList { get; set; } = new GoogleDriveFiles.ListRequest();
 
-
     /// <summary>
     /// Gets or sets A coroutine runner to run the coroutines.
     /// </summary>
@@ -76,6 +80,11 @@ public class SelectEnvironment : MonoBehaviour
         parentId = this.RequestList.ResponseData.Files[this.dropdown.value].Id;
 
         string envName = this.dropdown.options[this.dropdown.value].text;
+
+        Debug.Log("Selected environment: " + envName);
+        Debug.Log("Selected environment id: " + parentId);
+
+        EnvironmentInformation.saveFolderId = this.savedFolderIds[this.dropdown.value];
 
         this.CoroutineRunner.StartCoroutine(this.GetEnvironment(parentId, envName));
     }
@@ -172,6 +181,9 @@ public class SelectEnvironment : MonoBehaviour
         if (!this.testing)
         {
             this.CoroutineRunner.StartCoroutine(this.UpdateList(new GoogleDriveFiles.ListRequest()));
+
+            Debug.Log("List updated");
+            Debug.Log("List length: " + this.savedFolderIds.Count);
         }
     }
 
@@ -188,6 +200,7 @@ public class SelectEnvironment : MonoBehaviour
 
         if (!r.IsError)
         {
+            this.savedFolderIds = new List<string>();
             List<string> environmentNames = new List<string>();
             foreach (var folder in r.ResponseData.Files)
             {
@@ -216,6 +229,10 @@ public class SelectEnvironment : MonoBehaviour
         if (r.ResponseData.Files.Count == 0)
         {
             this.CoroutineRunner.StartCoroutine(this.CreateSavedDocFolder(parentID));
+        } else
+        {
+            // Get the id of the saved documents folder
+            this.savedFolderIds.Add(r.ResponseData.Files[0].Id);
         }
     }
 
@@ -228,6 +245,7 @@ public class SelectEnvironment : MonoBehaviour
     {
         GoogleDriveFiles.CreateRequest r = this.MakeRequest(parentID);
         yield return r.Send();
+        this.savedFolderIds.Add(r.ResponseData.Id);
     }
 
     /// <summary>

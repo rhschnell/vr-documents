@@ -47,7 +47,7 @@ public class FloatingDocument : MonoBehaviour
     public Image image;
 
     /// <summary>
-    /// The Id of the PDF file.
+    /// The id of the PDF file.
     /// </summary>
     public string pdfId;
 

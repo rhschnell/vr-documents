@@ -44,6 +44,7 @@ public class SelectEnvironmentTest
         this.mockCoroutineRunner = new Mock<ICoroutineRunner>();
 
         this.selectEnvironment.dropdown = this.mockDropdown.Object;
+        this.selectEnvironment.savedFolderIds = new List<string>() { "123", "567", "891", "1221" };
         this.selectEnvironment.Name = this.mockNameText.Object;
         this.selectEnvironment.Email = this.mockEmailText.Object;
         this.selectEnvironment.gameManager = new GameObject();
@@ -94,6 +95,7 @@ public class SelectEnvironmentTest
         mock.Setup(m => m.CoroutineRunner).Returns(this.mockCoroutineRunner.Object);
         mock.Object.Name = this.mockNameText.Object;
         mock.Object.Email = this.mockEmailText.Object;
+        mock.Object.savedFolderIds = new List<string>() { "123", "567", "891", "1221" };
 
         mock.Object.Refresh();
 
@@ -215,9 +217,11 @@ public class SelectEnvironmentTest
 
         responseMock.Setup(a => a.GoogleDriveRequest).Returns(requestMock.Object);
         requestMock.Setup(req => req.Send()).Returns(responseMock.Object);
+        requestMock.Setup(req => req.ResponseData.Id).Returns("123");
 
         mock.Setup(m => m.MakeRequest("123")).Returns(requestMock.Object);
         mock.CallBase = true;
+        mock.Object.savedFolderIds = new List<string>();
 
         yield return mock.Object.CreateSavedDocFolder("123");
 
@@ -240,10 +244,14 @@ public class SelectEnvironmentTest
         requestMock.Setup(req => req.ResponseData.Files).Returns(new List<UnityGoogleDrive.Data.File> { new UnityGoogleDrive.Data.File() });
 
         mock.CallBase = true;
+        mock.Object.savedFolderIds = new List<string>();
 
         yield return mock.Object.HasSavedDocFolder("123", requestMock.Object);
 
         requestMock.Verify(req => req.Send());
+
+        // assert that the folder id was added to the list
+        Assert.AreEqual(1, mock.Object.savedFolderIds.Count);
     }
 
     /// <summary>
@@ -265,6 +273,7 @@ public class SelectEnvironmentTest
         requestMock.Setup(req => req.ResponseData.Files).Returns(new List<UnityGoogleDrive.Data.File>());
 
         mock.CallBase = true;
+        mock.Object.savedFolderIds = new List<string>();
 
         yield return mock.Object.HasSavedDocFolder("123", requestMock.Object);
 
