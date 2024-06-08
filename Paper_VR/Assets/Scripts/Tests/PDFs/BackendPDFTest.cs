@@ -13,6 +13,7 @@ using UnityGoogleDrive.Data;
 /// </summary>
 public class BackendPDFTest
 {
+
     private GameObject gameManager;
     private EnvironmentInformation env;
 
@@ -69,6 +70,7 @@ public class BackendPDFTest
         // Verify that the ImportPDF method was called
         convertPDF.Verify(a => a.AddImagesToFloatingDocument(file, It.IsAny<FloatingDocument>()));
 
+
         // Assert that the floating document was created
         Assert.IsNotEmpty(this.env.GetFloatingDocuments());
 
@@ -88,6 +90,7 @@ public class BackendPDFTest
         ImportList importList = gameObject.AddComponent<ImportList>();
         importList.characterTransform = gameObject.transform;
         importList.pdfPrefab = new GameObject();
+
 
         // Assert that a Debug error is printed
         yield return importList.ImportPDF(null, "aoo");

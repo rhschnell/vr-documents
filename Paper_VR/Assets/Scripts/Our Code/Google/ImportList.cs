@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Schema;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -130,6 +131,7 @@ public class ImportList : MonoBehaviour
 
             // Find the game object called GameManeger
             GameObject gameManager = GameObject.Find("GameManager");
+
 
             // Get the GameManager component with the environment script
             EnvironmentInformation environment = gameManager.GetComponent<EnvironmentInformation>();

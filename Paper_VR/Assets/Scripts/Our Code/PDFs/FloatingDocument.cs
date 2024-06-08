@@ -12,7 +12,7 @@ using UnityEngine.UI;
 public class FloatingDocument : MonoBehaviour
 {
     /// <summary>
-    /// The input refernce of the up action.
+    /// The input reference of the up action.
     /// </summary>
     public InputActionReference inputActionReference;
 
