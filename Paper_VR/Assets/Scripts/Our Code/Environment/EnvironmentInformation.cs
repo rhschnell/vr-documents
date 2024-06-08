@@ -64,7 +64,7 @@ public class EnvironmentInformation : MonoBehaviour
         // Sets the import list to the new import list.
         this.importList = newEnvironmentInformation.importList;
 
-        // Sets the beckground color to the new background color.
+        // Sets the background color to the new background color.
         this.backgroundColor = newEnvironmentInformation.backgroundColor;
     }
 

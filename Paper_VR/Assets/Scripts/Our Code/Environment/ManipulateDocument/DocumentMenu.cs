@@ -19,6 +19,16 @@ public class DocumentMenu : MonoBehaviour
     public GameObject menu;
 
     /// <summary>
+    /// The button to activate the split menu
+    /// </summary>
+    public GameObject splitMenuButton;
+
+    /// <summary>
+    /// The PDFCanvas
+    /// </summary>
+    public GameObject pdfCanvas;
+
+    /// <summary>
     /// The subpanel
     /// </summary>
     public GameObject subPanel;
@@ -57,8 +67,8 @@ public class DocumentMenu : MonoBehaviour
     {
         if (this.hover)
         {
-            // Toggle the visibility of the subpanel when it is shown
-            if (this.subPanel.activeSelf)
+            var floatingDocument = this.pdfCanvas.GetComponent<FloatingDocument>();
+            if (floatingDocument != null)
             {
                 this.subPanel.SetActive(false);
                 this.duplicateSubsectionPanel.SetActive(false);
@@ -67,6 +77,8 @@ public class DocumentMenu : MonoBehaviour
             {
                 this.menu.SetActive(!this.menu.activeSelf);
             }
+
+            this.menu.SetActive(!this.menu.activeSelf);
         }
     }
 
