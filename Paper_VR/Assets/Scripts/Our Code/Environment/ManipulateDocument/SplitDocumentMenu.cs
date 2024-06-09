@@ -207,8 +207,8 @@ public class SplitDocumentMenu : MonoBehaviour
     public void OnClickSplitIndividualPage()
     {
         var floatingDocument = this.PdfPrefab.GetComponent<FloatingDocument>();
-        this.StartPageNumber = floatingDocument.currentPageIndex;
-        this.EndPageNumber = floatingDocument.currentPageIndex;
+        this.StartPageNumber = floatingDocument.currentPageIndex + 1;
+        this.EndPageNumber = floatingDocument.currentPageIndex + 1;
         this.OnClickSplit();
     }
 

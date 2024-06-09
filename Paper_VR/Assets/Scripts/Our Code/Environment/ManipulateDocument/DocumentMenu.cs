@@ -24,6 +24,11 @@ public class DocumentMenu : MonoBehaviour
     public GameObject splitMenuButton;
 
     /// <summary>
+    /// The split menu
+    /// </summary>
+    public GameObject splitMenu;
+
+    /// <summary>
     /// The PDFCanvas
     /// </summary>
     public GameObject pdfCanvas;
@@ -70,6 +75,7 @@ public class DocumentMenu : MonoBehaviour
             var floatingDocument = this.pdfCanvas.GetComponent<FloatingDocument>();
             if (floatingDocument != null)
             {
+                this.splitMenuButton.SetActive(floatingDocument.pages.Count > 1);
                 this.subPanel.SetActive(false);
                 this.duplicateSubsectionPanel.SetActive(false);
             }
@@ -79,6 +85,10 @@ public class DocumentMenu : MonoBehaviour
             }
 
             this.menu.SetActive(!this.menu.activeSelf);
+            if (!this.menu.activeSelf)
+            {
+                this.splitMenu.SetActive(false);
+            }
         }
     }
 
