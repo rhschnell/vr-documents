@@ -1,9 +1,4 @@
-﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
 using UnityEngine;
 
 /// <summary>
@@ -48,13 +43,19 @@ public class SplitPDF
         this.newFloatingDocument.currentPageIndex = 0;
         this.newFloatingDocument.SetSprite();
 
+        var countBefore = this.floatingDocument.sprites.Count;
         // Remove pages from initial document
-        this.floatingDocument.pages = new List<int>();
-        pageIndex = 0;
         foreach (var sprite in this.newFloatingDocument.sprites)
         {
-            this.floatingDocument.pages.Add(pageIndex++);
             this.floatingDocument.sprites.Remove(sprite);
+        }
+
+        var countAfter = this.floatingDocument.sprites.Count;
+
+        this.floatingDocument.pages = new List<int>();
+        for (var pageIdx = 0; pageIdx < this.floatingDocument.sprites.Count; pageIdx++)
+        {
+            this.floatingDocument.pages.Add(pageIdx);
         }
 
         this.floatingDocument.currentPageIndex = 0;

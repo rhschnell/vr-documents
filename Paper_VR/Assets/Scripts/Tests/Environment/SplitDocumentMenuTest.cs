@@ -1,19 +1,7 @@
-﻿using NUnit.Framework;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
-using UnityEngine.TestTools;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
 using TMPro;
 using UnityEngine;
-using UnityEngine.TestTools;
 using UnityEngine.UI;
 using GameObject = UnityEngine.GameObject;
 
@@ -65,7 +53,9 @@ public class SplitDocumentMenuTest
         this.envInfo.GetFloatingDocuments().Add(floatingDocument);
     }
 
-    // A Test behaves as an ordinary method
+    /// <summary>
+    /// Test for start plus button
+    /// </summary>
     [Test]
     public void ClickOnStartPlusButtonSimplePass()
     {
@@ -82,7 +72,9 @@ public class SplitDocumentMenuTest
         Assert.AreEqual(6, splitDocumentMenu.StartPageNumber);
     }
 
-    // A Test behaves as an ordinary method
+    /// <summary>
+    /// Test for start min button
+    /// </summary>
     [Test]
     public void ClickOnStartMinButtonSimplePass()
     {
@@ -98,8 +90,9 @@ public class SplitDocumentMenuTest
         Assert.AreEqual(4, splitDocumentMenu.StartPageNumber);
     }
 
-
-    // A Test behaves as an ordinary method
+    /// <summary>
+    /// Test for end plus button
+    /// </summary>
     [Test]
     public void ClickOnEndPlusButtonSimplePass()
     {
@@ -118,8 +111,9 @@ public class SplitDocumentMenuTest
         Assert.AreEqual(6, splitDocumentMenu.EndPageNumber);
     }
 
-
-    // A Test behaves as an ordinary method
+    /// <summary>
+    /// Test for end min button
+    /// </summary>
     [Test]
     public void ClickOnEndMinButtonSimplePass()
     {
@@ -135,6 +129,9 @@ public class SplitDocumentMenuTest
         Assert.AreEqual(4, splitDocumentMenu.EndPageNumber);
     }
 
+    /// <summary>
+    /// Test for start slider
+    /// </summary>
     [Test]
     public void StartSliderListenersTest()
     {
@@ -157,6 +154,9 @@ public class SplitDocumentMenuTest
         Assert.AreEqual(2, splitDocumentMenu.StartPageNumber);
     }
 
+    /// <summary>
+    /// Test for end slider
+    /// </summary>
     [Test]
     public void EndSliderListenersTest()
     {
@@ -180,7 +180,9 @@ public class SplitDocumentMenuTest
         Assert.AreEqual(3, splitDocumentMenu.EndPageNumber);
     }
 
-    // A Test behaves as an ordinary method
+    /// <summary>
+    /// Test for toggling the menu
+    /// </summary>
     [Test]
     public void ToggleMenuSimplePass()
     {
@@ -199,7 +201,9 @@ public class SplitDocumentMenuTest
         Assert.AreEqual(5, splitDocumentMenu.MaxPage);
     }
 
-    // A Test behaves as an ordinary method
+    /// <summary>
+    /// Test for pressing the split button
+    /// </summary>
     [Test]
     public void OnClickSplitSimplePass()
     {
@@ -209,7 +213,7 @@ public class SplitDocumentMenuTest
         splitDocumentMenu.SplitMenu = this.splitMenu;
         splitDocumentMenu.StartPageNumberText = this.startPageNumber;
         splitDocumentMenu.EndPageNumberText = this.endPageNumber;
-        splitDocumentMenu.EndPageNumber = 4;
+        splitDocumentMenu.EndPageNumber = 3;
         splitDocumentMenu.StartPageNumber = 2;
 
         var initialDocumentCount = envInfo.GetFloatingDocuments().Count;
@@ -227,12 +231,46 @@ public class SplitDocumentMenuTest
         // Check that the new document has the correct pages
         Assert.AreEqual(3, newDocument.pages.Count);
         Assert.AreEqual(0, newDocument.pages[0]);
-        Assert.AreEqual(1, newDocument.pages[1]);
-        Assert.AreEqual(2, newDocument.pages[2]);
 
         // Check that the original document has the remaining pages
         var originalDocument = envInfo.GetFloatingDocuments()[0];
         Assert.AreEqual(3, originalDocument.pages.Count);
+        Assert.AreEqual(1, originalDocument.pages[1]);
+    }
+
+    /// <summary>
+    /// Test for splitting an individual page
+    /// </summary>
+    [Test]
+    public void OnClickSplitIndividualPageTest()
+    {
+        var splitDocumentMenu = new GameObject("SplitMenu").AddComponent<SplitDocumentMenu>();
+        splitDocumentMenu.PdfPrefab = this.originalPdfCanvas;
+        splitDocumentMenu.Menu = this.manipulationMenu;
+        splitDocumentMenu.SplitMenu = this.splitMenu;
+        splitDocumentMenu.StartPageNumberText = this.startPageNumber;
+        splitDocumentMenu.EndPageNumberText = this.endPageNumber;
+        splitDocumentMenu.EndPageNumber = 4;
+        splitDocumentMenu.StartPageNumber = 2;
+
+        var initialDocumentCount = envInfo.GetFloatingDocuments().Count;
+
+        splitDocumentMenu.OnClickSplitIndividualPage();
+
+        // Check that the split and manipulation menus are deactivated
+        Assert.IsFalse(this.splitMenu.activeSelf);
+        Assert.IsFalse(this.manipulationMenu.activeSelf);
+
+        var newDocument = envInfo.GetFloatingDocuments()[initialDocumentCount - 1];
+        Assert.IsNotNull(newDocument);
+        Assert.AreNotSame(this.originalPdfCanvas, newDocument);
+
+        // Check that the new document has the correct pages
+        Assert.AreEqual(0, newDocument.pages[0]);
+
+        // Check that the original document has the remaining pages
+        var originalDocument = envInfo.GetFloatingDocuments()[0];
+        Assert.AreEqual(4, originalDocument.pages.Count);
         Assert.AreEqual(0, originalDocument.pages[0]);
         Assert.AreEqual(1, originalDocument.pages[1]);
     }
