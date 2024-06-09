@@ -5,11 +5,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using GameObject = UnityEngine.GameObject;
 
+/// <summary>
+/// Test class for the SplitDocumentMenu class.
+/// </summary>
 public class SplitDocumentMenuTest
 {
     private GameObject originalPdfCanvas;
     private GameObject manipulationMenu;
-    private GameObject splitMenu;
+    private GameObject subsectionMenu;
     private GameObject gameManager;
 
     private TMP_Text startPageNumber;
@@ -25,9 +28,9 @@ public class SplitDocumentMenuTest
         // Create a new GameObject to act as the PDFCanvas
         this.originalPdfCanvas = new GameObject("PDFCanvas");
         this.manipulationMenu = new GameObject("Menu");
-        this.splitMenu = new GameObject("SplitMenu");
+        this.subsectionMenu = new GameObject("SubsectionMenu");
         this.manipulationMenu.transform.SetParent(this.originalPdfCanvas.transform);
-        this.splitMenu.transform.SetParent(this.originalPdfCanvas.transform);
+        this.subsectionMenu.transform.SetParent(this.originalPdfCanvas.transform);
 
         this.startPageNumber = new GameObject("StartPageNumber").AddComponent<TextMeshPro>();
         this.endPageNumber = new GameObject("EndPageNumber").AddComponent<TextMeshPro>();
@@ -59,10 +62,10 @@ public class SplitDocumentMenuTest
     [Test]
     public void ClickOnStartPlusButtonSimplePass()
     {
-        var splitDocumentMenu = new GameObject("SplitMenu").AddComponent<SplitDocumentMenu>();
-        splitDocumentMenu.PdfPrefab = this.originalPdfCanvas;
+        var splitDocumentMenu = new GameObject("SplitMenu").AddComponent<MenuController>();
+        splitDocumentMenu.pdfPrefab = this.originalPdfCanvas;
         splitDocumentMenu.Menu = this.manipulationMenu;
-        splitDocumentMenu.SplitMenu = this.splitMenu;
+        splitDocumentMenu.subsectionMenu = this.subsectionMenu;
         splitDocumentMenu.StartPageNumberText = this.startPageNumber;
         splitDocumentMenu.EndPageNumberText = this.endPageNumber;
         splitDocumentMenu.StartPageNumber = 5;
@@ -78,10 +81,10 @@ public class SplitDocumentMenuTest
     [Test]
     public void ClickOnStartMinButtonSimplePass()
     {
-        var splitDocumentMenu = new GameObject("SplitMenu").AddComponent<SplitDocumentMenu>();
-        splitDocumentMenu.PdfPrefab = this.originalPdfCanvas;
+        var splitDocumentMenu = new GameObject("SplitMenu").AddComponent<MenuController>();
+        splitDocumentMenu.pdfPrefab = this.originalPdfCanvas;
         splitDocumentMenu.Menu = this.manipulationMenu;
-        splitDocumentMenu.SplitMenu = this.splitMenu;
+        splitDocumentMenu.subsectionMenu = this.subsectionMenu;
         splitDocumentMenu.StartPageNumberText = this.startPageNumber;
         splitDocumentMenu.EndPageNumberText = this.endPageNumber;
         splitDocumentMenu.StartPageNumber = 5;
@@ -96,10 +99,10 @@ public class SplitDocumentMenuTest
     [Test]
     public void ClickOnEndPlusButtonSimplePass()
     {
-        var splitDocumentMenu = new GameObject("SplitMenu").AddComponent<SplitDocumentMenu>();
-        splitDocumentMenu.PdfPrefab = this.originalPdfCanvas;
+        var splitDocumentMenu = new GameObject("SplitMenu").AddComponent<MenuController>();
+        splitDocumentMenu.pdfPrefab = this.originalPdfCanvas;
         splitDocumentMenu.Menu = this.manipulationMenu;
-        splitDocumentMenu.SplitMenu = this.splitMenu;
+        splitDocumentMenu.subsectionMenu = this.subsectionMenu;
         splitDocumentMenu.StartPageNumberText = this.startPageNumber;
         splitDocumentMenu.EndPageNumberText = this.endPageNumber;
         splitDocumentMenu.StartPageNumber = 2;
@@ -117,10 +120,10 @@ public class SplitDocumentMenuTest
     [Test]
     public void ClickOnEndMinButtonSimplePass()
     {
-        var splitDocumentMenu = new GameObject("SplitMenu").AddComponent<SplitDocumentMenu>();
-        splitDocumentMenu.PdfPrefab = this.originalPdfCanvas;
+        var splitDocumentMenu = new GameObject("SplitMenu").AddComponent<MenuController>();
+        splitDocumentMenu.pdfPrefab = this.originalPdfCanvas;
         splitDocumentMenu.Menu = this.manipulationMenu;
-        splitDocumentMenu.SplitMenu = this.splitMenu;
+        splitDocumentMenu.subsectionMenu = this.subsectionMenu;
         splitDocumentMenu.StartPageNumberText = this.startPageNumber;
         splitDocumentMenu.EndPageNumberText = this.endPageNumber;
         splitDocumentMenu.EndPageNumber = 5;
@@ -135,10 +138,10 @@ public class SplitDocumentMenuTest
     [Test]
     public void StartSliderListenersTest()
     {
-        var splitDocumentMenu = new GameObject("SplitMenu").AddComponent<SplitDocumentMenu>();
-        splitDocumentMenu.PdfPrefab = this.originalPdfCanvas;
+        var splitDocumentMenu = new GameObject("SplitMenu").AddComponent<MenuController>();
+        splitDocumentMenu.pdfPrefab = this.originalPdfCanvas;
         splitDocumentMenu.Menu = this.manipulationMenu;
-        splitDocumentMenu.SplitMenu = this.splitMenu;
+        splitDocumentMenu.subsectionMenu = this.subsectionMenu;
         splitDocumentMenu.StartPageNumberText = this.startPageNumber;
         splitDocumentMenu.EndPageNumberText = this.endPageNumber;
         splitDocumentMenu.StartPageNumber = 1;
@@ -160,10 +163,10 @@ public class SplitDocumentMenuTest
     [Test]
     public void EndSliderListenersTest()
     {
-        var splitDocumentMenu = new GameObject("SplitMenu").AddComponent<SplitDocumentMenu>();
-        splitDocumentMenu.PdfPrefab = this.originalPdfCanvas;
+        var splitDocumentMenu = new GameObject("SplitMenu").AddComponent<MenuController>();
+        splitDocumentMenu.pdfPrefab = this.originalPdfCanvas;
         splitDocumentMenu.Menu = this.manipulationMenu;
-        splitDocumentMenu.SplitMenu = this.splitMenu;
+        splitDocumentMenu.subsectionMenu = this.subsectionMenu;
         splitDocumentMenu.StartPageNumberText = this.startPageNumber;
         splitDocumentMenu.EndPageNumberText = this.endPageNumber;
         splitDocumentMenu.StartPageNumber = 1;
@@ -186,18 +189,18 @@ public class SplitDocumentMenuTest
     [Test]
     public void ToggleMenuSimplePass()
     {
-        var splitDocumentMenu = new GameObject("SplitMenu").AddComponent<SplitDocumentMenu>();
-        splitDocumentMenu.PdfPrefab = this.originalPdfCanvas;
+        var splitDocumentMenu = new GameObject("SplitMenu").AddComponent<MenuController>();
+        splitDocumentMenu.pdfPrefab = this.originalPdfCanvas;
         splitDocumentMenu.Menu = this.manipulationMenu;
-        splitDocumentMenu.SplitMenu = this.splitMenu;
+        splitDocumentMenu.subsectionMenu = this.subsectionMenu;
         splitDocumentMenu.StartPageNumberText = this.startPageNumber;
         splitDocumentMenu.EndPageNumberText = this.endPageNumber;
         splitDocumentMenu.EndPageNumber = 5;
 
         splitDocumentMenu.ToggleMenu();
-        Assert.False(this.splitMenu.activeSelf);
+        Assert.False(this.subsectionMenu.activeSelf);
         splitDocumentMenu.ToggleMenu();
-        Assert.True(this.splitMenu.activeSelf);
+        Assert.True(this.subsectionMenu.activeSelf);
         Assert.AreEqual(5, splitDocumentMenu.MaxPage);
     }
 
@@ -207,10 +210,10 @@ public class SplitDocumentMenuTest
     [Test]
     public void OnClickSplitSimplePass()
     {
-        var splitDocumentMenu = new GameObject("SplitMenu").AddComponent<SplitDocumentMenu>();
-        splitDocumentMenu.PdfPrefab = this.originalPdfCanvas;
+        var splitDocumentMenu = new GameObject("SplitMenu").AddComponent<MenuController>();
+        splitDocumentMenu.pdfPrefab = this.originalPdfCanvas;
         splitDocumentMenu.Menu = this.manipulationMenu;
-        splitDocumentMenu.SplitMenu = this.splitMenu;
+        splitDocumentMenu.subsectionMenu = this.subsectionMenu;
         splitDocumentMenu.StartPageNumberText = this.startPageNumber;
         splitDocumentMenu.EndPageNumberText = this.endPageNumber;
         splitDocumentMenu.EndPageNumber = 3;
@@ -218,10 +221,14 @@ public class SplitDocumentMenuTest
 
         var initialDocumentCount = envInfo.GetFloatingDocuments().Count;
 
-        splitDocumentMenu.OnClickSplit();
+        var splitDoc = new GameObject("asd").AddComponent<SplitDocument>();
+        splitDoc.menuController = splitDocumentMenu;
+        splitDoc.pdfPrefab = this.originalPdfCanvas;
+
+        splitDoc.OnClickSplit();
 
         // Check that the split and manipulation menus are deactivated
-        Assert.IsFalse(this.splitMenu.activeSelf);
+        Assert.IsFalse(this.subsectionMenu.activeSelf);
         Assert.IsFalse(this.manipulationMenu.activeSelf);
 
         var newDocument = envInfo.GetFloatingDocuments()[initialDocumentCount - 1];
@@ -247,7 +254,7 @@ public class SplitDocumentMenuTest
         var splitDocumentMenu = new GameObject("SplitMenu").AddComponent<SplitDocumentMenu>();
         splitDocumentMenu.PdfPrefab = this.originalPdfCanvas;
         splitDocumentMenu.Menu = this.manipulationMenu;
-        splitDocumentMenu.SplitMenu = this.splitMenu;
+        splitDocumentMenu.SplitMenu = this.subsectionMenu;
         splitDocumentMenu.StartPageNumberText = this.startPageNumber;
         splitDocumentMenu.EndPageNumberText = this.endPageNumber;
         splitDocumentMenu.EndPageNumber = 4;
@@ -258,7 +265,7 @@ public class SplitDocumentMenuTest
         splitDocumentMenu.OnClickSplitIndividualPage();
 
         // Check that the split and manipulation menus are deactivated
-        Assert.IsFalse(this.splitMenu.activeSelf);
+        Assert.IsFalse(this.subsectionMenu.activeSelf);
         Assert.IsFalse(this.manipulationMenu.activeSelf);
 
         var newDocument = envInfo.GetFloatingDocuments()[initialDocumentCount - 1];
@@ -283,7 +290,7 @@ public class SplitDocumentMenuTest
     {
         // Destroy all GameObjects
         UnityEngine.Object.Destroy(this.manipulationMenu);
-        UnityEngine.Object.Destroy(this.splitMenu);
+        UnityEngine.Object.Destroy(this.subsectionMenu);
         UnityEngine.Object.Destroy(this.originalPdfCanvas);
         UnityEngine.Object.Destroy(this.startPageNumber);
         UnityEngine.Object.Destroy(this.endPageNumber);

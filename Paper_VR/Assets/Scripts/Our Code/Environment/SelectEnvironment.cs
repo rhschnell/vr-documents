@@ -61,7 +61,7 @@ public class SelectEnvironment : MonoBehaviour
     /// <summary>
     /// Gets or sets The request list to get the list of folders.
     /// </summary>
-    public virtual GoogleDriveFiles.ListRequest RequestList { get; set; } = new GoogleDriveFiles.ListRequest();
+    public virtual GoogleDriveFiles.ListRequest RequestList { get; set; }
 
     /// <summary>
     /// Gets or sets A coroutine runner to run the coroutines.
@@ -176,6 +176,11 @@ public class SelectEnvironment : MonoBehaviour
     /// </summary>
     public void Refresh()
     {
+        if (this.RequestList == null)
+        {
+            this.RequestList = new GoogleDriveFiles.ListRequest();
+        }
+
         this.Name.text = "Name: " + GoogleLogin.name;
         this.Email.text = "Email: " + GoogleLogin.email;
         if (!this.testing)

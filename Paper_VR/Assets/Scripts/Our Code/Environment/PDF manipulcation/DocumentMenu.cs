@@ -19,29 +19,14 @@ public class DocumentMenu : MonoBehaviour
     public GameObject menu;
 
     /// <summary>
-    /// The button to activate the split menu
+    /// The subsection menu
     /// </summary>
-    public GameObject splitMenuButton;
-
-    /// <summary>
-    /// The split menu
-    /// </summary>
-    public GameObject splitMenu;
+    public GameObject subsectionMenu;
 
     /// <summary>
     /// The PDFCanvas
     /// </summary>
     public GameObject pdfCanvas;
-
-    /// <summary>
-    /// The subpanel
-    /// </summary>
-    public GameObject subPanel;
-
-    /// <summary>
-    /// The subsection panel for duplicating
-    /// </summary>
-    public GameObject duplicateSubsectionPanel;
 
     /// <summary>
     /// Whether there is hovered.
@@ -72,22 +57,10 @@ public class DocumentMenu : MonoBehaviour
     {
         if (this.hover)
         {
-            var floatingDocument = this.pdfCanvas.GetComponent<FloatingDocument>();
-            if (floatingDocument != null)
-            {
-                this.splitMenuButton.SetActive(floatingDocument.pages.Count > 1);
-                this.subPanel.SetActive(false);
-                this.duplicateSubsectionPanel.SetActive(false);
-            }
-            else
-            {
-                this.menu.SetActive(!this.menu.activeSelf);
-            }
-
             this.menu.SetActive(!this.menu.activeSelf);
             if (!this.menu.activeSelf)
             {
-                this.splitMenu.SetActive(false);
+                this.subsectionMenu.SetActive(false);
             }
         }
     }

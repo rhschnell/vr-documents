@@ -88,11 +88,10 @@ public class DuplicateDocumentTest : MonoBehaviour
 
         var initalFloatingDocument = this.originalPdfCanvas.GetComponent<FloatingDocument>();
         this.envInfo.GetFloatingDocuments().Add(initalFloatingDocument);
-        duplicateDocument.OnDuplicationDocumentClick();
+
+        duplicateDocument.DuplicatePDFCanvas();
 
         Assert.AreEqual(2, this.envInfo.GetFloatingDocuments().Count, "The duplicated PDF should be added to the environment.");
-        Assert.IsFalse(this.menu.activeSelf, "The menu should be hidden after duplication");
-        Assert.IsFalse(this.subPanel.activeSelf, "The subpanel should be hidden after duplication");
     }
 
     /// <summary>
@@ -107,7 +106,7 @@ public class DuplicateDocumentTest : MonoBehaviour
 
         LogAssert.Expect(LogType.Error, "The PDFCanvas prefab is null");
 
-        duplicateDocument.OnDuplicationDocumentClick();
+        duplicateDocument.DuplicatePDFCanvas();
 
         // Check if the error log was created
         LogAssert.NoUnexpectedReceived();
@@ -122,7 +121,7 @@ public class DuplicateDocumentTest : MonoBehaviour
         // Create the DuplicateDocument component and set its fields
         var duplicateDocument = this.SetupDuplicateDocument();
 
-        duplicateDocument.OnDuplicationPageClick();
+        duplicateDocument.DuplicatePagePDF();
 
         Assert.AreEqual(2, this.envInfo.GetFloatingDocuments().Count, "The duplicated PDF should be added to the environment.");
 
@@ -130,9 +129,6 @@ public class DuplicateDocumentTest : MonoBehaviour
         Assert.AreEqual(1, newFloatingDocument.pages.Count, "The new document should have only one page.");
         Assert.AreEqual(2, newFloatingDocument.pages[0], "The new document should contain the duplicated page.");
         Assert.AreEqual(this.envInfo.GetFloatingDocuments()[0].sprites[2], newFloatingDocument.sprites[0], "The new document should have the correct sprite.");
-
-        Assert.IsFalse(this.menu.activeSelf, "The menu should be hidden after duplication");
-        Assert.IsFalse(this.subPanel.activeSelf, "The subpanel should be hidden after duplication");
     }
 
     /// <summary>
@@ -147,65 +143,11 @@ public class DuplicateDocumentTest : MonoBehaviour
 
         LogAssert.Expect(LogType.Error, "The PDFCanvas prefab is null");
 
-        duplicateDocument.OnDuplicationPageClick();
+        duplicateDocument.DuplicatePagePDF();
 
         // Check if the error log was created
         LogAssert.NoUnexpectedReceived();
     }
-
-    /// <summary>
-    /// Tests if the panels correctly show when OnDuplicationClick is called
-    /// </summary>
-    [Test]
-    public void TestOnDuplicationClick()
-    {
-        var duplicateDocument = this.SetupDuplicateDocument();
-
-        duplicateDocument.OnDuplicationClick();
-
-        Assert.IsFalse(this.menu.activeSelf, "The menu should not show when OnDuplicationClick is called");
-        Assert.IsTrue(this.subPanel.activeSelf, "The subpanel should show when OnDuplicationClick is called");
-    }
-
-    /// <summary>
-    /// Tests if the panels correctly show when OnReturnClick is called
-    /// </summary>
-    [Test]
-    public void TestReturnClick()
-    {
-        var duplicateDocument = this.SetupDuplicateDocument();
-
-        duplicateDocument.OnDuplicationClick();
-        duplicateDocument.OnReturnClick();
-
-        Assert.IsFalse(this.subPanel.activeSelf, "The subpanel should not show when OnReturnClick is called");
-        Assert.IsTrue(this.menu.activeSelf, "The menu should show when OnReturnClick is called");
-    }
-
-    /// <summary>
-    /// Tests if the duplication of a subsection is implemented correctly
-    /// </summary>
-    // [Test]
-    // public void TestDuplicateSubsectionPDFCanvas()
-    // {
-    //    // Create the DuplicateDocument component and set its fields
-    //    var duplicateDocument = new GameObject("DuplicateDocument").AddComponent<DuplicateDocument>();
-    //    duplicateDocument.pdfCanvasPrefab = this.originalPdfCanvas;
-    //    duplicateDocument.menu = this.menu;
-    //    duplicateDocument.subPanel = this.subPanel;
-    //    duplicateDocument.duplicateMenu = this.duplicateMenu;
-    //    duplicateDocument.StartPageNumber = 2;
-    //    duplicateDocument.EndPageNumber = 4;
-    //    duplicateDocument.OnDuplicationSubsectionClick();
-    //    //Assert.AreEqual(2, this.envInfo.GetFloatingDocuments().Count, "The duplicated PDF should be added to the environment.");
-    //    var newFloatingDocument = this.envInfo.GetFloatingDocuments()[1];
-    //    Assert.AreEqual(3, newFloatingDocument.pages.Count, "The new document should have three pages.");
-    //    Assert.AreEqual(this.envInfo.GetFloatingDocuments()[0].sprites[1], newFloatingDocument.sprites[0], "The new document should have the correct sprite for the first page.");
-    //    Assert.AreEqual(this.envInfo.GetFloatingDocuments()[0].sprites[2], newFloatingDocument.sprites[1], "The new document should have the correct sprite for the second page.");
-    //    Assert.AreEqual(this.envInfo.GetFloatingDocuments()[0].sprites[3], newFloatingDocument.sprites[2], "The new document should have the correct sprite for the third page.");
-    //    Assert.IsFalse(this.menu.activeSelf, "The menu should be hidden after duplication");
-    //    Assert.IsFalse(this.subPanel.activeSelf, "The subpanel should be hidden after duplication");
-    // }
 
     /// <summary>
     /// Tests if the log error is written to the log when trying to duplicate a subsection of a floating document, but the prefab is null
@@ -219,7 +161,7 @@ public class DuplicateDocumentTest : MonoBehaviour
 
         LogAssert.Expect(LogType.Error, "The PDFCanvas prefab is null");
 
-        duplicateDocument.OnDuplicationSubsectionClick();
+        duplicateDocument.DuplicateSubsectionPDF();
 
         // Check if the error log was created
         LogAssert.NoUnexpectedReceived();
@@ -233,109 +175,15 @@ public class DuplicateDocumentTest : MonoBehaviour
     {
         // Create the DuplicateDocument component and set its fields
         var duplicateDocument = this.SetupDuplicateDocument();
-        duplicateDocument.StartPageNumber = 6;
-        duplicateDocument.EndPageNumber = 4;
+        duplicateDocument.MenuController.StartPageNumber = 6;
+        duplicateDocument.MenuController.EndPageNumber = 4;
 
         LogAssert.Expect(LogType.Error, "Invalid subsection range. Startindex must be above 0 and endindex should be higher then startindex");
 
-        duplicateDocument.OnDuplicationSubsectionClick();
+        duplicateDocument.DuplicateSubsectionPDF();
 
         // Check if the error log was created
         LogAssert.NoUnexpectedReceived();
-    }
-
-    /// <summary>
-    /// Tests if the panels correctly show when OnDuplicationSubsectionMenuClick is called
-    /// </summary>
-    [Test]
-    public void TestOnDuplicationSubsectionMenuClick()
-    {
-        var duplicateDocument = this.SetupDuplicateDocument();
-
-        duplicateDocument.OnDuplicationSubsectionMenuClick();
-
-        Assert.AreEqual(5, duplicateDocument.MaxPage, "The MaxPage should be updated correctly");
-        Assert.AreEqual(5, duplicateDocument.EndPageNumber, "The EndPageNumber should be updated correctly");
-    }
-
-    /// <summary>
-    /// Tests if the start plus button correctly increases the start page number
-    /// </summary>
-    [Test]
-    public void TestStartPlusButton()
-    {
-        var duplicateDocument = this.SetupDuplicateDocument();
-        duplicateDocument.StartPageNumber = 1;
-        duplicateDocument.EndPageNumber = 5;
-
-        duplicateDocument.ClickOnStartPlusButton();
-
-        Assert.AreEqual(2, duplicateDocument.StartPageNumber, "Start page number should increase by 1");
-    }
-
-    /// <summary>
-    /// Tests if the start minus button correctly decreases the start page number
-    /// </summary>
-    [Test]
-    public void TestStartMinusButton()
-    {
-        var duplicateDocument = this.SetupDuplicateDocument();
-        duplicateDocument.StartPageNumber = 3;
-        duplicateDocument.EndPageNumber = 5;
-
-        duplicateDocument.ClickOnStartMinButton();
-
-        Assert.AreEqual(2, duplicateDocument.StartPageNumber, "Start page number should decrease by 1");
-    }
-
-    /// <summary>
-    /// Tests if the end plus button correctly increases the end page number
-    /// </summary>
-    [Test]
-    public void TestEndPlusButton()
-    {
-        var duplicateDocument = this.SetupDuplicateDocument();
-        duplicateDocument.StartPageNumber = 1;
-        duplicateDocument.EndPageNumber = 3;
-        duplicateDocument.MaxPage = 5;
-
-        duplicateDocument.ClickOnEndPlusButton();
-
-        Assert.AreEqual(4, duplicateDocument.EndPageNumber, "End page number should increase by 1");
-    }
-
-    /// <summary>
-    /// Tests if the end minus button correctly decreases the end page number
-    /// </summary>
-    [Test]
-    public void TestEndMinusButton()
-    {
-        var duplicateDocument = this.SetupDuplicateDocument();
-        duplicateDocument.StartPageNumber = 1;
-        duplicateDocument.EndPageNumber = 3;
-
-        duplicateDocument.ClickOnEndMinButton();
-
-        Assert.AreEqual(2, duplicateDocument.EndPageNumber, "End page number should decrease by 1");
-    }
-
-    /// <summary>
-    /// Tests if the update label method correctly updates the label text
-    /// </summary>
-    [Test]
-    public void TestUpdateLabel()
-    {
-        var duplicateDocument = this.SetupDuplicateDocument();
-        duplicateDocument.StartPageNumberText = new GameObject().AddComponent<TextMeshPro>();
-        duplicateDocument.EndPageNumberText = new GameObject().AddComponent<TextMeshPro>();
-
-        duplicateDocument.StartPageNumber = 2;
-        duplicateDocument.EndPageNumber = 5;
-
-        duplicateDocument.UpdateLabel();
-
-        Assert.AreEqual("2", duplicateDocument.StartPageNumberText.text, "Start page number label text should be updated correctly");
-        Assert.AreEqual("5", duplicateDocument.EndPageNumberText.text, "End page number label text should be updated correctly");
     }
 
     /// <summary>
@@ -343,11 +191,12 @@ public class DuplicateDocumentTest : MonoBehaviour
     /// </summary>
     private DuplicateDocument SetupDuplicateDocument()
     {
-        var duplicateDocument = new GameObject("DuplicateDocument").AddComponent<DuplicateDocument>();
+        var duplicateDocument = new GameObject("DuplicateDocument2").AddComponent<DuplicateDocument>();
+        var menuController = new GameObject("MenuController").AddComponent<MenuController>();
         duplicateDocument.pdfCanvasPrefab = this.originalPdfCanvas;
-        duplicateDocument.menu = this.menu;
-        duplicateDocument.subPanel = this.subPanel;
-        duplicateDocument.duplicateMenu = this.duplicateMenu;
+        duplicateDocument.MenuController = menuController;
+        menuController.Menu = this.menu;
+        menuController.subsectionMenu = this.subPanel;
         return duplicateDocument;
     }
 }

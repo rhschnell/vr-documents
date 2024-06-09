@@ -128,7 +128,7 @@ public class BackendPDFTest
         // Assert that the sprites list is not empty
         Assert.IsNotEmpty(floatingDocumentComponent.sprites);
 
-        // Assert that the sprites list has the correct number of sprites
+        // Optionally, assert other conditions, such as the correct number of sprites
         Assert.AreEqual(1, floatingDocumentComponent.sprites.Count);
 
         // Cleanup
