@@ -5785,7 +5785,7 @@ MonoBehaviour:
   characterTransform: {fileID: 198722505}
   image: {fileID: 0}
   dropdown: {fileID: 1293429607}
-  pdfPrefab: {fileID: 9011475466499275803, guid: bb11c74c3b51bbd468286a708f862495, type: 3}
+  pdfPrefab: {fileID: 9011475466499275803, guid: bfb4ffd4a1b614844af24167238f735d, type: 3}
   pdfConverter: {fileID: 123434356}
 --- !u!114 &2041929406
 MonoBehaviour:
@@ -6102,4 +6102,5 @@ SceneRoots:
   - {fileID: 636223293}
   - {fileID: 583720470}
   - {fileID: 902448528}
+  - {fileID: 123434357}
   - {fileID: 123434357}
