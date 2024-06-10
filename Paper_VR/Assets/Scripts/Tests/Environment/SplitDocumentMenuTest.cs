@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using GameObject = UnityEngine.GameObject;
@@ -251,18 +252,21 @@ public class SplitDocumentMenuTest
     [Test]
     public void OnClickSplitIndividualPageTest()
     {
-        var splitDocumentMenu = new GameObject("SplitMenu").AddComponent<SplitDocumentMenu>();
-        splitDocumentMenu.PdfPrefab = this.originalPdfCanvas;
+        var splitDocumentMenu = new GameObject("SplitMenu").AddComponent<MenuController>();
+        splitDocumentMenu.pdfPrefab = this.originalPdfCanvas;
         splitDocumentMenu.Menu = this.manipulationMenu;
-        splitDocumentMenu.SplitMenu = this.subsectionMenu;
+        splitDocumentMenu.subsectionMenu = this.subsectionMenu;
         splitDocumentMenu.StartPageNumberText = this.startPageNumber;
         splitDocumentMenu.EndPageNumberText = this.endPageNumber;
         splitDocumentMenu.EndPageNumber = 4;
         splitDocumentMenu.StartPageNumber = 2;
 
         var initialDocumentCount = envInfo.GetFloatingDocuments().Count;
+        var splitDocument = new GameObject("SplitDocument").AddComponent<SplitDocument>();
+        splitDocument.menuController = splitDocumentMenu;
+        splitDocument.pdfPrefab = this.originalPdfCanvas;
 
-        splitDocumentMenu.OnClickSplitIndividualPage();
+        splitDocument.OnClickSplitIndividualPage();
 
         // Check that the split and manipulation menus are deactivated
         Assert.IsFalse(this.subsectionMenu.activeSelf);

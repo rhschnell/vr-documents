@@ -257,7 +257,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1367570239829807272}
         m_TargetAssemblyTypeName: DeleteDocument, OurCode
-        m_MethodName: 
+        m_MethodName: OnClickDeleteDocument
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
