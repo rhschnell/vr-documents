@@ -31,23 +31,23 @@ public class DuplicateDocument : MonoBehaviour
     {
         if (this.pdfCanvasPrefab != null)
         {
+            // Toggle the visibility of the menu and the subPanel
+            this.MenuController.Menu.SetActive(false);
+            this.MenuController.subsectionMenu.SetActive(false);
+
             // Calculate the position of the new pdf
             Transform transform = this.pdfCanvasPrefab.transform;
             Vector3 newPos = transform.position + (transform.right * 1.0f);
 
             // Instantiate a new PDFCanvas in the scene
             GameObject newPdf = Instantiate(this.pdfCanvasPrefab, newPos, transform.rotation);
-            FloatingDocument script = newPdf.GetComponent<FloatingDocument>();
+            FloatingDocument newFloatingDocument = newPdf.GetComponent<FloatingDocument>();
 
             GameObject gameManager = GameObject.Find("GameManager");
 
             // Adds the new duplicated pdf to the environment information
             EnvironmentInformation environment = gameManager.GetComponent<EnvironmentInformation>();
-            environment.GetFloatingDocuments().Add(script);
-
-            // Toggle the visibility of the menu and the subPanel
-            this.MenuController.Menu.SetActive(false);
-            this.MenuController.subsectionMenu.SetActive(false);
+            environment.GetFloatingDocuments().Add(newFloatingDocument);
         }
         else
         {
@@ -62,6 +62,10 @@ public class DuplicateDocument : MonoBehaviour
     {
         if (this.pdfCanvasPrefab != null)
         {
+            // Toggle the visibility of the menu and the subPanel
+            this.MenuController.Menu.SetActive(false);
+            this.MenuController.subsectionMenu.SetActive(false);
+
             FloatingDocument floatingDocument = this.pdfCanvasPrefab.GetComponent<FloatingDocument>();
 
             Sprite currentPageSprite = floatingDocument.sprites[floatingDocument.currentPageIndex];
@@ -102,6 +106,10 @@ public class DuplicateDocument : MonoBehaviour
 
             if (startIndex >= 0 && endIndex < floatingDocument.sprites.Count && startIndex <= endIndex)
             {
+                // Toggle the visibility of the menu and the subPanel
+                this.MenuController.Menu.SetActive(false);
+                this.MenuController.subsectionMenu.SetActive(false);
+
                 List<Sprite> subsectionSprites = new List<Sprite>();
 
                 for (int i = startIndex; i <= endIndex; i++)
