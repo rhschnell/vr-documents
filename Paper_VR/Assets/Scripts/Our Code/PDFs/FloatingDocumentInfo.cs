@@ -67,6 +67,11 @@ public class FloatingDocumentInfo
     /// <param name="doc">The floating document</param>
     public FloatingDocumentInfo(FloatingDocument doc)
     {
+        if (doc == null)
+        {
+            return;
+        }
+
         // set the attributes of the pdf
         this.position = doc.transform.position;
         this.rotation = doc.transform.rotation;

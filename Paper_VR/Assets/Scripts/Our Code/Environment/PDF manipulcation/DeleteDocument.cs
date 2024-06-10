@@ -52,4 +52,18 @@ public class DeleteDocument : MonoBehaviour
             var newPage = deletePDF.DeleteDocument(currentPage, currentPage);
         }
     }
+
+    /// <summary>
+    /// Deletes the floating document from the environment
+    /// </summary>
+    public void OnClickDeleteDocument()
+    {
+        var floatingDocument = this.pdfPrefab.GetComponent<FloatingDocument>();
+        GameObject gamemanager = GameObject.Find("GameManager");
+        EnvironmentInformation environment = gamemanager.GetComponent<EnvironmentInformation>();
+        environment.GetFloatingDocuments().Remove(floatingDocument);
+
+        Destroy(this.pdfPrefab);
+        this.pdfPrefab = null;
+    }
 }

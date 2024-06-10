@@ -1,9 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Xml.Schema;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using UnityGoogleDrive;
 using UnityGoogleDrive.Data;
 
@@ -146,6 +145,23 @@ public class ImportList : MonoBehaviour
             // If the file is null, throw an error
             Debug.LogError("File is null");
         }
+    }
+
+    /// <summary>
+    /// Return to the Environment Menu
+    /// </summary>
+    public void OnClickReturn()
+    {
+        // Find all GameObjects in the scene
+        GameObject[] allObjects = FindObjectsOfType<GameObject>();
+
+        // Iterate through all GameObjects and destroy them
+        foreach (GameObject obj in allObjects)
+        {
+            Destroy(obj);
+        }
+
+        SceneManager.LoadSceneAsync("EnviromentMenu");
     }
 
     // Start is called before the first frame update
