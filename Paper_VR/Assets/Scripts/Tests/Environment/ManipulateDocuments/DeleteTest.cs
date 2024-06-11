@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
@@ -27,6 +28,16 @@ public class DeleteTest
 
         FloatingDocument floatingDocument = pdfCanvasPrefab.AddComponent<FloatingDocument>();
         floatingDocument.pages = new List<int> { 1, 2, 3, 4, 5 };
+        string name = "test";
+        string id = "123";
+        floatingDocument.exportPages = new List<Tuple<string, string, int>>
+        {
+            new Tuple<string, string, int>(name, id, 1),
+            new Tuple<string, string, int>(name, id, 2),
+            new Tuple<string, string, int>(name, id, 3),
+            new Tuple<string, string, int>(name, id, 4),
+            new Tuple<string, string, int>(name, id, 5),
+        };
         floatingDocument.sprites = new List<Sprite> {
             Sprite.Create(null, default(Rect), new Vector2(1, 2)),
             Sprite.Create(null, default(Rect), new Vector2(1, 2)),
@@ -53,10 +64,10 @@ public class DeleteTest
         Assert.AreEqual(false, menu.activeSelf);
         Assert.AreEqual(false, subsectionMenu.activeSelf);
 
-        Object.Destroy(go);
-        Object.Destroy(menu);
-        Object.Destroy(subsectionMenu);
-        Object.Destroy(pdfCanvasPrefab);
+        UnityEngine.Object.Destroy(go);
+        UnityEngine.Object.Destroy(menu);
+        UnityEngine.Object.Destroy(subsectionMenu);
+        UnityEngine.Object.Destroy(pdfCanvasPrefab);
     }
 
     /// <summary>
@@ -77,6 +88,16 @@ public class DeleteTest
 
         FloatingDocument floatingDocument = pdfCanvasPrefab.AddComponent<FloatingDocument>();
         floatingDocument.pages = new List<int> { 1, 2, 3, 4, 5 };
+        string name = "test";
+        string id = "123";
+        floatingDocument.exportPages = new List<Tuple<string, string, int>>
+        {
+            new Tuple<string, string, int>(name, id, 1),
+            new Tuple<string, string, int>(name, id, 2),
+            new Tuple<string, string, int>(name, id, 3),
+            new Tuple<string, string, int>(name, id, 4),
+            new Tuple<string, string, int>(name, id, 5),
+        };
         floatingDocument.sprites = new List<Sprite> {
             Sprite.Create(null, default(Rect), new Vector2(1, 2)),
             Sprite.Create(null, default(Rect), new Vector2(1, 2)),
@@ -103,10 +124,10 @@ public class DeleteTest
         Assert.AreEqual(false, menu.activeSelf);
         Assert.AreEqual(false, subsectionMenu.activeSelf);
 
-        Object.Destroy(go);
-        Object.Destroy(menu);
-        Object.Destroy(subsectionMenu);
-        Object.Destroy(pdfCanvasPrefab);
+        UnityEngine.Object.Destroy(go);
+        UnityEngine.Object.Destroy(menu);
+        UnityEngine.Object.Destroy(subsectionMenu);
+        UnityEngine.Object.Destroy(pdfCanvasPrefab);
     }
 
     /// <summary>
@@ -152,11 +173,11 @@ public class DeleteTest
 
         Assert.Null(deleteDocument.pdfPrefab);
 
-        Object.Destroy(gameManager);
-        Object.Destroy(environment);
-        Object.Destroy(go);
-        Object.Destroy(menu);
-        Object.Destroy(subsectionMenu);
-        Object.Destroy(pdfCanvasPrefab);
+        UnityEngine.Object.Destroy(gameManager);
+        UnityEngine.Object.Destroy(environment);
+        UnityEngine.Object.Destroy(go);
+        UnityEngine.Object.Destroy(menu);
+        UnityEngine.Object.Destroy(subsectionMenu);
+        UnityEngine.Object.Destroy(pdfCanvasPrefab);
     }
 }

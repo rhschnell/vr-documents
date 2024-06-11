@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -78,6 +79,7 @@ public class DuplicateDocument : MonoBehaviour
 
             newFloatingDocument.pdfId = floatingDocument.pdfId;
             newFloatingDocument.pages = new List<int> { floatingDocument.pages[floatingDocument.currentPageIndex] };
+            newFloatingDocument.exportPages = new List<Tuple<string, string, int>> { floatingDocument.exportPages[floatingDocument.currentPageIndex] };
             newFloatingDocument.currentPageIndex = 0;
             newFloatingDocument.sprites = new List<Sprite> { currentPageSprite };
 
@@ -111,10 +113,12 @@ public class DuplicateDocument : MonoBehaviour
                 this.MenuController.subsectionMenu.SetActive(false);
 
                 List<Sprite> subsectionSprites = new List<Sprite>();
+                List<Tuple<string, string, int>> exportPages = new List<Tuple<string, string, int>>();
 
                 for (int i = startIndex; i <= endIndex; i++)
                 {
                     subsectionSprites.Add(floatingDocument.sprites[i]);
+                    exportPages.Add(floatingDocument.exportPages[i]);
                 }
 
                 Transform transform = this.pdfCanvasPrefab.transform;
@@ -132,6 +136,7 @@ public class DuplicateDocument : MonoBehaviour
 
                 newFloatingDocument.currentPageIndex = 0;
                 newFloatingDocument.sprites = subsectionSprites;
+                newFloatingDocument.exportPages = exportPages;
                 newFloatingDocument.SetSprite();
 
                 GameObject gameManager = GameObject.Find("GameManager");

@@ -57,7 +57,8 @@ public class EnvironmentInformation : MonoBehaviour
                 f.scale,
                 f.pdfId,
                 f.pdfName,
-                f.pages);
+                f.pages,
+                f.exportPages);
             this.floatingDocuments.Add(floatDoc);
         }
 

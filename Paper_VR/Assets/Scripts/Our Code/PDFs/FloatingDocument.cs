@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,11 @@ public class FloatingDocument : MonoBehaviour
     /// The input reference of the up action.
     /// </summary>
     public InputActionReference inputActionReference;
+
+    /// <summary>
+    /// The merge button that is used to merge the floating document with another floating document.
+    /// </summary>
+    public GameObject mergeButton;
 
     /// <summary>
     /// The position of the floating document in the scene.
@@ -62,6 +68,11 @@ public class FloatingDocument : MonoBehaviour
     public List<int> pages;
 
     /// <summary>
+    /// A list containing the pages that need to be exported in the format of (pdfName, pdfId, pageNumber).
+    /// </summary>
+    public List<Tuple<string, string, int>> exportPages;
+
+    /// <summary>
     /// The current page of the PDF file.
     /// </summary>
     public int currentPageIndex;
@@ -83,13 +94,15 @@ public class FloatingDocument : MonoBehaviour
     /// <param name="pdfId">The ID of the pdf</param>
     /// <param name="pdfName">The name of the pdf</param>
     /// <param name="pages">The pages of the pdf</param>
+    /// <param name="exportPages">The pages that need to be exported</param>
     public void SetAttributes(
         Vector3 position,
         Quaternion rotation,
         Vector3 scale,
         string pdfId,
         string pdfName,
-        List<int> pages)
+        List<int> pages,
+        List<Tuple<string, string, int>> exportPages)
     {
         // set the attributes of the pdf
         this.position = position;
@@ -98,6 +111,7 @@ public class FloatingDocument : MonoBehaviour
         this.pdfId = pdfId;
         this.pdfName = pdfName;
         this.pages = pages;
+        this.exportPages = exportPages;
         if (pages.Count <= 0)
         {
             throw new System.ArgumentException("The number of pages must be greater than 0");

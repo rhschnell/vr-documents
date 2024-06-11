@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -28,6 +29,18 @@ public class SplitPDF
     /// <returns> the new floating document </returns>
     public FloatingDocument SplitDocument(int startPage, int endPage)
     {
+        List<Tuple<string, string, int>> exportPages = new List<Tuple<string, string, int>>();
+        for (int i = endPage - 1; i >= startPage - 1; i--)
+        {
+            var page = this.floatingDocument.exportPages[i];
+            exportPages.Add(page);
+            this.floatingDocument.exportPages.Remove(page);
+        }
+
+        exportPages.Reverse();
+        this.newFloatingDocument.exportPages = exportPages;
+
+
         this.newFloatingDocument.pages = new List<int>();
         this.newFloatingDocument.sprites = new List<Sprite>();
         var pageIndex = 0;
