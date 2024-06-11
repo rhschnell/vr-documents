@@ -48,7 +48,8 @@ public class LoadEnvironmentInformation : MonoBehaviour
                 oldDoc.scale,
                 oldDoc.pdfId,
                 oldDoc.pdfName,
-                oldDoc.pages);
+                oldDoc.pages,
+                oldDoc.exportPages);
 
             // Replace the old floating document with the new one
             environmentInformation.GetFloatingDocuments()[i] = doc;

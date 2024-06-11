@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -36,6 +37,11 @@ public class FloatingDocumentInfo
     /// an array of the pages of the PDF file.
     /// </summary>
     public List<int> pages;
+
+    /// <summary>
+    /// A list containing the pages that need to be exported in the format of (pdfName, pdfId, pageNumber).
+    /// </summary>
+    public List<Tuple<string, string, int>> exportPages;
 
     /// <summary>
     /// The current page of the PDF file.
@@ -79,6 +85,7 @@ public class FloatingDocumentInfo
         this.pdfId = doc.pdfId;
         this.pdfName = doc.pdfName;
         this.pages = doc.pages;
+        this.exportPages = doc.exportPages;
         this.currentPage = doc.currentPageIndex;
     }
 }

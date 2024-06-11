@@ -27,6 +27,13 @@
         /// <returns> the new floating document </returns>
         public FloatingDocument DeleteDocument(int startPage, int endPage)
         {
+
+            for (int i = endPage - 1; i >= startPage - 1; i--)
+            {
+                var page = this.floatingDocument.exportPages[i];
+                this.floatingDocument.exportPages.Remove(page);
+            }
+
             int removed = endPage - startPage + 1;
             int prevLength = this.floatingDocument.pages.Count;
             this.floatingDocument.pages = new List<int>();

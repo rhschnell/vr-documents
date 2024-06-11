@@ -103,7 +103,8 @@ public class LoadEnvironmentInformationTest
             new Vector3(0.2f, 0.4f, 0.4f),
             "id",
             "name",
-            new List<int> { 0, 1, 2, 3 });
+            new List<int> { 0, 1, 2, 3 },
+            null);
         floatingDocuments.Add(fl1);
 
         environment.docPrefab = prefab;

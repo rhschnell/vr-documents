@@ -43,6 +43,17 @@ public class DuplicateDocumentTest : MonoBehaviour
         var floatingDocument = this.originalPdfCanvas.AddComponent<FloatingDocument>();
         floatingDocument.pdfId = "some/path/to/original.pdf";
         floatingDocument.pages = new List<int> { 0, 1, 2, 3, 4 };
+        string name = "test";
+        string id = "123";
+        floatingDocument.exportPages = new List<Tuple<string, string, int>>
+        {
+            new Tuple<string, string, int>(name, id, 1),
+            new Tuple<string, string, int>(name, id, 2),
+            new Tuple<string, string, int>(name, id, 3),
+            new Tuple<string, string, int>(name, id, 4),
+            new Tuple<string, string, int>(name, id, 5),
+        };
+
 
         Texture2D texture = new Texture2D(1, 1);
         floatingDocument.sprites = new List<Sprite>

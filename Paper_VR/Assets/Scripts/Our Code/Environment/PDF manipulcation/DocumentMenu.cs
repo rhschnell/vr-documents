@@ -14,17 +14,22 @@ public class DocumentMenu : MonoBehaviour
     public InputActionReference inputActionReference;
 
     /// <summary>
-    /// The menu
+    /// The menu.
     /// </summary>
     public GameObject menu;
 
     /// <summary>
-    /// The subsection menu
+    /// The subsection menu.
     /// </summary>
     public GameObject subsectionMenu;
 
     /// <summary>
-    /// The PDFCanvas
+    /// The merge menu.
+    /// </summary>
+    public GameObject mergeMenu;
+
+    /// <summary>
+    /// The PDFCanvas.
     /// </summary>
     public GameObject pdfCanvas;
 
@@ -60,6 +65,7 @@ public class DocumentMenu : MonoBehaviour
             this.menu.SetActive(!this.menu.activeSelf);
             if (!this.menu.activeSelf)
             {
+                this.mergeMenu.SetActive(false);
                 this.subsectionMenu.SetActive(false);
             }
         }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -106,14 +107,17 @@ public class BackendPDF : MonoBehaviour
 
         // Set the list of pages in the floating document
         List<int> pages = new List<int>();
+        List<Tuple<string, string, int>> exportPages = new List<Tuple<string, string, int>>();
         int count = 0;
         foreach (Sprite sprite in sprites)
         {
             pages.Add(count);
+            exportPages.Add(new Tuple<string, string, int>(floatingDocument.pdfName, floatingDocument.pdfId, count));
             count++;
         }
 
         floatingDocument.pages = pages;
+        floatingDocument.exportPages = exportPages;
 
         Debug.Log(floatingDocument.scale.x);
         // Set the width and height of the floating document to match the size of the pdf

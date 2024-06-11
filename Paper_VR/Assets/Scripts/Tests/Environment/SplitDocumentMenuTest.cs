@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using TMPro;
 using UnityEditor;
@@ -40,6 +41,17 @@ public class SplitDocumentMenuTest
         floatingDocument.pdfId = "some/path/to/original.pdf";
         floatingDocument.pages = new List<int> { 0, 1, 2, 3, 4 };
 
+        string name = "test";
+        string id = "123";
+        floatingDocument.exportPages = new List<Tuple<string, string, int>>
+        {
+            new Tuple<string, string, int>(name, id, 0),
+            new Tuple<string, string, int>(name, id, 1),
+            new Tuple<string, string, int>(name, id, 2),
+            new Tuple<string, string, int>(name, id, 3),
+            new Tuple<string, string, int>(name, id, 4),
+        };
+
         Texture2D texture = new Texture2D(1, 1);
         floatingDocument.sprites = new List<Sprite>
         {
@@ -49,7 +61,7 @@ public class SplitDocumentMenuTest
             Sprite.Create(texture, new Rect(0, 0, 1, 1), Vector2.zero),
             Sprite.Create(texture, new Rect(0, 0, 1, 1), Vector2.zero),
         };
-        floatingDocument.image = originalPdfCanvas.AddComponent<Image>();
+        floatingDocument.image = this.originalPdfCanvas.AddComponent<Image>();
         floatingDocument.currentPageIndex = 2;
 
         this.gameManager = new GameObject("GameManager");
@@ -220,7 +232,7 @@ public class SplitDocumentMenuTest
         splitDocumentMenu.EndPageNumber = 3;
         splitDocumentMenu.StartPageNumber = 2;
 
-        var initialDocumentCount = envInfo.GetFloatingDocuments().Count;
+        var initialDocumentCount = this.envInfo.GetFloatingDocuments().Count;
 
         var splitDoc = new GameObject("asd").AddComponent<SplitDocument>();
         splitDoc.menuController = splitDocumentMenu;
@@ -232,7 +244,7 @@ public class SplitDocumentMenuTest
         Assert.IsFalse(this.subsectionMenu.activeSelf);
         Assert.IsFalse(this.manipulationMenu.activeSelf);
 
-        var newDocument = envInfo.GetFloatingDocuments()[initialDocumentCount - 1];
+        var newDocument = this.envInfo.GetFloatingDocuments()[initialDocumentCount - 1];
         Assert.IsNotNull(newDocument);
         Assert.AreNotSame(this.originalPdfCanvas, newDocument);
 
@@ -241,7 +253,7 @@ public class SplitDocumentMenuTest
         Assert.AreEqual(0, newDocument.pages[0]);
 
         // Check that the original document has the remaining pages
-        var originalDocument = envInfo.GetFloatingDocuments()[0];
+        var originalDocument = this.envInfo.GetFloatingDocuments()[0];
         Assert.AreEqual(3, originalDocument.pages.Count);
         Assert.AreEqual(1, originalDocument.pages[1]);
     }
@@ -261,7 +273,7 @@ public class SplitDocumentMenuTest
         splitDocumentMenu.EndPageNumber = 4;
         splitDocumentMenu.StartPageNumber = 2;
 
-        var initialDocumentCount = envInfo.GetFloatingDocuments().Count;
+        var initialDocumentCount = this.envInfo.GetFloatingDocuments().Count;
         var splitDocument = new GameObject("SplitDocument").AddComponent<SplitDocument>();
         splitDocument.menuController = splitDocumentMenu;
         splitDocument.pdfPrefab = this.originalPdfCanvas;
@@ -272,7 +284,7 @@ public class SplitDocumentMenuTest
         Assert.IsFalse(this.subsectionMenu.activeSelf);
         Assert.IsFalse(this.manipulationMenu.activeSelf);
 
-        var newDocument = envInfo.GetFloatingDocuments()[initialDocumentCount - 1];
+        var newDocument = this.envInfo.GetFloatingDocuments()[initialDocumentCount - 1];
         Assert.IsNotNull(newDocument);
         Assert.AreNotSame(this.originalPdfCanvas, newDocument);
 
@@ -280,7 +292,7 @@ public class SplitDocumentMenuTest
         Assert.AreEqual(0, newDocument.pages[0]);
 
         // Check that the original document has the remaining pages
-        var originalDocument = envInfo.GetFloatingDocuments()[0];
+        var originalDocument = this.envInfo.GetFloatingDocuments()[0];
         Assert.AreEqual(4, originalDocument.pages.Count);
         Assert.AreEqual(0, originalDocument.pages[0]);
         Assert.AreEqual(1, originalDocument.pages[1]);
