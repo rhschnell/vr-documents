@@ -171,9 +171,9 @@ public class FloatingDocument : MonoBehaviour
     /// </summary>
     public void SetValues()
     {
-        this.image.sprite = this.sprites[this.currentPageIndex];
-        RectTransform rt = this.GetComponent<RectTransform>();
-        Vector2 dimensions = this.CalculateWidthAndHeight(rt.rect.width, rt.rect.height);
+        Sprite currentSprite = this.sprites[this.currentPageIndex];
+        this.image.sprite = currentSprite;
+        Vector2 dimensions = this.CalculateWidthAndHeight(currentSprite.rect.width, currentSprite.rect.height);
         this.transform.localScale = new Vector3(dimensions.x, dimensions.y, this.transform.localScale.z);
     }
 
