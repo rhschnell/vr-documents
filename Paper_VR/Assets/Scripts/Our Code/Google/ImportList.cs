@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -95,19 +96,6 @@ public class ImportList : MonoBehaviour
     }
 
     /// <summary>
-    /// Convert a pdf and set the image to the first page sprite.
-    /// </summary>
-    /// <param name="file">The file containing the conten of the pdf.</param>
-    /// <param name="name">The name of the pdf.</param>
-    //public void ConvertPdf(UnityGoogleDrive.Data.File file, string name)
-    //{
-     //   // Find the file
-     //   string name = this.PDFs[this.dropdown.value].Name;
-     //   GoogleDriveFiles.DownloadRequest req = new GoogleDriveFiles.DownloadRequest(this.PDFs[this.dropdown.value].Id);
-     //   req.Send().OnDone += (UnityGoogleDrive.Data.File file) => this.StartCoroutine(this.ImportPDF(file, name));
-    //}
-
-    /// <summary>
     /// Imports the pdf.
     /// </summary>
     /// <param name="file">The file we want to import.</param>
@@ -127,10 +115,10 @@ public class ImportList : MonoBehaviour
             FloatingDocument script = pdf.GetComponent<FloatingDocument>();
             script.pdfName = name;
             script.pdfId = file.Id;
+            script.exportPages = new List<Tuple<string, string, int>>();
 
             // Find the game object called GameManeger
             GameObject gameManager = GameObject.Find("GameManager");
-
 
             // Get the GameManager component with the environment script
             EnvironmentInformation environment = gameManager.GetComponent<EnvironmentInformation>();
@@ -138,7 +126,7 @@ public class ImportList : MonoBehaviour
             environment.GetFloatingDocuments().Add(script);
 
             // Convert the pdf to sprites and set the first page of the floating document to the first sprite
-            yield return this.pdfConverter.AddImagesToFloatingDocument(file, script);
+            yield return this.pdfConverter.AddImagesToFloatingDocument(file.Content, script);
         }
         else
         {

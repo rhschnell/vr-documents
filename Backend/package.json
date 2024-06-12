@@ -4,15 +4,20 @@
     "description": "This is a simple API that performs operations on PDF files: Like splitting, merging, and converting PDF files to images.",
     "main": "server.js",
     "scripts": {
-        "test": "mocha"
+        "start": "node server.js",
+        "test": "mocha --timeout 4000"
     },
+    "keywords": [
+        "pdf"
+    ],
+    "author": "Tycho",
+    "license": "UNLICENSED",
     "dependencies": {
         "cors": "^2.8.5",
         "dotenv": "^16.4.5",
         "express": "^4.19.2",
         "pdf-lib": "^1.17.1",
-        "pdf-parse": "^1.1.1",
-        "pdf-poppler": "^0.2.1"
+        "node-poppler": "^7.2.0"
     },
     "devDependencies": {
         "chai": "^4.4.1",

@@ -9,7 +9,7 @@ chai.use(chaiHttp);
 
 // Test the image conversion endpoint
 describe('PDF to Image Conversion', () => {
-  const pdfPath = path.join(__dirname, 'test.pdf'); // Ensure you have a test.pdf file in your test directory
+  const pdfPath = path.join(__dirname, 'test.pdf');
 
   it('should allow requests from allowed origins and convert PDF to image', (done) => {
     const pdfBuffer = fs.readFileSync(pdfPath);
@@ -22,7 +22,6 @@ describe('PDF to Image Conversion', () => {
       .end((err, res) => {
         expect(err).to.be.null;
         expect(res).to.have.status(200);
-        // Additional assertions can be made here regarding the response format
         done();
       });
   });
@@ -49,7 +48,7 @@ describe('PDF to Image Conversion', () => {
 
 // Test the extract pages endpoint
 describe('Extract Pages Endpoint', () => {
-  const pdfPath = path.join(__dirname, 'test.pdf'); // Ensure you have a test.pdf file in your test directory
+  const pdfPath = path.join(__dirname, 'test.pdf');
   const pdfBuffer = fs.readFileSync(pdfPath);
   const pagesToExtract = [1, 2]; // Example pages to extract
 
@@ -63,8 +62,6 @@ describe('Extract Pages Endpoint', () => {
       .end((err, res) => {
         expect(err).to.be.null;
         expect(res).to.have.status(200);
-        // Additional assertions can be made here regarding the response format
-        // For example, check if the response is a valid PDF buffer
         done();
       });
   });
@@ -96,3 +93,70 @@ describe('Extract Pages Endpoint', () => {
       });
   });
 });
+
+
+// Test the upload PDF endpoint
+describe('Upload PDF Endpoint', () => {
+  const pdfPath = path.join(__dirname, 'test.pdf'); 
+  const pdfBuffer = fs.readFileSync(pdfPath);
+  const pdfName = 'sample.pdf';
+
+  it('should upload a PDF and return the file path', (done) => {
+    chai.request(app)
+      .post('/upload-pdf')
+      .set('Content-Type', 'application/pdf')
+      .set('name', pdfName)
+      .send(pdfBuffer) // Send the PDF buffer as the request body
+      .end((err, res) => {
+        expect(err).to.be.null;
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.property('message', 'PDF uploaded successfully');
+        expect(res.body).to.have.property('filePath');
+        done();
+      });
+  });
+
+  it('should handle errors during PDF upload', (done) => {
+    // Simulate an error condition, e.g., by sending an invalid PDF buffer
+    const invalidPdfBuffer = null;
+    
+    chai.request(app)
+      .post('/upload-pdf')
+      .set('Content-Type', 'application/pdf')
+      .set('name', pdfName)
+      .send(invalidPdfBuffer) // Send an invalid PDF buffer as the request body
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body).to.have.property('message', 'No PDF data provided');
+        done();
+      });
+  });
+});
+
+// Test the merge PDFs endpoint
+describe('Merge PDFs Endpoint', () => {
+  const pdfPath1 = path.join(__dirname, 'test1.pdf'); 
+  const pdfPath2 = path.join(__dirname, 'test2.pdf'); 
+  const pdfBuffer1 = fs.readFileSync(pdfPath1);
+  const pdfBuffer2 = fs.readFileSync(pdfPath2);
+
+  it('should merge two PDFs and return the merged PDF', (done) => {
+    // Upload the PDFs first
+    Promise.all([
+      chai.request(app).post('/upload-pdf').set('Content-Type', 'application/pdf').set('name', 'test1.pdf').send(pdfBuffer1),
+      chai.request(app).post('/upload-pdf').set('Content-Type', 'application/pdf').set('name', 'test2.pdf').send(pdfBuffer2)
+    ]).then((uploadResponses) => {
+      // Perform the merge
+      chai.request(app)
+        .post('/merge-pdfs')
+        .set('file1', 'test1.pdf')
+        .set('file2', 'test2.pdf')
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.have.status(200);
+          done();
+        });
+    }).catch(done);
+  });
+});
+

@@ -63,7 +63,10 @@ public class MergeDocuements : MonoBehaviour
             var list = environmentInformation.GetFloatingDocuments();
             foreach (FloatingDocument t in list)
             {
+                // Set all the buttons to active
                 t.mergeButton.SetActive(true);
+
+                // If the floating document is the same as the current document, set the button to inactive
                 if (t == floatingDocument)
                 {
                     t.mergeButton.SetActive(false);
@@ -72,6 +75,13 @@ public class MergeDocuements : MonoBehaviour
         }
         else
         {
+            // Cancel
+            var list = this.GameManager.GetComponent<EnvironmentInformation>().GetFloatingDocuments();
+            foreach (FloatingDocument t in list)
+            {
+                t.mergeButton.SetActive(false);
+            }
+
             this.mergeMenu.SetActive(false);
         }
     }

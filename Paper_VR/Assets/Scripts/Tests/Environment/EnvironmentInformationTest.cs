@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -111,11 +112,13 @@ public class EnvironmentInformationTest
         floatingDocument1.pages = new List<int> { 1, 2, 3 };
         floatingDocument1.pdfId = "googledrive";
         floatingDocument1.pdfName = "examplename";
+        floatingDocument1.exportPages = new List<Tuple<string, string, int>> { new Tuple<string, string, int>("googledrive", "examplename", 1) };
 
         FloatingDocument floatingDocument2 = docPrefab.GetComponent<FloatingDocument>();
         floatingDocument2.pages = new List<int> { 4, 5, 6 };
         floatingDocument2.pdfId = "googledrive";
         floatingDocument2.pdfName = "examplename";
+        floatingDocument2.exportPages = new List<Tuple<string, string, int>> { new Tuple<string, string, int>("googledrive", "examplename", 1) };
 
         List<FloatingDocument> floatingDocuments = new ()
         {
@@ -171,11 +174,13 @@ public class EnvironmentInformationTest
         floatingDocument1.pages = new List<int> { 1, 2, 3 };
         floatingDocument1.pdfId = "googledrive";
         floatingDocument1.pdfName = "examplename";
+        floatingDocument1.exportPages = new List<Tuple<string, string, int>> { new Tuple<string, string, int>("googledrive", "examplename", 1) };
 
         FloatingDocument floatingDocument2 = docPrefab.GetComponent<FloatingDocument>();
         floatingDocument2.pages = new List<int> { 4, 5, 6 };
         floatingDocument2.pdfId = "googledrive";
         floatingDocument2.pdfName = "examplename";
+        floatingDocument2.exportPages = new List<Tuple<string, string, int>> { new Tuple<string, string, int>("googledrive", "examplename", 1) };
 
         List<FloatingDocument> floatingDocuments = new List<FloatingDocument>
         {

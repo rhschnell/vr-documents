@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.UI;
@@ -62,17 +63,24 @@ public class FloatingDocumentTests : MonoBehaviour
     {
         // Arrange
         List<int> pages = new List<int> { 1, 2, 3 };
+        List<int> pages2 = new List<int> { 1, 2, 3 };
+        List<Tuple<string, string, int>> exportPages =
+            new List<Tuple<string, string, int>> { new Tuple<string, string, int>("googledrive", "examplename", 1) };
+        List<Tuple<string, string, int>> exportPages2 =
+            new List<Tuple<string, string, int>> { new Tuple<string, string, int>("googledrive", "examplename", 1) };
         GameObject examplePrefab1 = new GameObject();
         FloatingDocument floatingDocument1 = examplePrefab1.AddComponent<FloatingDocument>();
         floatingDocument1.pages = pages;
         floatingDocument1.pdfId = "googledrive";
         floatingDocument1.pdfName = "examplename";
+        floatingDocument1.exportPages = exportPages;
 
         GameObject examplePrefab2 = new GameObject();
         FloatingDocument floatingDocument2 = examplePrefab2.AddComponent<FloatingDocument>();
-        floatingDocument2.pages = pages;
+        floatingDocument2.pages = pages2;
         floatingDocument2.pdfId = "googledrive";
         floatingDocument2.pdfName = "examplename";
+        floatingDocument2.exportPages = exportPages2;
 
         // Act
         bool result = floatingDocument1.Equals(floatingDocument2);

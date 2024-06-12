@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Moq;
@@ -46,8 +47,9 @@ public class ExportDocumentTest : MonoBehaviour
     /// <summary>
     /// A test that confirms that the document is exported.
     /// </summary>
-    [Test]
-    public void TestExportFloatingDocument()
+    /// <returns>IEnumerator</returns>
+    [UnityTest]
+    public IEnumerator TestExportFloatingDocument()
     {
         // Create the ExportDocument component and set its fields
         var exportDocument = new GameObject("ExportDocument").AddComponent<ExportDocument>();
@@ -62,17 +64,26 @@ public class ExportDocumentTest : MonoBehaviour
             2,
             3,
         };
+        List<Tuple<string, string, int>> exportPages = new List<Tuple<string, string, int>>()
+        {
+            new Tuple<string, string, int>("Test", "id", 1),
+            new Tuple<string, string, int>("Test", "id", 2),
+            new Tuple<string, string, int>("Test", "id", 3),
+        };
         exportDocument.floatingDocument.GetComponent<FloatingDocument>().pages = pages;
-        convertPDF.Setup(c => c.ExtractPDF(It.IsAny<string>(), It.IsAny<string>(), pages, It.IsAny<string>()));
+        exportDocument.floatingDocument.GetComponent<FloatingDocument>().pdfName = "Test";
+        exportDocument.floatingDocument.GetComponent<FloatingDocument>().pdfId = "id";
+        exportDocument.floatingDocument.GetComponent<FloatingDocument>().exportPages = exportPages;
+        convertPDF.Setup(c => c.ExtractPDF(It.IsAny<string>(), It.IsAny<string>(), pages));
 
         var initalFloatingDocument = this.originalPdfCanvas.GetComponent<FloatingDocument>();
         this.envInfo.GetFloatingDocuments().Add(initalFloatingDocument);
 
-        exportDocument.ExportPDF(convertPDF.Object);
+        yield return exportDocument.ExportPDF(convertPDF.Object);
 
         Assert.IsFalse(this.menu.activeSelf, "The menu should be hidden after export");
         // Verify that the ExtractPDF method was called
-        convertPDF.Verify(c => c.ExtractPDF(It.IsAny<string>(), It.IsAny<string>(), pages, It.IsAny<string>()));
+        convertPDF.Verify(c => c.ExtractPDF(It.IsAny<string>(), It.IsAny<string>(), pages));
     }
 
     /// <summary>
@@ -99,5 +110,44 @@ public class ExportDocumentTest : MonoBehaviour
 
         // Check if the error log was created
         LogAssert.NoUnexpectedReceived();
+    }
+
+    /// <summary>
+    /// This method tests the get PDF method.
+    /// of the pdf operations class.
+    /// </summary>
+    /// <returns>IEnumerator</returns>
+    [UnityTest]
+    public IEnumerator GetPDFTest()
+    {
+        // Create a list of pages
+        List<Tuple<string, string, int>> pages = new List<Tuple<string, string, int>>
+        {
+               new Tuple<string, string, int>("Test", "id", 1),
+               new Tuple<string, string, int>("Test", "id", 2),
+               new Tuple<string, string, int>("Test", "id", 3),
+
+               new Tuple<string, string, int>("Test2", "id2", 1),
+               new Tuple<string, string, int>("Test2", "id2", 2),
+               new Tuple<string, string, int>("Test2", "id2", 3),
+
+               new Tuple<string, string, int>("Test3", "id3", 1),
+               new Tuple<string, string, int>("Test3", "id3", 2),
+               new Tuple<string, string, int>("Test3", "id3", 3),
+        };
+
+        // Create a new Mock object for the BackendPDF component
+        Mock<BackendPDF> convertPDF = new Mock<BackendPDF>();
+        convertPDF.Object.extractedPDFcontent = new byte[4] { 1, 2, 3, 4 };
+        convertPDF.Object.mergedPDFcontent = new byte[8] { 1, 2, 3, 4, 1, 2, 3, 4 };
+        convertPDF.Setup(c => c.ExtractPDF(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<List<int>>()));
+        convertPDF.Setup(c => c.MergePDF(It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<string>(), It.IsAny<byte[]>()));
+
+        yield return PDFoperations.GetPDF(pages, convertPDF.Object);
+
+        convertPDF.Verify(c => c.ExtractPDF(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<List<int>>()));
+
+        // Check if the content is merged
+        Assert.AreEqual(8, PDFoperations.pdfContent.Length);
     }
 }
