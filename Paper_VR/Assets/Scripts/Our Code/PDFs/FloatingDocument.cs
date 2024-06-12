@@ -148,10 +148,19 @@ public class FloatingDocument : MonoBehaviour
 
         // check if the attributes of the pdf are the same
         FloatingDocument other = (FloatingDocument)obj;
+        if (other == this)
+        {
+            return true;
+        }
+
         return this.pdfId == other.pdfId &&
             this.pdfName == other.pdfName &&
             Enumerable.SequenceEqual(this.pages, other.pages) &&
-            this.currentPageIndex == other.currentPageIndex;
+            Enumerable.SequenceEqual(this.exportPages, other.exportPages) &&
+            this.currentPageIndex == other.currentPageIndex &&
+            this.gameObject.transform.position == other.gameObject.transform.position &&
+            this.gameObject.transform.rotation == other.gameObject.transform.rotation &&
+            this.gameObject.transform.localScale == other.gameObject.transform.localScale;
     }
 
     /// <summary>

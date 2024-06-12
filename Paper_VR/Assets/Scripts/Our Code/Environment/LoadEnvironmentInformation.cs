@@ -21,10 +21,11 @@ public class LoadEnvironmentInformation : MonoBehaviour
     /// <returns>The IEnumerator.</returns>
     public virtual IEnumerator AddImages(FloatingDocument pdf)
     {
-        // Download the file from the Google Drive
-        GoogleDriveFiles.DownloadRequest request = new GoogleDriveFiles.DownloadRequest(pdf.pdfId);
-        yield return request.Send();
-        yield return this.convertPDF.AddImagesToFloatingDocument(request.ResponseData, pdf);
+        // Retrieve the content of the PDF
+        yield return PDFoperations.GetPDF(pdf.exportPages, this.convertPDF);
+        byte[] content = PDFoperations.pdfContent;
+
+        yield return this.convertPDF.AddImagesToFloatingDocument(content, pdf);
     }
 
     /// <summary>

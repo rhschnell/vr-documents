@@ -76,6 +76,8 @@ public class MergeTest
     public void UpdateListActive()
     {
         Assert.IsTrue(this.mergeMenu.activeSelf);
+        var env = this.gameManager.AddComponent<EnvironmentInformation>();
+        env.SetFloatingDocuments(new List<FloatingDocument>());
         this.mergeDocuments.UpdateList();
         Assert.IsFalse(this.mergeMenu.activeSelf);
     }

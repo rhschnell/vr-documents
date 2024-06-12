@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Moq;
@@ -13,7 +14,6 @@ using UnityGoogleDrive.Data;
 /// </summary>
 public class BackendPDFTest
 {
-
     private GameObject gameManager;
     private EnvironmentInformation env;
 
@@ -36,7 +36,7 @@ public class BackendPDFTest
     public void Teardown()
     {
         // Destroy the GameManager object
-        Object.DestroyImmediate(this.gameManager);
+        UnityEngine.Object.DestroyImmediate(this.gameManager);
     }
 
     /// <summary>
@@ -60,7 +60,7 @@ public class BackendPDFTest
         // Set the convertPDF object as a mock object
         Mock<BackendPDF> convertPDF = new Mock<BackendPDF>();
         // When the AddImagesToFloatingDocument method is called, do nothing
-        convertPDF.Setup(a => a.AddImagesToFloatingDocument(file, It.IsAny<FloatingDocument>()));
+        convertPDF.Setup(a => a.AddImagesToFloatingDocument(file.Content, It.IsAny<FloatingDocument>()));
 
         importList.pdfConverter = convertPDF.Object;
 
@@ -68,14 +68,13 @@ public class BackendPDFTest
         yield return importList.ImportPDF(file, "Document1.pdf");
 
         // Verify that the ImportPDF method was called
-        convertPDF.Verify(a => a.AddImagesToFloatingDocument(file, It.IsAny<FloatingDocument>()));
-
+        convertPDF.Verify(a => a.AddImagesToFloatingDocument(file.Content, It.IsAny<FloatingDocument>()));
 
         // Assert that the floating document was created
         Assert.IsNotEmpty(this.env.GetFloatingDocuments());
 
         // Cleanup
-        Object.DestroyImmediate(gameObject);
+        UnityEngine.Object.DestroyImmediate(gameObject);
     }
 
     /// <summary>
@@ -91,14 +90,13 @@ public class BackendPDFTest
         importList.characterTransform = gameObject.transform;
         importList.pdfPrefab = new GameObject();
 
-
         // Assert that a Debug error is printed
         yield return importList.ImportPDF(null, "aoo");
 
         LogAssert.Expect(LogType.Error, "File is null");
 
         // Cleanup
-        Object.DestroyImmediate(gameObject);
+        UnityEngine.Object.DestroyImmediate(gameObject);
     }
 
     /// <summary>
@@ -114,6 +112,7 @@ public class BackendPDFTest
         FloatingDocument floatingDocumentComponent = floatingDocumentGameObject.AddComponent<FloatingDocument>();
         floatingDocumentComponent.image = floatingDocumentGameObject.AddComponent<Image>();
         floatingDocumentComponent.currentPageIndex = 0;
+        floatingDocumentComponent.exportPages = new List<Tuple<string, string, int>>();
 
         // Create a BackendPDF object
         GameObject convertPDFGameObject = new GameObject();
@@ -129,11 +128,11 @@ public class BackendPDFTest
         Assert.IsNotEmpty(floatingDocumentComponent.sprites);
 
         // Optionally, assert other conditions, such as the correct number of sprites
-        Assert.AreEqual(1, floatingDocumentComponent.sprites.Count);
+        Assert.AreEqual(2, floatingDocumentComponent.sprites.Count);
 
         // Cleanup
-        Object.DestroyImmediate(floatingDocumentGameObject);
-        Object.DestroyImmediate(convertPDFGameObject);
+        UnityEngine.Object.DestroyImmediate(floatingDocumentGameObject);
+        UnityEngine.Object.DestroyImmediate(convertPDFGameObject);
     }
 
     /// <summary>

@@ -1,4 +1,7 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 
 /// <summary>
@@ -24,7 +27,7 @@ public class ExportDocument : MonoBehaviour
         // Get the BackendPDF component and call the ExtractPDF method
         GameObject pdfConvert = GameObject.Find("PDFConvert");
         BackendPDF convertPDF = pdfConvert.GetComponent<BackendPDF>();
-        this.ExportPDF(convertPDF);
+        this.StartCoroutine(this.ExportPDF(convertPDF));
     }
 
     /// <summary>
@@ -32,18 +35,26 @@ public class ExportDocument : MonoBehaviour
     /// It does this by calling the ExtractPDF method from the BackendPDF component.
     /// </summary>
     /// <param name="convertPDF">The BackendPDF component that will extract the PDF file</param>
-    public void ExportPDF(BackendPDF convertPDF)
+    /// <returns>IEnumerator</returns>
+    public IEnumerator ExportPDF(BackendPDF convertPDF)
     {
         if (this.floatingDocument != null)
         {
-            // Get the id, name, and pages of the floating document
-            string id = this.floatingDocument.GetComponent<FloatingDocument>().pdfId;
-            string name = this.floatingDocument.GetComponent<FloatingDocument>().pdfName;
-            List<int> pages = this.floatingDocument.GetComponent<FloatingDocument>().pages;
-            convertPDF.ExtractPDF(id, name, pages, EnvironmentInformation.saveFolderId);
-
             // Unshow the menu of the original pdf
             this.menu.SetActive(false);
+
+            // Get the id, name, and pages of the floating document
+            string name = this.floatingDocument.GetComponent<FloatingDocument>().pdfName;
+            List<Tuple<string, string, int>> pages = this.floatingDocument.GetComponent<FloatingDocument>().exportPages;
+            // yield return convertPDF.ExtractPDF(id, name, pages);
+
+            // Get the pdf content
+            yield return PDFoperations.GetPDF(pages, convertPDF);
+
+            byte[] content = PDFoperations.pdfContent;
+
+            // Upload the PDF file to the google drive
+            yield return convertPDF.ExportPDFToDrive(EnvironmentInformation.saveFolderId, name, content, null, false);
         }
         else
         {

@@ -62,6 +62,13 @@ public class DocumentMenu : MonoBehaviour
     {
         if (this.hover)
         {
+            var gameManager = GameObject.Find("GameManager");
+            var list = gameManager.GetComponent<EnvironmentInformation>().GetFloatingDocuments();
+            foreach (FloatingDocument t in list)
+            {
+                t.mergeButton.SetActive(false);
+            }
+
             this.menu.SetActive(!this.menu.activeSelf);
             if (!this.menu.activeSelf)
             {

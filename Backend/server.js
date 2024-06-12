@@ -1,10 +1,11 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
-const pdf = require('pdf-poppler');
+const { Poppler } = require("node-poppler");
 const { PDFDocument } = require('pdf-lib');
 const { Readable } = require('stream');
 const cors = require('cors');
+var http = require('http');
 const app = express();
 
 
@@ -32,45 +33,135 @@ app.use(express.urlencoded({ extended: true }));
 // Middleware for handling raw PDF data
 app.use('/convert-pdf-to-image', express.raw({ type: 'application/pdf', limit: '5mb' }));
 app.use('/extract-pages', express.raw({ type: 'application/pdf', limit: '5mb' }));
+app.use('/upload-pdf', express.raw({ type: 'application/pdf', limit: '5mb' }));
 
-app.post('/convert-pdf-to-image', (req, res) => {
-  // Clear the 'temp' directory at the start
+
+// Endpoint that receives a PDF file and writes it to the uploads folder
+app.post('/upload-pdf', (req, res) => {
+  try {
+    console.log("upload-pdf")
+
+    // Retrieve the name of the file from the headers
+    const name = req.headers['name'];
+    console.log(name);
+    console.log(req.body);
+
+    // Ensure that the request contains actual PDF data
+    if (!req.body || !req.body.length) {
+      return res.status(400).send({ message: 'No PDF data provided' });
+    }
+
+
+    // Write the PDF file to the uploads folder
+    const filePath = path.join(__dirname, 'uploads', name);
+    fs.writeFileSync(filePath, req.body);
+
+    // Send a response to the client
+    res.status(200).send({ message: 'PDF uploaded successfully', filePath });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: 'Error uploading PDF' });
+  }
+});
+
+
+// Endpoint for merging two PDFs
+app.post('/merge-pdfs', async (req, res) => {
+  try {
+    // retrieve the names of the files
+    const file1 = req.headers['file1'];
+    const file2 = req.headers['file2'];
+    
+    // Read the PDF files from the uploads folder
+    const file1bytes = fs.readFileSync(path.join(__dirname, 'uploads', file1));
+    const file2bytes = fs.readFileSync(path.join(__dirname, 'uploads', file2));
+
+    // delete the files from the uploads folder
+    fs.unlinkSync(path.join(__dirname, 'uploads', file1));
+    fs.unlinkSync(path.join(__dirname, 'uploads', file2));
+
+    // Create new PDF documents
+    const [pdfDoc1, pdfDoc2] = await Promise.all([
+      PDFDocument.load(file1bytes),
+      PDFDocument.load(file2bytes)
+    ]);
+
+    console.log("made it");
+
+    // Create a new PDF document
+    const mergedPdfDoc = await PDFDocument.create();
+
+    // Copy pages from the first PDF to the new document
+    for (const pageNumber of pdfDoc1.getPageIndices()) {
+      const [copiedPage] = await mergedPdfDoc.copyPages(pdfDoc1, [pageNumber]);
+      mergedPdfDoc.addPage(copiedPage);
+    }
+
+    // // Copy pages from the second PDF to the new document
+    for (const pageNumber of pdfDoc2.getPageIndices()) {
+      const [copiedPage] = await mergedPdfDoc.copyPages(pdfDoc2, [pageNumber]);
+      mergedPdfDoc.addPage(copiedPage);
+    }
+
+    // Serialize the merged PDF document to bytes
+    const mergedPdfBytes = await mergedPdfDoc.save();
+
+    // Create a stream from the new PDF bytes
+    const pdfStream = new Readable();
+    pdfStream.push(mergedPdfBytes);
+    pdfStream.push(null); // Indicate the end of the stream
+    
+    res.contentType('application/pdf');
+    pdfStream.pipe(res); // Pipe the stream to the response
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: 'Error merging PDFs' });
+  }
+});
+
+// Endpoint for converting a PDF to images
+app.post('/convert-pdf-to-image', async (req, res) => {
+  console.log("convert-pdf-to-image");
   const tempDir = path.join(__dirname, 'temp');
-  fs.readdirSync(tempDir).forEach(file => {
-    fs.unlinkSync(path.join(tempDir, file));
-  });
 
   // Write the PDF to the 'temp' directory
-  const tempPdfPath = path.join(tempDir, `tempPdf-${Date.now()}.pdf`);
+  const currentDate = Date.now();
+  const tempPdfPath = path.join(tempDir, `tempPDF-${currentDate}.pdf`);
   fs.writeFileSync(tempPdfPath, req.body);
 
-  const outputDir = tempDir;
-  const outputPath = path.basename(tempPdfPath, path.extname(tempPdfPath));
-
-  let opts = {
-    format: 'jpeg',
-    out_dir: outputDir,
-    out_prefix: outputPath,
-    page: null, // Convert all pages
-    scale: 3000 // Resolution
+  // Set the options for the conversion
+  const poppler = new Poppler();
+  const options = {
+    pngFile: true,
+    resolutionXYAxis: 300,
   };
+  
+  const outputFile = path.join(tempDir, `tempPNG-${currentDate}.png`);
 
-  pdf.convert(tempPdfPath, opts)
-    .then(() => {
-      // Read all the image files that were created
-      const imageFiles = fs.readdirSync(outputDir).filter(file => file.startsWith(outputPath));
-      const imagesData = imageFiles.map(file => {
-        const imagePath = path.join(outputDir, file);
-        return fs.readFileSync(imagePath);
-      });
+  await poppler.pdfToCairo(tempPdfPath, outputFile, options);
 
-      // Send back an array of images
-      res.contentType('application/json');
-      res.send(JSON.stringify(imagesData.map((buffer) => buffer.toString('base64'))));
-    })
-    .catch(err => {
-      res.status(500).send(`Error converting PDF to image: ${err}`);
-    });
+  // Read all the image files that were created
+  const imageFiles = fs.readdirSync(tempDir).filter(file => file.startsWith(`tempPNG-${currentDate}`));
+  const imagesData = imageFiles.map(file => {
+    const imagePath = path.join(tempDir, file);
+    return fs.readFileSync(imagePath);
+  });
+
+  // Send back an array of images
+  res.contentType('application/json');
+  await res.send(JSON.stringify(imagesData.map((buffer) => buffer.toString('base64'))));
+
+  // Clear all the files in the temp directory with the current date
+  const files = fs.readdirSync(tempDir);
+  for (const file of files) {
+    if (
+      file.startsWith(`tempPDF-${currentDate}`) || 
+      file.startsWith(`tempPNG-${currentDate}`)
+    ) {
+      fs.unlinkSync(path.join(tempDir, file));
+    }
+  }
 });
 
 // Endpoint for extracting pages from a PDF
@@ -90,7 +181,7 @@ app.post('/extract-pages', async (req, res) => {
     const newPdfDoc = await PDFDocument.create();
     
     for (const pageNumber of pagesToExtract) {
-      const [copiedPage] = await newPdfDoc.copyPages(pdfDoc, [pageNumber - 1]);
+      const [copiedPage] = await newPdfDoc.copyPages(pdfDoc, [pageNumber]);
       newPdfDoc.addPage(copiedPage);
     }
     
@@ -109,8 +200,16 @@ app.post('/extract-pages', async (req, res) => {
   }
 });
 
+// get method
+app.get('/', (req, res) => {
+  res.send('Hello from App Engine!');
+});
+
+// Create an HTTP service.
+// http.createServer(app).listen(8080, "0.0.0.0");
+
 // Set up the server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

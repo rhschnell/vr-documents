@@ -40,7 +40,6 @@ public class SplitPDF
         exportPages.Reverse();
         this.newFloatingDocument.exportPages = exportPages;
 
-
         this.newFloatingDocument.pages = new List<int>();
         this.newFloatingDocument.sprites = new List<Sprite>();
         var pageIndex = 0;
