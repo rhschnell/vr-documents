@@ -25,7 +25,7 @@ public class ExportDocument : MonoBehaviour
     public void OnExportClick()
     {
         // Get the BackendPDF component and call the ExtractPDF method
-        GameObject pdfConvert = GameObject.Find("PDFConvert");
+        GameObject pdfConvert = GameObject.Find("PDFConversionManager");
         BackendPDF convertPDF = pdfConvert.GetComponent<BackendPDF>();
         this.StartCoroutine(this.ExportPDF(convertPDF));
     }

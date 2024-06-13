@@ -99,7 +99,7 @@ public class ExportDocumentTest : MonoBehaviour
         exportDocument.menu = this.menu;
 
         // Create a ExportPDF game object
-        GameObject pdfConvert = new GameObject("PDFConvert");
+        GameObject pdfConvert = new GameObject("PDFConversionManager");
         BackendPDF convertPDF = pdfConvert.AddComponent<BackendPDF>();
 
         yield return new WaitForSeconds(0.5f);
