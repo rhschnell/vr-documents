@@ -1,10 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityGoogleDrive;
 
 /// <summary>
@@ -22,11 +20,6 @@ public class EnvironmentInformation : MonoBehaviour
     /// This is the prefab for all the floating documents.
     /// </summary>
     public GameObject docPrefab;
-
-    /// <summary>
-    /// This is the path to the images.
-    /// </summary>
-    private static string imagePath = "Sprites";
 
     private string environmentName = "New Environment";
     private List<FloatingDocument> floatingDocuments = new List<FloatingDocument>();

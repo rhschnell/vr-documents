@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -32,6 +31,7 @@ public class SaveButton : MonoBehaviour
     /// </summary>
     public void OnApplicationQuit()
     {
+        // Save the environment
         this.Save();
     }
 
@@ -40,15 +40,21 @@ public class SaveButton : MonoBehaviour
     /// </summary>
     public void Start()
     {
+        // Cal lthe SaveEveryWhile method to enable autosave
         this.StartCoroutine(this.SaveEveryWhile());
     }
 
+    /// <summary>
+    /// Saves the environment every 45 seconds (autosave).
+    /// </summary>
+    /// <returns>The IEnumerator</returns>
     IEnumerator SaveEveryWhile()
     {
+        // Wait 45 seconds before saving the environment
         yield return new WaitForSeconds(this.savingTime);
         this.Save();
 
+        // Makes a call to itself
         this.StartCoroutine(this.SaveEveryWhile());
-        // NEW CODE
     }
 }

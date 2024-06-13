@@ -32,17 +32,17 @@ public class SelectEnvironment : MonoBehaviour
     public GameObject gameManager;
 
     /// <summary>
-    /// The name textbox
+    /// The name textbox.
     /// </summary>
     public TMP_Text Name;
 
     /// <summary>
-    /// The email textbox
+    /// The email textbox.
     /// </summary>
     public TMP_Text Email;
 
     /// <summary>
-    /// The delete textbox information
+    /// The delete textbox information.
     /// </summary>
     public TMP_Text DeleteText;
 
@@ -55,8 +55,6 @@ public class SelectEnvironment : MonoBehaviour
     /// The google methods.
     /// </summary>
     public GoogleMethods googleMethods = new GoogleMethods();
-    private GoogleDriveSettings GoogleDriveSettings;
-    private GoogleDriveRequest LoginRequest;
 
     /// <summary>
     /// Gets or sets The request list to get the list of folders.
@@ -95,25 +93,30 @@ public class SelectEnvironment : MonoBehaviour
     public void ChangeDeleteText()
     {
         string n = this.RequestList.ResponseData.Files[this.dropdown.value].Id;
+
+        // Prompt the user with a confirmation text to avoid unwanted deletions of environments
         this.DeleteText.text = "Are you sure you want to delete " + this.dropdown.options[this.dropdown.value].text + "?";
     }
 
     /// <summary>
-    /// Is called when the button is pressed, finding the correct ID and then creating the delete request
+    /// Is called when the button is pressed, finding the correct ID and then creating the delete request.
     /// </summary>
     public void DeleteEnvironmentButton()
     {
         string s = this.RequestList.ResponseData.Files[this.dropdown.value].Id;
+
+        // Creates the delete request
         this.CoroutineRunner.StartCoroutine(this.DeleteEnvironmenet(new GoogleDriveFiles.DeleteRequest(s)));
     }
 
     /// <summary>
-    /// Deletes the selected environment
+    /// Deletes the selected environment.
     /// </summary>
-    /// <param name="r">the request</param>
-    /// <returns>Needs to wait for request return</returns>
+    /// <param name="r">The request.</param>
+    /// <returns>Needs to wait for request return.</returns>
     public IEnumerator DeleteEnvironmenet(GoogleDriveFiles.DeleteRequest r)
     {
+        // Waits for the request to return, then deletes the environment
         yield return r.Send();
         this.CoroutineRunner.StartCoroutine(this.UpdateList(new GoogleDriveFiles.ListRequest()));
     }
@@ -125,8 +128,11 @@ public class SelectEnvironment : MonoBehaviour
     /// <returns>Returns the file.</returns>
     public virtual UnityGoogleDrive.Data.File Download(string id)
     {
+        // Create a new download request for the file with the given id
         GoogleDriveFiles.DownloadRequest req = new GoogleDriveFiles.DownloadRequest(id);
         UnityGoogleDrive.Data.File returnFile = null;
+
+        // Send the request and set the returnFile once the download is done
         req.Send().OnDone += (UnityGoogleDrive.Data.File file) => { returnFile = file; };
         return returnFile;
     }
@@ -134,9 +140,9 @@ public class SelectEnvironment : MonoBehaviour
     /// <summary>
     /// This method will get the environment information from the selected environment and load the scene.
     /// </summary>
-    /// <param name="id">The id of the folder</param>
-    /// <param name="envName">the name of the enviorment</param>
-    /// <returns>An IEnumerator</returns>
+    /// <param name="id">The id of the folder,</param>
+    /// <param name="envName">The name of the enviorment.</param>
+    /// <returns>An IEnumerator.</returns>
     public IEnumerator GetEnvironment(string id, string envName)
     {
         // Find the json file of the selected environment
@@ -172,19 +178,23 @@ public class SelectEnvironment : MonoBehaviour
     }
 
     /// <summary>
-    /// Calls a refresh on the list of folders and the name and email
+    /// Calls a refresh on the list of folders and the name and email.
     /// </summary>
     public void Refresh()
     {
+        // Initialize the request list if it is null
         if (this.RequestList == null)
         {
             this.RequestList = new GoogleDriveFiles.ListRequest();
         }
 
+        // Update the name and email text fields with the logged-in user's information
         this.Name.text = "Name: " + GoogleLogin.name;
         this.Email.text = "Email: " + GoogleLogin.email;
+
         if (!this.testing)
         {
+            // Start the coroutine to update the list of folders
             this.CoroutineRunner.StartCoroutine(this.UpdateList(new GoogleDriveFiles.ListRequest()));
 
             Debug.Log("List updated");
@@ -193,26 +203,30 @@ public class SelectEnvironment : MonoBehaviour
     }
 
     /// <summary>
-    /// finds all folders under the main folder and lists their names
+    /// Finds all folders under the main folder and lists their names.
     /// </summary>
-    /// <returns>Waits for the request to finish</returns>
-    /// <param name="r">The request to get the list of folders</param>
+    /// <returns>Waits for the request to finish.</returns>
+    /// <param name="r">The request to get the list of folders.</param>
     public IEnumerator UpdateList(GoogleDriveFiles.ListRequest r)
     {
+        // Specify the fields to retrieve and the query to filter folders
         r.Fields = new List<string> { "files(id, name)" };
         r.Q = $"'{GoogleLogin.folderID}' in parents and trashed = false and mimeType = 'application/vnd.google-apps.folder'";
         yield return r.Send();
 
+        // If the request is successful, process the retrieved folders
         if (!r.IsError)
         {
             this.savedFolderIds = new List<string>();
             List<string> environmentNames = new List<string>();
             foreach (var folder in r.ResponseData.Files)
             {
+                // Start coroutine to check if each folder contains saved documents
                 this.CoroutineRunner.StartCoroutine(this.HasSavedDocFolder(folder.Id, new GoogleDriveFiles.ListRequest()));
                 environmentNames.Add(folder.Name);
             }
 
+            // Clear the dropdown options and add the new folder names
             this.dropdown.ClearOptions();
             this.dropdown.AddOptions(environmentNames);
         }
@@ -223,16 +237,19 @@ public class SelectEnvironment : MonoBehaviour
     /// <summary>
     /// Checks if the Saved Documents folder exists in the selected folder, if not it will create it.
     /// </summary>
-    /// <param name="parentID">The id of the folder to check</param>
-    /// <param name="r">the new request, done for testing</param>
+    /// <param name="parentID">The id of the folder to check.</param>
+    /// <param name="r">the new request, done for testing.</param>
     /// <returns>so you can wait</returns>
     public virtual IEnumerator HasSavedDocFolder(string parentID, GoogleDriveFiles.ListRequest r)
     {
+        // Specify the fields to retrieve and the query to check for the saved documents folder
         r.Fields = new List<string> { "files(id, name)" };
         r.Q = $"'{parentID}' in parents and trashed = false and mimeType = 'application/vnd.google-apps.folder'";
         yield return r.Send();
+
         if (r.ResponseData.Files.Count == 0)
         {
+            // If the environment has no Saved Documents folder, create it
             this.CoroutineRunner.StartCoroutine(this.CreateSavedDocFolder(parentID));
         } else
         {
@@ -242,25 +259,35 @@ public class SelectEnvironment : MonoBehaviour
     }
 
     /// <summary>
-    /// Creates the Saved Documents folder in the selected folder
+    /// Creates the Saved Documents folder in the selected folder.
     /// </summary>
-    /// <param name="parentID">the folder to create it in</param>
-    /// <returns>so it can wait</returns>
+    /// <param name="parentID">The folder to create it in.</param>
+    /// <returns>An IEnumerator.</returns>
     public virtual IEnumerator CreateSavedDocFolder(string parentID)
     {
+        // Create a request to create the Saved Documents folder in the specified parent folder
         GoogleDriveFiles.CreateRequest r = this.MakeRequest(parentID);
         yield return r.Send();
+
+        // Add the created folders ID to the list of saved folder IDs
         this.savedFolderIds.Add(r.ResponseData.Id);
     }
 
     /// <summary>
-    /// Creates the request to create the Saved Documents folder
+    /// Creates the request to create the Saved Documents folder.
     /// </summary>
-    /// <param name="parentID">The parent ID</param>
-    /// <returns>A waitable object</returns>
+    /// <param name="parentID">The parent ID.</param>
+    /// <returns>A waitable object.</returns>
     public virtual GoogleDriveFiles.CreateRequest MakeRequest(string parentID)
     {
-        UnityGoogleDrive.Data.File folder = new UnityGoogleDrive.Data.File { Name = "Saved Documents", MimeType = "application/vnd.google-apps.folder", Parents = new List<string> { parentID } };
+        // Define the new folder's properties
+        UnityGoogleDrive.Data.File folder = new UnityGoogleDrive.Data.File {
+            Name = "Saved Documents",
+            MimeType = "application/vnd.google-apps.folder",
+            Parents = new List<string> { parentID },
+        };
+
+        // Return a new request to create the folder
         return new GoogleDriveFiles.CreateRequest(folder);
     }
 
@@ -271,18 +298,21 @@ public class SelectEnvironment : MonoBehaviour
     private void LoadNewScene(EnvironmentInfo envInfo)
     {
         // Gets the environment information component of the game manager and loads the new
-        // Environment information on to it.
+        // Environment information on to it
         EnvironmentInformation envInformation = this.gameManager.GetComponent<EnvironmentInformation>();
-        // Debug.Log("first element is: " + envInfo.floatingDocuments[0].position.ToString());
 
         envInformation.LoadNewInformation(envInfo);
 
-        // Loads the environment scene.
+        // Loads the environment scene
         SceneManager.LoadSceneAsync("Environment");
     }
 
+    /// <summary>
+    /// Initializes the CoroutineRunner and refreshes the folder list on start.
+    /// </summary>
     void Start()
     {
+        // Get the CoroutineRunner component or add it if not present
         this.CoroutineRunner = this.GetComponent<ICoroutineRunner>() ?? this.gameObject.AddComponent<CoroutineRunner>();
         this.Refresh();
     }

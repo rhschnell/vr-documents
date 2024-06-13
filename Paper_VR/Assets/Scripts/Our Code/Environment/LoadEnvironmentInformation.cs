@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityGoogleDrive;
@@ -32,13 +31,14 @@ public class LoadEnvironmentInformation : MonoBehaviour
     /// Loads the scene.
     /// </summary>
     /// <param name="environmentInformation">The information of the environment.</param>
-    /// <returns>The IEnumerator</returns>
+    /// <returns>The IEnumerator.</returns>
     public IEnumerator LoadScene(EnvironmentInformation environmentInformation)
     {
-        // forloop with index
+        // For-loop with index
         for (int i = 0; i < environmentInformation.GetFloatingDocuments().Count; i++)
         {
             FloatingDocument oldDoc = environmentInformation.GetFloatingDocuments()[i];
+
             // Create a new floating document
             GameObject instance = Instantiate(environmentInformation.docPrefab, oldDoc.position, oldDoc.rotation);
             FloatingDocument doc = instance.GetComponent<FloatingDocument>();
@@ -64,7 +64,7 @@ public class LoadEnvironmentInformation : MonoBehaviour
     }
 
     /// <summary>
-    /// This method subscribes to the sceneLoaded event at the start
+    /// This method subscribes to the sceneLoaded event at the start.
     /// </summary>
     private void Start()
     {
@@ -73,7 +73,7 @@ public class LoadEnvironmentInformation : MonoBehaviour
     }
 
     /// <summary>
-    /// This method unsubscribes to the sceneLoaded event when destroyed
+    /// This method unsubscribes to the sceneLoaded event when destroyed.
     /// </summary>
     private void OnDestroy()
     {
@@ -81,6 +81,9 @@ public class LoadEnvironmentInformation : MonoBehaviour
         this.Unsubscribe();
     }
 
+    /// <summary>
+    /// This method unsubscribed to the sceneload event.
+    /// </summary>
     private void Unsubscribe()
     {
         // Unsubscribe from the sceneLoaded event to avoid memory leaks

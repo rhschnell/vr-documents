@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// The class containing the actual split of two documents
+/// The class containing the actual split of two documents.
 /// </summary>
 public class SplitPDF
 {
@@ -13,10 +13,11 @@ public class SplitPDF
     /// <summary>
     /// Initializes a new instance of the <see cref="SplitPDF"/> class.
     /// </summary>
-    /// <param name="floatingDocument">the old floating document</param>
-    /// <param name="newFloatingDocument">the newly created floated document</param>
+    /// <param name="floatingDocument">The old floating document.</param>
+    /// <param name="newFloatingDocument">The newly created floated document.</param>
     public SplitPDF(FloatingDocument floatingDocument, FloatingDocument newFloatingDocument)
     {
+        // Set the floatingDocument and newFloatingDocument fields
         this.floatingDocument = floatingDocument;
         this.newFloatingDocument = newFloatingDocument;
     }
@@ -40,6 +41,7 @@ public class SplitPDF
         exportPages.Reverse();
         this.newFloatingDocument.exportPages = exportPages;
 
+        // Initialize the new floating documents pages and sprites lists
         this.newFloatingDocument.pages = new List<int>();
         this.newFloatingDocument.sprites = new List<Sprite>();
         var pageIndex = 0;
@@ -52,18 +54,17 @@ public class SplitPDF
             this.newFloatingDocument.sprites.Add(this.floatingDocument.sprites[spriteIndex]);
         }
 
+        // Set the initial page index and show the sprite for the new floating document
         this.newFloatingDocument.currentPageIndex = 0;
         this.newFloatingDocument.SetSprite();
 
-        var countBefore = this.floatingDocument.sprites.Count;
         // Remove pages from initial document
         foreach (var sprite in this.newFloatingDocument.sprites)
         {
             this.floatingDocument.sprites.Remove(sprite);
         }
 
-        var countAfter = this.floatingDocument.sprites.Count;
-
+        // Reinitialize the pages list for the original floating document
         this.floatingDocument.pages = new List<int>();
         for (var pageIdx = 0; pageIdx < this.floatingDocument.sprites.Count; pageIdx++)
         {

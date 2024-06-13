@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -22,6 +21,7 @@ public class Scroll : MonoBehaviour
     /// Floating doc script.
     /// </summary>
     public FloatingDocument floatingDocument;
+
     private bool isHovering = false;
     private bool available = true;
     private Vector2 joystickValue;
@@ -31,14 +31,13 @@ public class Scroll : MonoBehaviour
     /// </summary>
     public void ScrollUp()
     {
-        Debug.Log("up");
+        // Check if we are not on the first page
         if (this.floatingDocument.currentPageIndex - 1 >= 0)
         {
+            // Scroll up (previous page)
             this.floatingDocument.currentPageIndex--;
             this.SetSprite();
         }
-
-        Debug.Log("Current page: " + this.floatingDocument.currentPageIndex + " - 1 > = 0");
     }
 
     /// <summary>
@@ -46,14 +45,13 @@ public class Scroll : MonoBehaviour
     /// </summary>
     public void ScrollDown()
     {
-        Debug.Log("down'{ pageIndex: " + this.floatingDocument.currentPageIndex);
+        // Check if we are not on the last page
         if (this.floatingDocument.currentPageIndex + 1 < this.floatingDocument.pages.Count)
         {
+            // Scroll down (next page)
             this.floatingDocument.currentPageIndex++;
             this.SetSprite();
         }
-
-        Debug.Log("Current page: " + this.floatingDocument.currentPageIndex + " + 1 < = pages count: " + this.floatingDocument.pages[0].ToString());
     }
 
     /// <summary>
@@ -61,7 +59,7 @@ public class Scroll : MonoBehaviour
     /// </summary>
     public void SetSprite()
     {
-        Debug.Log("setSprite");
+        // Set the sprite of the floating document, found in the sprites list of the floating document
         this.floatingDocument.image.sprite = this.floatingDocument.sprites[this.floatingDocument.currentPageIndex];
     }
 
@@ -71,38 +69,61 @@ public class Scroll : MonoBehaviour
     /// <param name="isHovering">The is hovering value.</param>
     public void IsHovering(bool isHovering)
     {
-        Debug.Log("set hovering to " + isHovering.ToString());
+        // Set isHovering boolean
         this.isHovering = isHovering;
     }
 
+    /// <summary>
+    /// Called once per frame to update the joystick value and check for scrolling.
+    /// </summary>
     private void Update()
     {
+        // Update the current joystick value from the input action referenc
         this.SetJoystickValue();
+
+        // Check the joystick input and scroll the content if necessary
         this.ScrollCheck();
     }
 
+    /// <summary>
+    /// Sets the current joystick value from the input action reference if it is available.
+    /// </summary>
     private void SetJoystickValue()
     {
+        // Read the joystick value
         this.joystickValue = this.inputActionReference.action.ReadValue<Vector2>();
     }
 
     private void ScrollCheck()
     {
-        if (this.available && this.isHovering) {
-            if (this.joystickValue.y < -0.5f) {
+        // Check if scrolling is available and the user is hovering over the scrollable area
+        if (this.available && this.isHovering)
+        {
+            // Check if the joystick is being pushed downward
+            if (this.joystickValue.y < -0.5f)
+            {
                 this.ScrollDown();
                 this.StartCoroutine(this.LockAndUnlock());
-            } else if (this.joystickValue.y > 0.5f) {
+            }
+
+            // Check if the joystick is being pushed upward
+            else if (this.joystickValue.y > 0.5f)
+            {
                 this.ScrollUp();
                 this.StartCoroutine(this.LockAndUnlock());
             }
         }
     }
 
+    /// <summary>
+    /// Handles that the scroll functionality scrolls only one page per scroll.
+    /// </summary>
+    /// <returns>An IEnumerator</returns>
     IEnumerator LockAndUnlock()
     {
         this.available = false;
 
+        // Wait scrollWaitingTime seconds so that the user can scroll page for page
         yield return new WaitForSeconds(this.scrollWaitingTime);
 
         this.available = true;

@@ -23,12 +23,12 @@ public class ImportList : MonoBehaviour
     public TMP_Dropdown dropdown;
 
     /// <summary>
-    /// The list of pdfs in this folder
+    /// The list of pdfs in this folder.
     /// </summary>
     public List<File> PDFs;
 
     /// <summary>
-    /// the list request for the environment
+    /// the list request for the environment.
     /// </summary>
     public GoogleDriveFiles.ListRequest envReq;
 
@@ -45,7 +45,7 @@ public class ImportList : MonoBehaviour
     public BackendPDF pdfConverter;
 
     /// <summary>
-    /// finds all folders under the main folder and lists their names
+    /// Finds all folders under the main folder and lists their names.
     /// </summary>
     public void UpdateList()
     {
@@ -55,6 +55,7 @@ public class ImportList : MonoBehaviour
             environmentNames.Add(file.Name.Replace(".pdf", ""));
         }
 
+        // Add the found environments to the dropdown
         this.dropdown.ClearOptions();
         this.dropdown.AddOptions(environmentNames);
 
@@ -69,15 +70,19 @@ public class ImportList : MonoBehaviour
     }
 
     /// <summary>
-    /// finds all PDF files inside a selected folder
+    /// Finds all PDF files inside a selected folder.
     /// </summary>
-    /// <returns>waits for the request</returns>
+    /// <returns>Waits for the request.</returns>
     public IEnumerator FindPDF()
     {
+        // Define the fields to retrieve
         string parentId = SelectEnvironment.parentId;
         this.envReq.Fields = new List<string> { "files(id, name)" };
         this.envReq.Q = $"'{parentId}' in parents and name contains '.pdf' and trashed = false";
+
         yield return this.envReq.Send();
+
+        // If no error is thrown, add pdf files to the list
         if (!this.envReq.IsError)
         {
             this.PDFs = this.envReq.ResponseData.Files;
@@ -91,7 +96,11 @@ public class ImportList : MonoBehaviour
     public void Download()
     {
         string name = this.PDFs[this.dropdown.value].Name;
+
+        // Create a download request for the selected PDF using its unique ID
         GoogleDriveFiles.DownloadRequest req = new GoogleDriveFiles.DownloadRequest(this.PDFs[this.dropdown.value].Id);
+
+        // Send the download request and set up a callback to handle the completion of the request
         req.Send().OnDone += (UnityGoogleDrive.Data.File file) => this.StartCoroutine(this.ImportPDF(file, name));
     }
 
@@ -105,14 +114,18 @@ public class ImportList : MonoBehaviour
     {
         if (file != null)
         {
-            // Create a new floating document
+            // Calculate the position of the new pdf
             float spawnDistance = 2.0f;
             Vector3 offset = new Vector3(0.0f, 0.0f, 0.0f);
             Vector3 spawnPosition = this.characterTransform.position + (this.characterTransform.forward * spawnDistance) + offset;
             Vector3 direction = spawnPosition - this.characterTransform.position;
             Quaternion lookRotation = Quaternion.LookRotation(direction);
+
+            // Instantiate a new PDFCanvas in the scene
             GameObject pdf = Instantiate(this.pdfPrefab, spawnPosition, lookRotation);
             FloatingDocument script = pdf.GetComponent<FloatingDocument>();
+
+            // Set fields of the floating document
             script.pdfName = name;
             script.pdfId = file.Id;
             script.exportPages = new List<Tuple<string, string, int>>();
@@ -152,12 +165,16 @@ public class ImportList : MonoBehaviour
         SceneManager.LoadSceneAsync("EnviromentMenu");
     }
 
-    // Start is called before the first frame update
+    /// <summary>
+    /// Initializes the import list by finding all pdfs in the environment.
+    /// </summary>
     void Start()
     {
         if (SelectEnvironment.parentId != "" && SelectEnvironment.parentId != null)
         {
             this.envReq = new GoogleDriveFiles.ListRequest();
+
+            // Find all pdfs in the current environment
             this.StartCoroutine(this.FindPDF());
         }
     }

@@ -10,23 +10,24 @@ using UnityEngine;
 public class ExportDocument : MonoBehaviour
 {
     /// <summary>
-    /// The menu which appears under the floating document
+    /// The menu which appears under the floating document.
     /// </summary>
     public GameObject menu;
 
     /// <summary>
-    /// The floating document that is being exported
+    /// The floating document that is being exported.
     /// </summary>
     public GameObject floatingDocument;
 
     /// <summary>
-    /// This method handles the click of the duplicate button; duplicating the whole floating document
+    /// This method handles the click of the duplicate button; duplicating the whole floating document.
     /// </summary>
     public void OnExportClick()
     {
         // Get the BackendPDF component and call the ExtractPDF method
         GameObject pdfConvert = GameObject.Find("PDFConversionManager");
         BackendPDF convertPDF = pdfConvert.GetComponent<BackendPDF>();
+
         this.StartCoroutine(this.ExportPDF(convertPDF));
     }
 
