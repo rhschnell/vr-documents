@@ -78,7 +78,7 @@ public class FloatingDocumentInfo
             return;
         }
 
-        // set the attributes of the pdf
+        // Set the attributes of the pdf
         this.position = doc.transform.position;
         this.rotation = doc.transform.rotation;
         this.scale = doc.transform.localScale;

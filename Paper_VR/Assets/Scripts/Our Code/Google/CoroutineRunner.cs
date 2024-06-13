@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -8,12 +7,13 @@ using UnityEngine;
 public class CoroutineRunner : MonoBehaviour, ICoroutineRunner
 {
     /// <summary>
-    /// The base function
+    /// The base function.
     /// </summary>
-    /// <param name="routine">the routine to run</param>
-    /// <returns>the base return</returns>
+    /// <param name="routine">The routine to run.</param>
+    /// <returns>The base return.</returns>
     public new Coroutine StartCoroutine(IEnumerator routine)
     {
+        // Start the coroutine using the base class
         return base.StartCoroutine(routine);
     }
 }

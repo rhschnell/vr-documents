@@ -104,7 +104,7 @@ public class FloatingDocument : MonoBehaviour
         List<int> pages,
         List<Tuple<string, string, int>> exportPages)
     {
-        // set the attributes of the pdf
+        // Set the attributes of the pdf
         this.position = position;
         this.rotation = rotation;
         this.scale = scale;
@@ -123,10 +123,10 @@ public class FloatingDocument : MonoBehaviour
     /// <summary>
     /// Returns a string representation of the FloatingDocument.
     /// </summary>
-    /// <returns>the attributes of the pdf</returns>
+    /// <returns>The attributes of the pdf.</returns>
     public override string ToString()
     {
-        // return the attributes of the pdf
+        // Return the attributes of the pdf
         return "PDF Path: " + this.pdfId +
             ", PDF Name: " + this.pdfName +
             ", Number of Pages: " + this.pages.Count;
@@ -146,13 +146,14 @@ public class FloatingDocument : MonoBehaviour
             return false;
         }
 
-        // check if the attributes of the pdf are the same
+        // Check if the attributes of the pdf are the same
         FloatingDocument other = (FloatingDocument)obj;
         if (other == this)
         {
             return true;
         }
 
+        // Return if the PDFs are equal
         return this.pdfId == other.pdfId &&
             this.pdfName == other.pdfName &&
             Enumerable.SequenceEqual(this.pages, other.pages) &&
@@ -171,7 +172,7 @@ public class FloatingDocument : MonoBehaviour
     /// </returns>
     public override int GetHashCode()
     {
-        // return the hash code of the pdf
+        // Return the hash code of the pdf
         return base.GetHashCode();
     }
 
@@ -180,9 +181,11 @@ public class FloatingDocument : MonoBehaviour
     /// </summary>
     public void SetValues()
     {
+        // Calculate the width and height dimensions based on the current sprite width and height
         Sprite currentSprite = this.sprites[this.currentPageIndex];
         this.image.sprite = currentSprite;
         Vector2 dimensions = this.CalculateWidthAndHeight(currentSprite.rect.width, currentSprite.rect.height);
+
         this.transform.localScale = new Vector3(dimensions.x, dimensions.y, this.transform.localScale.z);
     }
 
@@ -191,8 +194,10 @@ public class FloatingDocument : MonoBehaviour
     /// </summary>
     public void ScrollUp()
     {
+        // Check if the current page is not the first page
         if (this.currentPageIndex - 1 >= 0)
         {
+            // Show the page before the shown page
             this.currentPageIndex--;
             this.SetSprite();
         }
@@ -203,8 +208,10 @@ public class FloatingDocument : MonoBehaviour
     /// </summary>
     public void ScrollDown()
     {
+        // Check if the current page is not the last page
         if (this.currentPageIndex + 1 < this.pages.Count)
         {
+            // Show the page after the shownp page
             this.currentPageIndex++;
             this.SetSprite();
         }
@@ -215,6 +222,7 @@ public class FloatingDocument : MonoBehaviour
     /// </summary>
     public void SetSprite()
     {
+        // Set the sprite with the currentPageIndex and the pages of a floating document
         this.image.sprite = this.sprites[this.pages[this.currentPageIndex]];
     }
 
@@ -224,18 +232,19 @@ public class FloatingDocument : MonoBehaviour
     /// <param name="isHovering">The is hovering value.</param>
     public void IsHovering(bool isHovering)
     {
-        // Debug.Log("set hovering to " + isHovering.ToString());
+        // Set the hovering boolean
         this.isHovering = isHovering;
     }
 
     /// <summary>
     /// Method that calculates the width and height based on relation between width and height.
     /// </summary>
-    /// <param name="width">Old width</param>
+    /// <param name="width">Old width.</param>
     /// <param name="height">Old height.</param>
     /// <returns>The new width and height.</returns>
     private Vector2 CalculateWidthAndHeight(float width, float height)
     {
+        // Calculates the width and height
         Vector2 dimensions = default(Vector2);
         dimensions.x = Mathf.Sqrt(0.0001f * width / height);
         dimensions.y = 0.0001f / dimensions.x;
@@ -243,34 +252,55 @@ public class FloatingDocument : MonoBehaviour
         return dimensions;
     }
 
+    /// <summary>
+    /// Called once per frame to update the joystick value and check for scrolling.
+    /// </summary>
     private void Update()
     {
+        // Update the current joystick value from the input action referenc
         this.SetJoystickValue();
+
+        // Check the joystick input and scroll the content if necessary
         this.ScrollCheck();
     }
 
+    /// <summary>
+    /// Initializes the component when the script instance is being loaded.
+    /// </summary>
     private void Awake()
     {
+        // Set available to true
         this.available = true;
     }
 
+    /// <summary>
+    /// Sets the current joystick value from the input action reference if it is available.
+    /// </summary>
     private void SetJoystickValue()
     {
         if (this.inputActionReference != null)
         {
+            // Read the joystick value
             this.joystickValue = this.inputActionReference.action.ReadValue<Vector2>();
         }
     }
 
+    /// <summary>
+    /// Checks the joystick input and scrolls the content up or down if certain conditions are met
+    /// </summary>
     private void ScrollCheck()
     {
+        // Check if scrolling is available and the user is hovering over the scrollable area
         if (this.available && this.isHovering)
         {
+            // Check if the joystick is being pushed downward
             if (this.joystickValue.y < -0.5f)
             {
                 this.ScrollDown();
                 this.StartCoroutine(this.LockAndUnlock());
             }
+
+            // Check if the joystick is being pushed upward
             else if (this.joystickValue.y > 0.5f)
             {
                 this.ScrollUp();
@@ -279,10 +309,15 @@ public class FloatingDocument : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Handles that the scroll functionality scrolls only one page per scroll.
+    /// </summary>
+    /// <returns>An IEnumerator</returns>
     IEnumerator LockAndUnlock()
     {
         this.available = false;
 
+        // Wait scrollWaitingTime seconds so that the user can scroll page for page
         yield return new WaitForSeconds(this.scrollWaitingTime);
 
         this.available = true;

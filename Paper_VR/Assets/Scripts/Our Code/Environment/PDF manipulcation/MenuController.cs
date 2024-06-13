@@ -10,57 +10,57 @@ using UnityEngine.UI;
 public class MenuController : MonoBehaviour
 {
     /// <summary>
-    /// The canvas of the PDF containing the floating document
+    /// The canvas of the PDF containing the floating document.
     /// </summary>
     public GameObject pdfPrefab;
 
     /// <summary>
-    /// The manipulation menu
+    /// The manipulation menu.
     /// </summary>
     public GameObject Menu;
 
     /// <summary>
-    /// The splitting menu
+    /// The splitting menu.
     /// </summary>
     public GameObject subsectionMenu;
 
     /// <summary>
-    /// Text field containing the currently selected start page from which to split
+    /// Text field containing the currently selected start page from which to split.
     /// </summary>
     public TMP_Text StartPageNumberText;
 
     /// <summary>
-    /// Text field containing the currently selected end page at which to split
+    /// Text field containing the currently selected end page at which to split.
     /// </summary>
     public TMP_Text EndPageNumberText;
 
     /// <summary>
-    /// The plus button for increasing the start page number
+    /// The plus button for increasing the start page number.
     /// </summary>
     public UnityEngine.UI.Button StartPlusButton;
 
     /// <summary>
-    /// The minus button for decreasing the start page number
+    /// The minus button for decreasing the start page number.
     /// </summary>
     public UnityEngine.UI.Button StartMinusButton;
 
     /// <summary>
-    /// THis is the start slider for changing the start page number
+    /// THis is the start slider for changing the start page number.
     /// </summary>
     public UnityEngine.UI.Slider StartSlider;
 
     /// <summary>
-    /// The plus button for increasing the end page number
+    /// The plus button for increasing the end page number.
     /// </summary>
     public UnityEngine.UI.Button EndPlusButton;
 
     /// <summary>
-    /// The minus button for decreasing the end page number
+    /// The minus button for decreasing the end page number.
     /// </summary>
     public UnityEngine.UI.Button EndMinusButton;
 
     /// <summary>
-    /// The counter for the start page number
+    /// The counter for the start page number.
     /// </summary>
     public UnityEngine.UI.Slider EndSlider;
 
@@ -84,6 +84,7 @@ public class MenuController : MonoBehaviour
     /// </summary>
     public void SetupSliderListeners()
     {
+        // Set up the slider which indicates the start page
         if (this.StartSlider != null)
         {
             this.StartSlider.onValueChanged.AddListener((v) =>
@@ -95,6 +96,7 @@ public class MenuController : MonoBehaviour
             });
         }
 
+        // Set up the slider which indicates the end page
         if (this.EndSlider != null)
         {
             this.EndSlider.onValueChanged.AddListener((v) =>
@@ -112,6 +114,7 @@ public class MenuController : MonoBehaviour
     /// </summary>
     public void ToggleMenu()
     {
+        // Toggles the subsection menu on or off, depending on its current state
         this.subsectionMenu.SetActive(!this.subsectionMenu.activeSelf);
         this.UpdateDocumentPageCount();
     }
@@ -121,6 +124,7 @@ public class MenuController : MonoBehaviour
     /// </summary>
     public void ClickOnStartPlusButton()
     {
+        // Add one to the StartPageNumber, iff the start page number is less then the EndPageNumber
         this.StartPageNumber = this.StartPageNumber < this.EndPageNumber ? this.StartPageNumber + 1 : this.StartPageNumber;
         this.UpdateLabel();
     }
@@ -130,6 +134,7 @@ public class MenuController : MonoBehaviour
     /// </summary>
     public void ClickOnStartMinButton()
     {
+        // Subtracts one from the StartPageNumber, iff the start page number is greater then one
         this.StartPageNumber = this.StartPageNumber > 1 ? this.StartPageNumber - 1 : this.StartPageNumber;
         this.UpdateLabel();
     }
@@ -139,6 +144,7 @@ public class MenuController : MonoBehaviour
     /// </summary>
     public void ClickOnEndPlusButton()
     {
+        // Add one to the EndPageNumber, iff the start page number is less then the number of pages in the document
         this.EndPageNumber = this.EndPageNumber < this.MaxPage ? this.EndPageNumber + 1 : this.EndPageNumber;
         this.UpdateLabel();
     }
@@ -148,6 +154,7 @@ public class MenuController : MonoBehaviour
     /// </summary>
     public void ClickOnEndMinButton()
     {
+        // Subtracts one from the EndPageNumber, iff the EndPageNubmer is greater then the StartPageNumber
         this.EndPageNumber = this.EndPageNumber > this.StartPageNumber ? this.EndPageNumber - 1 : this.EndPageNumber;
         this.UpdateLabel();
     }
@@ -155,27 +162,30 @@ public class MenuController : MonoBehaviour
     /// <summary>
     /// Returns the current start page number.
     /// </summary>
-    /// <returns>the start number</returns>
+    /// <returns>The start number.</returns>
     public int GetStartPageNumber()
     {
+        // Return the StartPageNumber
         return this.StartPageNumber;
     }
 
     /// <summary>
     /// Returns the current end page number.
     /// </summary>
-    /// <returns>the end number</returns>
+    /// <returns>The end number.</returns>
     public int GetEndPageNumber()
     {
+        // Return the EndPageNumber
         return this.EndPageNumber;
     }
 
     /// <summary>
     /// Returns the maximum number of pages the floating document contains.
     /// </summary>
-    /// <returns>the max number</returns>
+    /// <returns>The max number.</returns>
     public int GetMaxPage()
     {
+        // Return the MaxPage
         return this.MaxPage;
     }
 
@@ -185,12 +195,14 @@ public class MenuController : MonoBehaviour
     /// </summary>
     private void UpdateDocumentPageCount()
     {
+        // Get the current floating document
         var floatingDocument = this.pdfPrefab.GetComponent<FloatingDocument>();
         if (floatingDocument == null || floatingDocument.pages.Count <= 0)
         {
             return;
         }
 
+        // Set the MaxPage and EndPageNumber variables
         this.MaxPage = floatingDocument.pages.Count;
         this.EndPageNumber = floatingDocument.pages.Count;
 
@@ -198,10 +210,11 @@ public class MenuController : MonoBehaviour
     }
 
     /// <summary>
-    /// This is the start method and immediately executed.
+    /// This is the start method and is immediately executed.
     /// </summary>
     void Start()
     {
+        // Set up the slider listeners
         this.SetupSliderListeners();
     }
 
@@ -213,11 +226,13 @@ public class MenuController : MonoBehaviour
     {
         if (this.StartPageNumberText != null)
         {
+            // Set the value of the StartPageNumberText in the environment
             this.StartPageNumberText.text = this.StartPageNumber.ToString();
         }
 
         if (this.EndPageNumberText != null)
         {
+            // Set the value of the EndPageNumberText in the environment
             this.EndPageNumberText.text = this.EndPageNumber.ToString();
         }
     }

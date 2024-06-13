@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -22,6 +20,7 @@ public class ScaleDocuments : MonoBehaviour
     /// </summary>
     public void ScaleUp()
     {
+        // Scale the document up by x1.1
         this.scale = this.scale * 1.1f;
         this.SetScale();
     }
@@ -31,6 +30,7 @@ public class ScaleDocuments : MonoBehaviour
     /// </summary>
     public void ScaleDown()
     {
+        // Scale the document down by 1.1f
         this.scale = this.scale / 1.1f;
         this.SetScale();
     }
@@ -40,6 +40,7 @@ public class ScaleDocuments : MonoBehaviour
     /// </summary>
     private void SetScale()
     {
+        // Set the scale of the document to this.scale
         this.floatingDocument.scale = this.scale;
         this.gameObject.transform.localScale = this.scale;
     }
@@ -49,6 +50,7 @@ public class ScaleDocuments : MonoBehaviour
     /// </summary>
     private void Awake()
     {
+        // Set the scale of the document
         this.scale = this.gameObject.transform.localScale;
     }
 }

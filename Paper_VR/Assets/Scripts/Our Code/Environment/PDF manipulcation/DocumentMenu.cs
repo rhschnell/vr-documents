@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -43,6 +41,7 @@ public class DocumentMenu : MonoBehaviour
     /// </summary>
     /// <param name="hover">The hover boolean.</param>
     public void OnHover(bool hover) {
+        // Sets the hover boolean
         this.hover = hover;
     }
 
@@ -52,6 +51,7 @@ public class DocumentMenu : MonoBehaviour
     /// <param name="con">The action needed for when action called.</param>
     public void OpenAndCloseMenu(InputAction.CallbackContext con)
     {
+        // Calls the ToggleMenu function to open the menu
         this.ToggleMenu();
     }
 
@@ -70,6 +70,8 @@ public class DocumentMenu : MonoBehaviour
             }
 
             this.menu.SetActive(!this.menu.activeSelf);
+
+            // If the menu is closed, the subsection menu should also close
             if (!this.menu.activeSelf)
             {
                 this.mergeMenu.SetActive(false);
@@ -78,13 +80,21 @@ public class DocumentMenu : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Registers event handler for input actions.
+    /// </summary>
     private void Awake()
     {
+        // Add the OpenAndCloseMenu method to the input action's started event
         this.inputActionReference.action.started += this.OpenAndCloseMenu;
     }
 
+    /// <summary>
+    /// Unregisters event handler for input actions.
+    /// </summary>
     private void OnDestroy()
     {
+        // Remove the OpenAndCloseMenu method from the input action's started event
         this.inputActionReference.action.started -= this.OpenAndCloseMenu;
     }
 }

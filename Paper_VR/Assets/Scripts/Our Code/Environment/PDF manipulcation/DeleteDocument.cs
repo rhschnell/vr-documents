@@ -1,14 +1,13 @@
 using Assets.Scripts.Our_Code.PDFs;
-using TMPro;
 using UnityEngine;
 
 /// <summary>
-/// Logic for deleting subsections of the document
+/// Logic for deleting subsections of the document.
 /// </summary>
 public class DeleteDocument : MonoBehaviour
 {
     /// <summary>
-    /// The canvas of the PDF containing the floating document
+    /// The canvas of the PDF containing the floating document.
     /// </summary>
     public GameObject pdfPrefab;
 
@@ -25,29 +24,34 @@ public class DeleteDocument : MonoBehaviour
         var floatingDocument = this.pdfPrefab.GetComponent<FloatingDocument>();
         int end = this.MenuController.GetEndPageNumber();
         int start = this.MenuController.GetStartPageNumber();
-        int max = this.MenuController.GetMaxPage();
+
+        // Check if the end and start variables are less then the number of pages in the document
         if (floatingDocument != null && ((end - start + 1) < floatingDocument.pages.Count))
         {
             this.MenuController.Menu.SetActive(false);
             this.MenuController.subsectionMenu.SetActive(false);
 
+            // Delete the subsection
             var deletePDF = new DeletePDF(floatingDocument);
             var newPage = deletePDF.DeleteDocument(start, end);
         }
     }
 
     /// <summary>
-    /// Deletes the current page of the floating document
+    /// Deletes the current page of the floating document.
     /// </summary>
     public void OnClickDeletePage()
     {
+        // Get the currently shown page of the floating document
         var floatingDocument = this.pdfPrefab.GetComponent<FloatingDocument>();
         int currentPage = floatingDocument.currentPageIndex + 1;
+
         if (floatingDocument != null)
         {
             this.MenuController.Menu.SetActive(false);
             this.MenuController.subsectionMenu.SetActive(false);
 
+            // Delete the shown page from the floating document
             var deletePDF = new DeletePDF(floatingDocument);
             var newPage = deletePDF.DeleteDocument(currentPage, currentPage);
         }

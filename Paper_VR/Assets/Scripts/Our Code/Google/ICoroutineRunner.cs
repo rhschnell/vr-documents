@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -8,9 +7,9 @@ using UnityEngine;
 public interface ICoroutineRunner
 {
     /// <summary>
-    /// the abract function
+    /// The abract function.
     /// </summary>
-    /// <param name="routine">the thing to run</param>
-    /// <returns>base return</returns>
+    /// <param name="routine">The routine to run.</param>
+    /// <returns>Base return.</returns>
     Coroutine StartCoroutine(IEnumerator routine);
 }

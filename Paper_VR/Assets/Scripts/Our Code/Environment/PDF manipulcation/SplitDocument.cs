@@ -1,14 +1,12 @@
-using Assets.Scripts.Our_Code.PDFs;
-using TMPro;
 using UnityEngine;
 
 /// <summary>
-/// The SplitDocumentMenu is doing the basic behavior for the menu pop up, when splitting a document
+/// The SplitDocumentMenu is doing the basic behavior for the menu pop up, when splitting a document.
 /// </summary>
 public class SplitDocument : MonoBehaviour
 {
     /// <summary>
-    /// The canvas of the PDF containing the floating document
+    /// The canvas of the PDF containing the floating document.
     /// </summary>
     public GameObject pdfPrefab;
 
@@ -22,22 +20,22 @@ public class SplitDocument : MonoBehaviour
     /// </summary>
     public void OnClickSplit()
     {
+        // Get the current floating document and the start- and endpage numbers
         var floatingDocument = this.pdfPrefab.GetComponent<FloatingDocument>();
         int end = this.menuController.GetEndPageNumber();
         int start = this.menuController.GetStartPageNumber();
-        int max = this.menuController.GetMaxPage();
+
         if (floatingDocument != null && ((end - start + 1) < floatingDocument.pages.Count))
         {
-            // floatingDocument.sprites
-            // environmentInfo.ConvertPdf()
-            // Create a new floating document
+            // Calculate the position of the new pdf
             Transform transform = this.pdfPrefab.transform;
             Vector3 newPos = transform.position + (transform.right * 1.0f);
-            Vector3 offset = new Vector3(5.0f, 0.0f, 0.0f);
 
+            // Toggle the visibility of the (subsection) menu
             this.menuController.Menu.SetActive(false);
             this.menuController.subsectionMenu.SetActive(false);
 
+            // Instantiate a new PDFCanvas in the scene
             var pdf = Instantiate(this.pdfPrefab, newPos, transform.rotation);
             var newFloatingDocument = pdf.GetComponent<FloatingDocument>();
 
@@ -46,6 +44,7 @@ public class SplitDocument : MonoBehaviour
 
             // Find the game object called GameManager
             GameObject gameManager = GameObject.Find("GameManager");
+
             // Get the GameManager component with the environment script
             EnvironmentInformation environment = gameManager.GetComponent<EnvironmentInformation>();
             environment.GetFloatingDocuments().Add(newFloatingDocument);
@@ -57,10 +56,12 @@ public class SplitDocument : MonoBehaviour
     /// </summary>
     public void OnClickSplitIndividualPage()
     {
+        // Get the current floating document
         var floatingDocument = this.pdfPrefab.GetComponent<FloatingDocument>();
+
+        // Set the StartPageNumber and EndPageNumber to the current page so we only split that page
         this.menuController.StartPageNumber = floatingDocument.currentPageIndex + 1;
         this.menuController.EndPageNumber = floatingDocument.currentPageIndex + 1;
         this.OnClickSplit();
     }
-
 }

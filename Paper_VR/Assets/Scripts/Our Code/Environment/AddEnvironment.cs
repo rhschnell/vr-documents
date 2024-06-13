@@ -1,12 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityGoogleDrive;
 
 /// <summary>
-/// This class adds environments to documents
+/// This class adds environments to documents.
 /// </summary>
 public class AddEnvironment : MonoBehaviour
 {
@@ -16,18 +14,19 @@ public class AddEnvironment : MonoBehaviour
     public TMP_InputField InputField;
 
     /// <summary>
-    /// the error message text field
+    /// the error message text field.
     /// </summary>
     public TMP_Text error;
 
     /// <summary>
-    /// Adds an environment
+    /// Adds an environment.
     /// </summary>
     public void AddEnvironmentButton()
     {
         string environmentName = this.InputField.text;
         if (environmentName == "")
         {
+            // Give an error in the environment when the given name is an empty string
             this.error.text = "Name must not be empty!";
         }
         else
@@ -40,12 +39,13 @@ public class AddEnvironment : MonoBehaviour
     }
 
     /// <summary>
-    /// Makes a request to create a new environment folder
+    /// Makes a request to create a new environment folder.
     /// </summary>
-    /// <param name="name">the name of the new folder</param>
-    /// <returns>a new create file request</returns>
+    /// <param name="name">The name of the new folder.</param>
+    /// <returns>A new create file request.</returns>
     public virtual GoogleDriveFiles.CreateRequest MakeRequest(string name)
     {
+        // Create a new folder with the name of the new environment
         UnityGoogleDrive.Data.File newFile = new UnityGoogleDrive.Data.File { Name = name, MimeType = "application/vnd.google-apps.folder" };
         newFile.Parents = new List<string> { GoogleLogin.folderID };
         return GoogleDriveFiles.Create(newFile);
