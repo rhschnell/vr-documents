@@ -24,6 +24,7 @@ public class Scroll : MonoBehaviour
 
     private bool isHovering = false;
     private bool available = true;
+    private bool isHolding = false;
     private Vector2 joystickValue;
 
     /// <summary>
@@ -74,6 +75,16 @@ public class Scroll : MonoBehaviour
     }
 
     /// <summary>
+    /// Set the holding value to the holding value passed through.
+    /// </summary>
+    /// <param name="isHolding">The is holding value.</param>
+    public void IsHolding(bool isHolding)
+    {
+        // Set isHolding boolean
+        this.isHolding = isHolding;
+    }
+
+    /// <summary>
     /// Called once per frame to update the joystick value and check for scrolling.
     /// </summary>
     private void Update()
@@ -97,7 +108,7 @@ public class Scroll : MonoBehaviour
     private void ScrollCheck()
     {
         // Check if scrolling is available and the user is hovering over the scrollable area
-        if (this.available && this.isHovering)
+        if (this.available && this.isHovering && !this.isHolding)
         {
             // Check if the joystick is being pushed downward
             if (this.joystickValue.y < -0.5f)

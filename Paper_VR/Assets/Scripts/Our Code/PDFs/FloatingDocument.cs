@@ -82,6 +82,7 @@ public class FloatingDocument : MonoBehaviour
     /// </summary>
     public bool isHovering = false;
     private bool available;
+    private bool isHolding = false;
     private Vector2 joystickValue;
 
     /// <summary>
@@ -237,6 +238,16 @@ public class FloatingDocument : MonoBehaviour
     }
 
     /// <summary>
+    /// Set the holding value to the holding value passed through.
+    /// </summary>
+    /// <param name="isHolding">The is holding value.</param>
+    public void IsHolding(bool isHolding)
+    {
+        // Set isHolding boolean
+        this.isHolding = isHolding;
+    }
+
+    /// <summary>
     /// Method that calculates the width and height based on relation between width and height.
     /// </summary>
     /// <param name="width">Old width.</param>
@@ -291,7 +302,7 @@ public class FloatingDocument : MonoBehaviour
     private void ScrollCheck()
     {
         // Check if scrolling is available and the user is hovering over the scrollable area
-        if (this.available && this.isHovering)
+        if (this.available && this.isHovering && !this.isHolding)
         {
             // Check if the joystick is being pushed downward
             if (this.joystickValue.y < -0.5f)
