@@ -1,4 +1,3 @@
-using Assets.Scripts.Our_Code.PDFs;
 using UnityEngine;
 
 /// <summary>
@@ -25,6 +24,13 @@ public class DeleteDocument : MonoBehaviour
         int end = this.MenuController.GetEndPageNumber();
         int start = this.MenuController.GetStartPageNumber();
 
+        // If the document has only one page, we are going to delete the whole document
+        if (floatingDocument.exportPages.Count == 1)
+        {
+            this.OnClickDeleteDocument();
+            return;
+        }
+
         // Check if the end and start variables are less then the number of pages in the document
         if (floatingDocument != null && ((end - start + 1) < floatingDocument.pages.Count))
         {
@@ -44,6 +50,14 @@ public class DeleteDocument : MonoBehaviour
     {
         // Get the currently shown page of the floating document
         var floatingDocument = this.pdfPrefab.GetComponent<FloatingDocument>();
+
+        // If the document has only one page, we can call the method to delete the whole document
+        if (floatingDocument.exportPages.Count == 1)
+        {
+            this.OnClickDeleteDocument();
+            return;
+        }
+
         int currentPage = floatingDocument.currentPageIndex + 1;
 
         if (floatingDocument != null)
@@ -53,7 +67,7 @@ public class DeleteDocument : MonoBehaviour
 
             // Delete the shown page from the floating document
             var deletePDF = new DeletePDF(floatingDocument);
-            var newPage = deletePDF.DeleteDocument(currentPage, currentPage);
+            deletePDF.DeleteDocument(currentPage, currentPage);
         }
     }
 
