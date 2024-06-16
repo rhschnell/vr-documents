@@ -388,8 +388,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 9119277708860327837}
-        m_TargetAssemblyTypeName: DuplicateDocument, OurCode
+      - m_Target: {fileID: 3796053168800512059}
+        m_TargetAssemblyTypeName: DuplicateController, OurCode
         m_MethodName: DuplicatePagePDF
         m_Mode: 1
         m_Arguments:
@@ -932,7 +932,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pdfPrefab: {fileID: 9011475466499275803}
-  menuController: {fileID: 890290423630377334}
+  menuController: {fileID: 0}
 --- !u!1 &1630613526520058134
 GameObject:
   m_ObjectHideFlags: 0
@@ -946,7 +946,7 @@ GameObject:
   - component: {fileID: 6567016745438750027}
   - component: {fileID: 3004014902699155558}
   m_Layer: 5
-  m_Name: SplitMenuToggleButton
+  m_Name: ExtractButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1053,9 +1053,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 890290423630377334}
+      - m_Target: {fileID: 6841965192248677656}
         m_TargetAssemblyTypeName: MenuController, OurCode
-        m_MethodName: ToggleMenu
+        m_MethodName: ToggleSubsectionMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1114,7 +1114,7 @@ GameObject:
   - component: {fileID: 4991313414549537340}
   - component: {fileID: 9158122205882345505}
   m_Layer: 5
-  m_Name: SplitIndividualPageButton
+  m_Name: ExtractIndividualPageButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1223,8 +1223,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4955122286437745682}
-        m_TargetAssemblyTypeName: SplitDocument, OurCode
-        m_MethodName: OnClickSplitIndividualPage
+        m_TargetAssemblyTypeName: ExtractController, OurCode
+        m_MethodName: OnClickExtractIndividualPage
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2061,7 +2061,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 890290423630377334}
+      - m_Target: {fileID: 6841965192248677656}
         m_TargetAssemblyTypeName: MenuController, OurCode
         m_MethodName: ClickOnStartMinButton
         m_Mode: 1
@@ -2193,9 +2193,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 890290423630377334}
+      - m_Target: {fileID: 6841965192248677656}
         m_TargetAssemblyTypeName: MenuController, OurCode
-        m_MethodName: ToggleMenu
+        m_MethodName: ToggleSubsectionMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2368,7 +2368,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pdfPrefab: {fileID: 9011475466499275803}
-  MenuController: {fileID: 890290423630377334}
+  MenuController: {fileID: 6841965192248677656}
 --- !u!1 &3874334509740394632
 GameObject:
   m_ObjectHideFlags: 0
@@ -2490,8 +2490,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 9119277708860327837}
-        m_TargetAssemblyTypeName: DuplicateDocument, OurCode
+      - m_Target: {fileID: 3796053168800512059}
+        m_TargetAssemblyTypeName: DuplicateController, OurCode
         m_MethodName: DuplicatePDFCanvas
         m_Mode: 1
         m_Arguments:
@@ -2647,7 +2647,6 @@ GameObject:
   - component: {fileID: 328208121118772298}
   - component: {fileID: 8362145388926701569}
   - component: {fileID: 1472696104395160617}
-  - component: {fileID: 890290423630377334}
   m_Layer: 5
   m_Name: SubsectionMenu
   m_TagString: Untagged
@@ -2757,32 +2756,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RaycastTriggerInteraction: 1
---- !u!114 &890290423630377334
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4110090839135266448}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a0682c6a1e68d74787d6d0b6e9f160e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pdfPrefab: {fileID: 9011475466499275803}
-  Menu: {fileID: 5844786527756617074}
-  subsectionMenu: {fileID: 4110090839135266448}
-  StartPageNumberText: {fileID: 9092127720622315274}
-  EndPageNumberText: {fileID: 3101915956897563516}
-  StartPlusButton: {fileID: 4214764737698878225}
-  StartMinusButton: {fileID: 4033120546546976397}
-  StartSlider: {fileID: 1696683028480933178}
-  EndPlusButton: {fileID: 4066730900927262317}
-  EndMinusButton: {fileID: 7025561922382695754}
-  EndSlider: {fileID: 8729622639611020608}
-  StartPageNumber: 1
-  EndPageNumber: 1
-  MaxPage: 0
 --- !u!1 &4150757955630098966
 GameObject:
   m_ObjectHideFlags: 0
@@ -2981,7 +2954,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Split this page
+  m_text: Extract this page
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3196,7 +3169,7 @@ GameObject:
   - component: {fileID: 7498984979426291954}
   - component: {fileID: 2742926006164403185}
   m_Layer: 5
-  m_Name: SplitRangeButton
+  m_Name: ExtractRangeButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3305,8 +3278,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4955122286437745682}
-        m_TargetAssemblyTypeName: SplitDocument, OurCode
-        m_MethodName: OnClickSplit
+        m_TargetAssemblyTypeName: ExtractController, OurCode
+        m_MethodName: OnClickExtractSubsection
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3647,12 +3620,12 @@ GameObject:
   - component: {fileID: 2118608453873398674}
   - component: {fileID: 4955122286437745682}
   m_Layer: 5
-  m_Name: SplitButtons
+  m_Name: ExtractButtons
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2118608453873398674
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3687,7 +3660,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pdfPrefab: {fileID: 9011475466499275803}
-  menuController: {fileID: 890290423630377334}
+  menuController: {fileID: 6841965192248677656}
 --- !u!1 &5290613837814707202
 GameObject:
   m_ObjectHideFlags: 0
@@ -3697,6 +3670,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 28185017121259123}
+  - component: {fileID: 3796053168800512059}
   m_Layer: 5
   m_Name: DuplicateButtons
   m_TagString: Untagged
@@ -3726,6 +3700,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3796053168800512059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5290613837814707202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5f7796485d355f4cb5e2047c4a2538b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pdfPrefab: {fileID: 9011475466499275803}
+  MenuController: {fileID: 6841965192248677656}
 --- !u!1 &5396668439739782194
 GameObject:
   m_ObjectHideFlags: 0
@@ -4564,8 +4552,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 9119277708860327837}
-        m_TargetAssemblyTypeName: DuplicateDocument, OurCode
+      - m_Target: {fileID: 3796053168800512059}
+        m_TargetAssemblyTypeName: DuplicateController, OurCode
         m_MethodName: DuplicateSubsectionPDF
         m_Mode: 1
         m_Arguments:
@@ -4697,7 +4685,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 890290423630377334}
+      - m_Target: {fileID: 6841965192248677656}
         m_TargetAssemblyTypeName: MenuController, OurCode
         m_MethodName: ClickOnEndMinButton
         m_Mode: 1
@@ -4921,7 +4909,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 890290423630377334}
+      - m_Target: {fileID: 6841965192248677656}
         m_TargetAssemblyTypeName: MenuController, OurCode
         m_MethodName: ClickOnEndPlusButton
         m_Mode: 1
@@ -5089,9 +5077,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 890290423630377334}
+      - m_Target: {fileID: 6841965192248677656}
         m_TargetAssemblyTypeName: MenuController, OurCode
-        m_MethodName: ToggleMenu
+        m_MethodName: ToggleSubsectionMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5658,7 +5646,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 890290423630377334}
+      - m_Target: {fileID: 6841965192248677656}
         m_TargetAssemblyTypeName: MenuController, OurCode
         m_MethodName: ClickOnStartPlusButton
         m_Mode: 1
@@ -6425,7 +6413,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Split within range
+  m_text: Extract within range
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -7292,12 +7280,11 @@ GameObject:
   - component: {fileID: 865806696214457516}
   - component: {fileID: 6986759763384836106}
   - component: {fileID: 5777882784554114658}
-  - component: {fileID: 2140810687921681953}
   - component: {fileID: 4861588978349422206}
-  - component: {fileID: 9119277708860327837}
   - component: {fileID: 4306564634564859700}
   - component: {fileID: 4873248907615671982}
   - component: {fileID: 2032940502754247341}
+  - component: {fileID: 6841965192248677656}
   m_Layer: 5
   m_Name: PDFCanvas
   m_TagString: Untagged
@@ -7374,7 +7361,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &5327262367509388410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7477,8 +7464,8 @@ MonoBehaviour:
   m_HoverEntered:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2140810687921681953}
-        m_TargetAssemblyTypeName: DocumentMenu, OurCode
+      - m_Target: {fileID: 6841965192248677656}
+        m_TargetAssemblyTypeName: MenuController, OurCode
         m_MethodName: OnHover
         m_Mode: 6
         m_Arguments:
@@ -7504,8 +7491,8 @@ MonoBehaviour:
   m_HoverExited:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2140810687921681953}
-        m_TargetAssemblyTypeName: DocumentMenu, OurCode
+      - m_Target: {fileID: 6841965192248677656}
+        m_TargetAssemblyTypeName: MenuController, OurCode
         m_MethodName: OnHover
         m_Mode: 6
         m_Arguments:
@@ -7683,24 +7670,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 100, y: 100, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2140810687921681953
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9011475466499275803}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84fa6b5c667799f429f38fca59ea491f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputActionReference: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}
-  menu: {fileID: 5844786527756617074}
-  subsectionMenu: {fileID: 4110090839135266448}
-  mergeMenu: {fileID: 2768291917940399187}
-  pdfCanvas: {fileID: 9011475466499275803}
-  hover: 0
 --- !u!114 &4861588978349422206
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7726,20 +7695,6 @@ MonoBehaviour:
   pages: 
   currentPageIndex: 0
   isHovering: 0
---- !u!114 &9119277708860327837
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9011475466499275803}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f5f7796485d355f4cb5e2047c4a2538b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pdfCanvasPrefab: {fileID: 9011475466499275803}
-  MenuController: {fileID: 890290423630377334}
 --- !u!114 &4306564634564859700
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7781,12 +7736,41 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pdfPrefab: {fileID: 9011475466499275803}
-  menuController: {fileID: 890290423630377334}
+  menuController: {fileID: 6841965192248677656}
   GameManager: {fileID: 0}
   selected: {fileID: 4281464261824711376}
   error: {fileID: 6175185818659775516}
   mergeMenu: {fileID: 2768291917940399187}
   self: 0
+--- !u!114 &6841965192248677656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9011475466499275803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a0682c6a1e68d74787d6d0b6e9f160e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputActionReference: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  pdfPrefab: {fileID: 9011475466499275803}
+  Menu: {fileID: 5844786527756617074}
+  subsectionMenu: {fileID: 4110090839135266448}
+  mergeMenu: {fileID: 2768291917940399187}
+  StartPageNumberText: {fileID: 9092127720622315274}
+  EndPageNumberText: {fileID: 3101915956897563516}
+  StartPlusButton: {fileID: 4214764737698878225}
+  StartMinusButton: {fileID: 4033120546546976397}
+  StartSlider: {fileID: 1696683028480933178}
+  EndPlusButton: {fileID: 4066730900927262317}
+  EndMinusButton: {fileID: 7025561922382695754}
+  EndSlider: {fileID: 8729622639611020608}
+  StartPageNumber: 1
+  EndPageNumber: 1
+  MaxPage: 0
+  hover: 0
 --- !u!1 &9146261332391186142
 GameObject:
   m_ObjectHideFlags: 0
