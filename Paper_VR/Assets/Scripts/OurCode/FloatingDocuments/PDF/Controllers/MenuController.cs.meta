@@ -1,0 +1,24 @@
+fileFormatVersion: 2
+guid: 0a0682c6a1e68d74787d6d0b6e9f160e
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - inputActionReference: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  - pdfPrefab: {instanceID: 0}
+  - Menu: {instanceID: 0}
+  - subsectionMenu: {instanceID: 0}
+  - mergeMenu: {instanceID: 0}
+  - StartPageNumberText: {instanceID: 0}
+  - EndPageNumberText: {instanceID: 0}
+  - StartPlusButton: {instanceID: 0}
+  - StartMinusButton: {instanceID: 0}
+  - StartSlider: {instanceID: 0}
+  - EndPlusButton: {instanceID: 0}
+  - EndMinusButton: {instanceID: 0}
+  - EndSlider: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
