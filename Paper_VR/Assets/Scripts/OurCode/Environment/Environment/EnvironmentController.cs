@@ -25,6 +25,7 @@ public class EnvironmentController : MonoBehaviour
     private List<FloatingDocument> floatingDocuments = new List<FloatingDocument>();
     private List<string> importList = new List<string>();
     private Color backgroundColor = Color.white;
+    private Material material;
 
     /// <summary>
     /// Loads the new environment information on this instance of the class.
@@ -60,6 +61,9 @@ public class EnvironmentController : MonoBehaviour
 
         // Sets the background color to the new background color.
         this.backgroundColor = newEnvironmentInformation.backgroundColor;
+
+        // Sets the material to the new material
+        this.material = newEnvironmentInformation.material;
     }
 
     /// <summary>
@@ -173,11 +177,30 @@ public class EnvironmentController : MonoBehaviour
     }
 
     /// <summary>
+    /// Returns the material of the environment.
+    /// </summary>
+    /// <returns>The material of the environment.</returns>
+    public Material GetMaterial()
+    {
+        return this.material;
+    }
+
+    /// <summary>
+    /// Sets the environment material to the new material.
+    /// </summary>
+    /// <param name="material">The new environment material.</param>
+    public void SetMaterial(Material material)
+    {
+        this.material = material;
+    }
+
+    /// <summary>
     /// The awake method, it makes sure that the object will not be destroyed when loading a new scene.
     /// </summary>
     void Awake()
     {
         // Does not destroy this game object when a new scene is loaded.
         DontDestroyOnLoad(this.gameObject);
+        this.material = new Material(Shader.Find("Standard"));
     }
 }

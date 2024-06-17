@@ -29,6 +29,11 @@ public class EnvironmentInformation
     public Color backgroundColor;
 
     /// <summary>
+    /// The material put on the rendering to change backgrounds.
+    /// </summary>
+    public Material material;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="EnvironmentInformation"/> class.
     /// The default constructor for the EnvironmentInformation class.
     /// </summary>
@@ -53,6 +58,7 @@ public class EnvironmentInformation
 
         this.importList = environmentInformation.GetImportList();
         this.backgroundColor = environmentInformation.GetBackgroundColor();
+        this.material = environmentInformation.GetMaterial();
     }
 
     /// <summary>
@@ -64,8 +70,12 @@ public class EnvironmentInformation
     /// </returns>
     public static EnvironmentInformation LoadFromJson(string json)
     {
+        // Create JSON serializer settings and add the custom MaterialConverter.
+        var settings = new JsonSerializerSettings();
+        settings.Converters.Add(new MaterialConverter());
+
         // Deserialize the json string to an object.
-        EnvironmentInformation scene = JsonConvert.DeserializeObject<EnvironmentInformation>(json);
+        EnvironmentInformation scene = JsonConvert.DeserializeObject<EnvironmentInformation>(json, settings);
 
         // Return the environment information.
         return scene;

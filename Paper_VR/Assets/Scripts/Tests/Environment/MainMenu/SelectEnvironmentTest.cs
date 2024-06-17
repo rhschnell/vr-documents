@@ -155,6 +155,10 @@ public class SelectEnvironmentTest
         environmentInfo.floatingDocuments = new List<FloatingDocumentInfo>();
         environmentInfo.importList = new List<string>();
         environmentInfo.backgroundColor = Color.red;
+        environmentInfo.material = new Material(Shader.Find("Standard"))
+        {
+            color = Color.white,
+        };
         string json = environmentInfo.SaveToJson();
         var content = System.Text.Encoding.ASCII.GetBytes(json);
 
