@@ -157,6 +157,9 @@ public class SelectEnvironment : MonoBehaviour
             envInfo.floatingDocuments = new List<FloatingDocumentInfo>();
             envInfo.importList = new List<string>();
             envInfo.backgroundColor = Color.white;
+
+            Material loadedMaterial = Resources.Load<Material>("Material/Default");
+            envInfo.material = loadedMaterial;
         }
         else
         {

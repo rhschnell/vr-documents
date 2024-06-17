@@ -54,7 +54,6 @@ public class DuplicateDocumentTest : MonoBehaviour
             new Tuple<string, string, int>(name, id, 5),
         };
 
-
         Texture2D texture = new Texture2D(1, 1);
         floatingDocument.sprites = new List<Sprite>
         {
