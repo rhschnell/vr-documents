@@ -89,13 +89,13 @@ public class FloatingDocument : MonoBehaviour
     /// Initializes a new instance of the <see cref="FloatingDocument"/> class.
     /// Constructor for the FloatingDocument class.
     /// </summary>
-    /// <param name="position">The initial position of the floating document</param>
-    /// <param name="rotation">The initial rotation of the floating document</param>
-    /// <param name="scale">The intial scale of the floating document</param>
-    /// <param name="pdfId">The ID of the pdf</param>
-    /// <param name="pdfName">The name of the pdf</param>
-    /// <param name="pages">The pages of the pdf</param>
-    /// <param name="exportPages">The pages that need to be exported</param>
+    /// <param name="position">The initial position of the floating document.</param>
+    /// <param name="rotation">The initial rotation of the floating document.</param>
+    /// <param name="scale">The intial scale of the floating document.</param>
+    /// <param name="pdfId">The ID of the PDF.</param>
+    /// <param name="pdfName">The name of the PDF.</param>
+    /// <param name="pages">The pages of the PDF.</param>
+    /// <param name="exportPages">The pages that need to be exported.</param>
     public void SetAttributes(
         Vector3 position,
         Quaternion rotation,
@@ -187,7 +187,13 @@ public class FloatingDocument : MonoBehaviour
         this.image.sprite = currentSprite;
         Vector2 dimensions = this.CalculateWidthAndHeight(currentSprite.rect.width, currentSprite.rect.height);
 
-        this.transform.localScale = new Vector3(dimensions.x, dimensions.y, this.transform.localScale.z);
+        if (this.IsScaleZero(this.scale))
+        {
+            this.transform.localScale = new Vector3(dimensions.x, dimensions.y, this.transform.localScale.z);
+        } else
+        {
+            this.transform.localScale = this.scale;
+        }
     }
 
     /// <summary>
@@ -318,6 +324,16 @@ public class FloatingDocument : MonoBehaviour
                 this.StartCoroutine(this.LockAndUnlock());
             }
         }
+    }
+
+    /// <summary>
+    /// Returns if a scale is 0, this means that the PDF hasn't been initialized yet.
+    /// </summary>
+    /// <param name="scale">The scale of a floating document.</param>
+    /// <returns>If the scale is composed of all zeros.</returns>
+    private bool IsScaleZero(Vector3 scale)
+    {
+        return scale.x == 0 && scale.y == 0 && scale.z == 0;
     }
 
     /// <summary>

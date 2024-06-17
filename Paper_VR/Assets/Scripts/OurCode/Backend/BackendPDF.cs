@@ -153,15 +153,6 @@ public class BackendPDF : MonoBehaviour
             floatingDocument.exportPages = exportPages;
         }
 
-        Debug.Log(floatingDocument.scale.x);
-        // Set the width and height of the floating document to match the size of the pdf
-        if (floatingDocument.scale.x < 0.000001 || floatingDocument.scale.x > 0.5f)
-        {
-            Debug.Log("new document!");
-            floatingDocument.scale.x = frontPage.rect.width;
-            floatingDocument.scale.y = frontPage.rect.height;
-        }
-
         floatingDocument.SetValues();
     }
 
