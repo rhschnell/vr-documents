@@ -21,7 +21,7 @@ public class ScaleDocuments : MonoBehaviour
     public void ScaleUp()
     {
         // Scale the document up by x1.1
-        this.scale = this.scale * 1.1f;
+        this.scale = this.gameObject.transform.localScale * 1.1f;
         this.SetScale();
     }
 
@@ -31,7 +31,7 @@ public class ScaleDocuments : MonoBehaviour
     public void ScaleDown()
     {
         // Scale the document down by 1.1f
-        this.scale = this.scale / 1.1f;
+        this.scale = this.gameObject.transform.localScale / 1.1f;
         this.SetScale();
     }
 
