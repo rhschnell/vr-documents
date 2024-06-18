@@ -58,14 +58,6 @@ public class LogInTest
         Assert.AreEqual(runner, this.googleLogin.GetCoroutineRunner());
     }
 
-    [UnityTest]
-    public IEnumerator TestTest()
-    {
-        yield return new WaitForSeconds(3.0f);
-
-        Assert.IsTrue(true);
-    }
-
     /// <summary>
     /// Tests the update info
     /// </summary>

@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
 
 /// <summary>
 /// Class containing tests for the delete document functionality.
@@ -16,6 +14,7 @@ public class DeleteTest
     [Test]
     public void TestDeleteDocumentSubsection()
     {
+        // Creating the objects
         GameObject go = new GameObject();
         GameObject menu = new GameObject();
         GameObject subsectionMenu = new GameObject();
@@ -76,6 +75,7 @@ public class DeleteTest
     [Test]
     public void TestDeleteDocumentPage()
     {
+        // Creating the objects
         GameObject go = new GameObject();
         GameObject menu = new GameObject();
         GameObject subsectionMenu = new GameObject();
@@ -136,6 +136,7 @@ public class DeleteTest
     [Test]
     public void TestDeleteDocument()
     {
+        // Creating the objects
         GameObject go = new GameObject();
         GameObject menu = new GameObject();
         GameObject subsectionMenu = new GameObject();
