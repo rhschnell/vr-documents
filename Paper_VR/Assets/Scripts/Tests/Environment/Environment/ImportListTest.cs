@@ -10,7 +10,7 @@ using UnityGoogleDrive;
 using UnityGoogleDrive.Data;
 
 /// <summary>
-/// Testing the ImportList class
+/// Testing the ImportList class.
 /// </summary>
 public class ImportListTest
 {
@@ -21,12 +21,12 @@ public class ImportListTest
     private GameObject importButton;
 
     /// <summary>
-    /// setUp the test
+    /// Sets up the test environment.
     /// </summary>
     [SetUp]
     public void SetUp()
     {
-        // Initialize ImportList and its dependencies
+        // Initialize ImportList and its dependencies.
         GameObject go = new GameObject();
         this.importList = go.AddComponent<ImportList>();
 
@@ -56,16 +56,17 @@ public class ImportListTest
     }
 
     /// <summary>
-    /// Tear down the test
+    /// Tear down the test.
     /// </summary>
     [TearDown]
     public void TearDown()
     {
         GameObject.DestroyImmediate(this.go);
+        GameObject.DestroyImmediate(this.importButton);
     }
 
     /// <summary>
-    /// Makes sure that the update list function works as expected
+    /// Makes sure that the update list function works as expected.
     /// </summary>
     [Test]
     public void UpdateList_ShouldUpdateDropdownOptions()
@@ -76,6 +77,47 @@ public class ImportListTest
 
         Assert.AreEqual(this.mockDropdown.Object.options[0].text, "Document1");
         Assert.AreEqual(this.mockDropdown.Object.options[1].text, "Document2");
+    }
+
+    /// <summary>
+    /// Tests that the import button is not interactable when the import list is empty.
+    /// </summary>
+    [Test]
+    public void UpdateList_NotInteractableOnEmptyList()
+    {
+        // Set the dropdown to have zero PDFs
+        this.importList.PDFs.Clear();
+
+        this.importList.UpdateList();
+
+        Assert.IsFalse(this.importList.importButton.interactable);
+    }
+
+    /// <summary>
+    /// Makes sure that the refresh button updates the import list.
+    /// </summary>
+    [Test]
+    public void OnClickRefresh_ShouldUpdateImportList()
+    {
+        this.importList.PDFs.Clear();
+
+        // Create mock PDF objects and add them to the import list
+        var importListPDFs = new List<File>
+        {
+            new File { Name = "Document1.pdf" },
+            new File { Name = "Document2.pdf" },
+        };
+
+        this.importList.PDFs = importListPDFs;
+
+        // Call the update list method
+        this.importList.UpdateList();
+
+        // Assert
+
+        Assert.AreEqual(2, this.mockDropdown.Object.options.Count);
+        Assert.AreEqual("Document1", this.mockDropdown.Object.options[0].text);
+        Assert.AreEqual("Document2", this.mockDropdown.Object.options[1].text);
     }
 
     /// <summary>
