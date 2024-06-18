@@ -4259,7 +4259,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d040ac61300e90d46933142b2cd19974, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1893551373}
   InputField: {fileID: 671078724}
   addButton: {fileID: 1270601786}
   error: {fileID: 284294047}
@@ -5962,6 +5961,7 @@ MonoBehaviour:
   savedFolderIds: []
   gameManager: {fileID: 1893551373}
   openEnvironmentButton: {fileID: 26149000}
+  deleteEnvironmentButton: {fileID: 2143339768}
   Name: {fileID: 1390857965}
   Email: {fileID: 733862588}
   DeleteText: {fileID: 955486255}
@@ -6003,6 +6003,7 @@ MonoBehaviour:
   savedFolderIds: []
   gameManager: {fileID: 1893551373}
   openEnvironmentButton: {fileID: 26149000}
+  deleteEnvironmentButton: {fileID: 2143339768}
   Name: {fileID: 1390857965}
   Email: {fileID: 733862588}
   DeleteText: {fileID: 955486255}

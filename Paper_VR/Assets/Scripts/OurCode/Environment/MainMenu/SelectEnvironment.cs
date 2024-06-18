@@ -38,6 +38,11 @@ public class SelectEnvironment : MonoBehaviour
     public Button openEnvironmentButton;
 
     /// <summary>
+    /// The button which can be clicked to delete an environment.
+    /// </summary>
+    public Button deleteEnvironmentButton;
+
+    /// <summary>
     /// The name textbox.
     /// </summary>
     public TMP_Text Name;
@@ -252,10 +257,21 @@ public class SelectEnvironment : MonoBehaviour
             // Clear the dropdown options and add the new folder names
             this.dropdown.ClearOptions();
             this.dropdown.AddOptions(environmentNames);
+
+            Debug.Log(r.ResponseData.Files.Count);
+            if (r.ResponseData.Files.Count == 0)
+            {
+                this.openEnvironmentButton.interactable = false;
+                this.deleteEnvironmentButton.interactable = false;
+            }
+            else
+            {
+                this.deleteEnvironmentButton.interactable = true;
+                this.openEnvironmentButton.interactable = true;
+            }
         }
 
         this.RequestList = r;
-        this.openEnvironmentButton.interactable = true;
     }
 
     /// <summary>

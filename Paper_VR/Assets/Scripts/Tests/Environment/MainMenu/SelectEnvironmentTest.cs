@@ -131,6 +131,11 @@ public class SelectEnvironmentTest
         mock.Object.testing = true;
         mock.Object.openEnvironmentButton = this.openButton.GetComponent<Button>();
 
+        var openEnvironmentButton = new GameObject("OpenEnvironmentButton");
+        mock.Object.openEnvironmentButton = openEnvironmentButton.AddComponent<Button>();
+        var deleteEnvironmentButton = new GameObject("DeleteEnvironmentButton");
+        mock.Object.deleteEnvironmentButton = deleteEnvironmentButton.AddComponent<Button>();
+
         this.mockListRequest.Setup(req => req.Send()).Returns(responseMock.Object);
         this.mockListRequest.Setup(req => req.ResponseData.Files).Returns(mockFiles);
         this.mockListRequest.Setup(req => req.IsError).Returns(false);
@@ -142,6 +147,37 @@ public class SelectEnvironmentTest
         Assert.True(this.mockDropdown.Object.options.Exists(option => option.text == "Env2"));
 
         yield return new WaitForSeconds(1f);
+    }
+
+    /// <summary>
+    /// Tests if the open and delete button get disbabled when the environment list is empty.
+    /// </summary>
+    /// <returns>Its a unity tests, so needs an enumerator as return</returns>
+    [UnityTest]
+    public IEnumerator UpdateList_SetsDropdownOptionsEmptyList()
+    {
+        var mockFiles = new List<UnityGoogleDrive.Data.File> { };
+        var responseMock = new Mock<GoogleDriveRequestYieldInstruction<UnityGoogleDrive.Data.FileList>>();
+        responseMock.Setup(a => a.GoogleDriveRequest).Returns(this.mockListRequest.Object);
+
+        var mock = new Mock<SelectEnvironment>();
+        mock.Setup(m => m.CoroutineRunner).Returns(this.mockCoroutineRunner.Object);
+        mock.Object.dropdown = this.mockDropdown.Object;
+        mock.Object.testing = true;
+
+        var openEnvironmentButton = new GameObject("OpenEnvironmentButton");
+        mock.Object.openEnvironmentButton = openEnvironmentButton.AddComponent<Button>();
+        var deleteEnvironmentButton = new GameObject("DeleteEnvironmentButton");
+        mock.Object.deleteEnvironmentButton = deleteEnvironmentButton.AddComponent<Button>();
+
+        this.mockListRequest.Setup(req => req.Send()).Returns(responseMock.Object);
+        this.mockListRequest.Setup(req => req.ResponseData.Files).Returns(mockFiles);
+        this.mockListRequest.Setup(req => req.IsError).Returns(false);
+
+        yield return mock.Object.UpdateList(this.mockListRequest.Object);
+
+        Assert.IsFalse(mock.Object.deleteEnvironmentButton.interactable);
+        Assert.IsFalse(mock.Object.openEnvironmentButton.interactable);
     }
 
     /// <summary>

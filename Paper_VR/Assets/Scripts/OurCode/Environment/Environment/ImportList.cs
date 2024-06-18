@@ -51,6 +51,14 @@ public class ImportList : MonoBehaviour
     public BackendPDF pdfConverter;
 
     /// <summary>
+    /// Refreshes the import list.
+    /// </summary>
+    public void OnClickRefresh()
+    {
+        this.StartCoroutine(this.FindPDF());
+    }
+
+    /// <summary>
     /// Finds all folders under the main folder and lists their names.
     /// </summary>
     public void UpdateList()
@@ -64,6 +72,15 @@ public class ImportList : MonoBehaviour
         // Add the found environments to the dropdown
         this.dropdown.ClearOptions();
         this.dropdown.AddOptions(environmentNames);
+
+        // Make the import button not interactable if there are no PDFs
+        if (this.PDFs.Count == 0)
+        {
+            this.importButton.interactable = false;
+            return;
+        }
+
+        this.importButton.interactable = true;
 
         // Find the game object called GameManeger
         GameObject gameManager = GameObject.Find("GameManager");
