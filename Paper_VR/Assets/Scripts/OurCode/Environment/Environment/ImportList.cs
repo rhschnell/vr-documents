@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using UnityGoogleDrive;
 using UnityGoogleDrive.Data;
 
@@ -21,6 +22,11 @@ public class ImportList : MonoBehaviour
     /// The dropdown containing all environments.
     /// </summary>
     public TMP_Dropdown dropdown;
+
+    /// <summary>
+    /// The button which can be clicked to import the selected document.
+    /// </summary>
+    public Button importButton;
 
     /// <summary>
     /// The list of pdfs in this folder.
@@ -102,6 +108,9 @@ public class ImportList : MonoBehaviour
 
         // Send the download request and set up a callback to handle the completion of the request
         req.Send().OnDone += (UnityGoogleDrive.Data.File file) => this.StartCoroutine(this.ImportPDF(file, name));
+
+        // Make the import button not interactable to prevent spam clicking
+        this.StartCoroutine(this.DisableImportButton());
     }
 
     /// <summary>
@@ -163,6 +172,22 @@ public class ImportList : MonoBehaviour
         }
 
         SceneManager.LoadSceneAsync("EnviromentMenu");
+    }
+
+    /// <summary>
+    /// Makes the import button not interactable for two seconds.
+    /// </summary>
+    /// <returns>An IEnumerator.</returns>
+    private IEnumerator DisableImportButton()
+    {
+        // Make the import button not interactable
+        this.importButton.interactable = false;
+
+        // Wait for one second
+        yield return new WaitForSeconds(2.0f);
+
+        // Make the import button interactable again
+        this.importButton.interactable = true;
     }
 
     /// <summary>

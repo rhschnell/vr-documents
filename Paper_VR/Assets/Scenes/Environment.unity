@@ -4417,7 +4417,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Select
+  m_text: Import
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -6474,6 +6474,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterTransform: {fileID: 198722505}
   dropdown: {fileID: 1293429607}
+  importButton: {fileID: 1921164587}
   pdfPrefab: {fileID: 9011475466499275803, guid: bfb4ffd4a1b614844af24167238f735d, type: 3}
   pdfConverter: {fileID: 123434356}
 --- !u!114 &2041929406
