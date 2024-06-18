@@ -153,6 +153,7 @@ public class BackendPDF : MonoBehaviour
             floatingDocument.exportPages = exportPages;
         }
 
+        floatingDocument.loadingPDFText.gameObject.SetActive(false);
         floatingDocument.SetValues();
     }
 
@@ -203,6 +204,8 @@ public class BackendPDF : MonoBehaviour
 
         if (www.result != UnityWebRequest.Result.Success)
         {
+            floatingDocument.loadingPDFText.gameObject.SetActive(true);
+            floatingDocument.loadingPDFText.text = "Sorry, the PDF couldn't be loaded due to a server error";
             Debug.LogError("Error: " + www.error);
         }
         else

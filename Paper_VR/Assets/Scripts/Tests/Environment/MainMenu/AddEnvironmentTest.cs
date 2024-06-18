@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Moq;
 using NUnit.Framework;
 using TMPro;
@@ -97,6 +98,16 @@ public class AddEnvironmentTest
         this.mockInputField.text = "TestName";
         Mock<AddEnvironment> addEnvironmentMock = new Mock<AddEnvironment>();
 
+        Mock<SelectEnvironment> selectEnvironmentMock = new Mock<SelectEnvironment>();
+        Mock<TMP_Dropdown> dropdownMock = new Mock<TMP_Dropdown>();
+        var optionsDropdown = new List<TMP_Dropdown.OptionData>
+        {
+            new TMP_Dropdown.OptionData("Environment 1"),
+            new TMP_Dropdown.OptionData("Environment 2"),
+        };
+        dropdownMock.Object.options = optionsDropdown;
+        selectEnvironmentMock.Object.dropdown = dropdownMock.Object;
+
         // Setup mock behavior
         var responseMock = new Mock<GoogleDriveRequestYieldInstruction<UnityGoogleDrive.Data.File>>();
         responseMock.Setup(x => x.GoogleDriveRequest).Returns(this.mockCreateRequest.Object);
@@ -106,9 +117,37 @@ public class AddEnvironmentTest
         addEnvironmentMock.Object.error = this.mockError;
         addEnvironmentMock.Object.InputField = this.mockInputField;
         addEnvironmentMock.Object.coroutineRunner = this.mockCoroutineRunner.Object;
-
+        addEnvironmentMock.Object.selectEnvironment = selectEnvironmentMock.Object;
         addEnvironmentMock.Object.AddEnvironmentButton();
 
         Assert.AreEqual("", this.mockError.text);
+    }
+
+    /// <summary>
+    /// Tests the AddEnvironmentButton method when the name is already in the dropdown.
+    /// </summary>
+    [Test]
+    public void AddEnvironmentButton_WhenNameIsNotEmpty_DuplicateName()
+    {
+        // Set the input field text
+        this.mockInputField.text = "Environment 1";
+        Mock<AddEnvironment> addEnvironmentMock = new Mock<AddEnvironment>();
+        Mock<SelectEnvironment> selectEnvironmentMock = new Mock<SelectEnvironment>();
+        Mock<TMP_Dropdown> dropdownMock = new Mock<TMP_Dropdown>();
+        var optionsDropdown = new List<TMP_Dropdown.OptionData>
+        {
+            new TMP_Dropdown.OptionData("Environment 1"),
+            new TMP_Dropdown.OptionData("Environment 2"),
+        };
+        dropdownMock.Object.options = optionsDropdown;
+        selectEnvironmentMock.Object.dropdown = dropdownMock.Object;
+
+        addEnvironmentMock.Object.error = this.mockError;
+        addEnvironmentMock.Object.InputField = this.mockInputField;
+        addEnvironmentMock.Object.coroutineRunner = this.mockCoroutineRunner.Object;
+        addEnvironmentMock.Object.selectEnvironment = selectEnvironmentMock.Object;
+        addEnvironmentMock.Object.AddEnvironmentButton();
+
+        Assert.AreEqual("An environment with this name already exists", this.mockError.text);
     }
 }
