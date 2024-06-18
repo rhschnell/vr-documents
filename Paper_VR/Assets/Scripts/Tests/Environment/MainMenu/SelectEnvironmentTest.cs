@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
+using UnityEngine.UI;
 using UnityGoogleDrive;
 
 /// <summary>
@@ -15,6 +16,7 @@ public class SelectEnvironmentTest
 {
     private GameObject gameObject;
     private SelectEnvironment selectEnvironment;
+    private GameObject openButton;
     private Mock<TMP_Dropdown> mockDropdown;
     private Mock<TMP_Text> mockNameText;
     private Mock<TMP_Text> mockEmailText;
@@ -43,12 +45,16 @@ public class SelectEnvironmentTest
         this.mockListRequest = new Mock<GoogleDriveFiles.ListRequest>();
         this.mockCoroutineRunner = new Mock<ICoroutineRunner>();
 
+        this.openButton = new GameObject("OpenEnvironmentButton");
+
+        // Set all fields of selectEnvironment
         this.selectEnvironment.dropdown = this.mockDropdown.Object;
         this.selectEnvironment.savedFolderIds = new List<string>() { "123", "567", "891", "1221" };
         this.selectEnvironment.Name = this.mockNameText.Object;
         this.selectEnvironment.Email = this.mockEmailText.Object;
         this.selectEnvironment.gameManager = new GameObject();
         this.selectEnvironment.CoroutineRunner = this.mockCoroutineRunner.Object;
+        this.selectEnvironment.openEnvironmentButton = this.openButton.AddComponent<Button>();
     }
 
     /// <summary>
@@ -80,6 +86,8 @@ public class SelectEnvironmentTest
 
         Assert.AreEqual("123", SelectEnvironment.parentId);
         SelectEnvironment.parentId = null;
+
+        Assert.IsFalse(this.selectEnvironment.openEnvironmentButton.interactable);
     }
 
     /// <summary>
@@ -171,6 +179,7 @@ public class SelectEnvironmentTest
         googleMehodsMock.Object.returnFile = new UnityGoogleDrive.Data.File { Content = content };
 
         mock.Object.googleMethods = googleMehodsMock.Object;
+        mock.Setup(a => a.CreateNewListRequest("123")).Returns(this.mockListRequest.Object);
 
         // Create a mock response
         var mockFiles = new List<UnityGoogleDrive.Data.File>

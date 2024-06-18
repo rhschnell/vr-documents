@@ -5,6 +5,7 @@ using NUnit.Framework;
 using TMPro;
 using UnityEngine;
 using UnityEngine.TestTools;
+using UnityEngine.UI;
 using UnityGoogleDrive;
 using UnityGoogleDrive.Data;
 
@@ -17,6 +18,7 @@ public class ImportListTest
     private ImportList importList;
     private Mock<TMP_Dropdown> mockDropdown;
     private List<File> mockPDFs;
+    private GameObject importButton;
 
     /// <summary>
     /// setUp the test
@@ -38,6 +40,8 @@ public class ImportListTest
         this.go = new GameObject();
         this.importList = this.go.AddComponent<ImportList>();
 
+        this.importButton = new GameObject("ImportButton");
+
         this.mockDropdown = new Mock<TMP_Dropdown>();
         this.importList.dropdown = this.mockDropdown.Object;
 
@@ -48,6 +52,7 @@ public class ImportListTest
         };
 
         this.importList.PDFs = this.mockPDFs;
+        this.importList.importButton = this.importButton.AddComponent<Button>();
     }
 
     /// <summary>

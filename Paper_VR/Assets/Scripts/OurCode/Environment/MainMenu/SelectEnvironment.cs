@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using UnityGoogleDrive;
 
 /// <summary>
@@ -30,6 +31,11 @@ public class SelectEnvironment : MonoBehaviour
     /// The manager of the game, containing all inportant information.
     /// </summary>
     public GameObject gameManager;
+
+    /// <summary>
+    /// The button which can be clicked to open an environment.
+    /// </summary>
+    public Button openEnvironmentButton;
 
     /// <summary>
     /// The name textbox.
@@ -81,6 +87,9 @@ public class SelectEnvironment : MonoBehaviour
         EnvironmentController.saveFolderId = this.savedFolderIds[this.dropdown.value];
 
         this.CoroutineRunner.StartCoroutine(this.GetEnvironment(parentId, envName));
+
+        // Make the open button not interactable to prevent spam clicking
+        this.StartCoroutine(this.DisableOpenButton());
     }
 
     /// <summary>
@@ -142,16 +151,14 @@ public class SelectEnvironment : MonoBehaviour
     public IEnumerator GetEnvironment(string id, string envName)
     {
         // Find the json file of the selected environment
-        this.RequestList = new GoogleDriveFiles.ListRequest();
-        this.RequestList.Fields = new List<string> { "files(id, name)" };
-        this.RequestList.Q = $"'{id}' in parents and name contains 'Environment.json' and trashed = false";
+        GoogleDriveFiles.ListRequest requestList = this.CreateNewListRequest(id);
 
-        yield return this.RequestList.Send();
+        yield return requestList.Send();
 
         EnvironmentInformation envInfo = new EnvironmentInformation();
 
         // Check if the file exists, if not create an empty environment
-        if (this.RequestList.ResponseData.Files.Count == 0)
+        if (requestList.ResponseData.Files.Count == 0)
         {
             envInfo.environmentName = envName;
             envInfo.floatingDocuments = new List<FloatingDocumentInfo>();
@@ -164,7 +171,7 @@ public class SelectEnvironment : MonoBehaviour
         else
         {
             // Get the json file
-            yield return this.googleMethods.DownloadFile(this.RequestList.ResponseData.Files[0].Id);
+            yield return this.googleMethods.DownloadFile(requestList.ResponseData.Files[0].Id);
 
             // Get the json from the request
             var content = this.googleMethods.returnFile.Content;
@@ -173,7 +180,23 @@ public class SelectEnvironment : MonoBehaviour
             envInfo = EnvironmentInformation.LoadFromJson(json);
         }
 
+        this.RequestList = requestList;
         this.LoadNewScene(envInfo);
+    }
+
+    /// <summary>
+    /// Gets and return a new list request from the Google Drive.
+    /// </summary>
+    /// <param name="id">The ID for the Google Drive.</param>
+    /// <returns>The new request list.</returns>
+    public virtual GoogleDriveFiles.ListRequest CreateNewListRequest(string id)
+    {
+        // Make new list request
+        var r = new GoogleDriveFiles.ListRequest();
+        r.Fields = new List<string> { "files(id, name)" };
+        r.Q = $"'{id}' in parents and name contains 'Environment.json' and trashed = false";
+
+        return r;
     }
 
     /// <summary>
@@ -304,6 +327,22 @@ public class SelectEnvironment : MonoBehaviour
 
         // Loads the environment scene
         SceneManager.LoadSceneAsync("Environment");
+    }
+
+    /// <summary>
+    /// Makes the open environment button not interactable for three seconds.
+    /// </summary>
+    /// <returns>An IEnumerator.</returns>
+    private IEnumerator DisableOpenButton()
+    {
+        // Make the open environment button not interactable
+        this.openEnvironmentButton.interactable = false;
+
+        // Wait for one second
+        yield return new WaitForSeconds(5.0f);
+
+        // Make the open environment button interactable again
+        this.openEnvironmentButton.interactable = true;
     }
 
     /// <summary>
