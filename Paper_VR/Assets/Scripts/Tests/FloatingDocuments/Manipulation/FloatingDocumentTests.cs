@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.UI;
@@ -264,5 +265,142 @@ public class FloatingDocumentTests : MonoBehaviour
 
         // Assert
         Assert.IsFalse(newDoc.isHovering, "isHovering should be false.");
+    }
+
+    /// <summary>
+    /// Test the IsHovering method.
+    /// </summary>
+    [Test]
+    public void IsHoldingTest()
+    {
+        // Arrange
+        GameObject examplePrefab = new GameObject();
+        FloatingDocument newDoc = examplePrefab.AddComponent<FloatingDocument>();
+
+        // Act
+        newDoc.IsHolding(true);
+
+        // Assert
+        Assert.IsTrue(newDoc.isHolding, "isHolding should be true.");
+
+        // Act
+        newDoc.IsHolding(false);
+
+        // Assert
+        Assert.IsFalse(newDoc.isHolding, "isHolding should be false.");
+    }
+
+    /// <summary>
+    /// When called, update with scroll up.
+    /// </summary>
+    [Test]
+    public void UpdateTest()
+    {
+        GameObject gameManager = new GameObject("GameManager");
+        Assert.NotNull(gameManager, "Could not create gameManager : GameManager");
+
+        // Create a new GameObject to act as the PDFCanvas
+        var originalPdfCanvas = new GameObject("PDFCanvas");
+        originalPdfCanvas.AddComponent<FloatingDocument>();
+
+        var floatingDocument = originalPdfCanvas.AddComponent<FloatingDocument>();
+        Assert.NotNull(floatingDocument, "Could not create floatingDocument: FloatingDocument");
+        floatingDocument.mergeButton = new GameObject();
+        floatingDocument.pdfId = "some/path/to/original.pdf";
+        floatingDocument.pages = new List<int> { 0, 1, 2, 3, 4 };
+        floatingDocument.image = new GameObject().AddComponent<UnityEngine.UI.Image>();
+        string name = "test";
+        string id = "123";
+        floatingDocument.exportPages = new List<Tuple<string, string, int>>
+        {
+            new Tuple<string, string, int>(name, id, 1),
+            new Tuple<string, string, int>(name, id, 2),
+            new Tuple<string, string, int>(name, id, 3),
+            new Tuple<string, string, int>(name, id, 4),
+            new Tuple<string, string, int>(name, id, 5),
+        };
+        floatingDocument.sprites = new List<Sprite> {
+            Sprite.Create(null, default(Rect), new Vector2(1, 2)),
+            Sprite.Create(null, default(Rect), new Vector2(1, 2)),
+            Sprite.Create(null, default(Rect), new Vector2(1, 2)),
+            Sprite.Create(null, default(Rect), new Vector2(1, 2)),
+            Sprite.Create(null, default(Rect), new Vector2(1, 2)),
+        };
+
+        gameManager.AddComponent<EnvironmentController>();
+
+        floatingDocument.currentPageIndex = 2;
+        floatingDocument.joystickValue = new Vector2(0, 1);
+        floatingDocument.available = true;
+        floatingDocument.isHovering = true;
+        floatingDocument.isHolding = false;
+
+        Vector2 testJoystickValue = new Vector2(0.5f, 0.5f);
+        var methodInfo = typeof(FloatingDocument).GetMethod("Update", BindingFlags.NonPublic | BindingFlags.Instance);
+        methodInfo.Invoke(floatingDocument, null);
+
+        Assert.AreEqual(1, floatingDocument.currentPageIndex);
+
+        // Destroy all GameObjects
+        Destroy(gameManager);
+        Destroy(originalPdfCanvas);
+        Destroy(floatingDocument);
+    }
+
+    /// <summary>
+    /// When called, update with scroll down.
+    /// </summary>
+    [Test]
+    public void UpdateTest2()
+    {
+        GameObject gameManager = new GameObject("GameManager");
+        Assert.NotNull(gameManager, "Could not create gameManager : GameManager");
+
+        // Create a new GameObject to act as the PDFCanvas
+        var originalPdfCanvas = new GameObject("PDFCanvas");
+        originalPdfCanvas.AddComponent<FloatingDocument>();
+
+        var floatingDocument = originalPdfCanvas.AddComponent<FloatingDocument>();
+        Assert.NotNull(floatingDocument, "Could not create floatingDocument: FloatingDocument");
+        floatingDocument.mergeButton = new GameObject();
+        floatingDocument.pdfId = "some/path/to/original.pdf";
+        floatingDocument.pages = new List<int> { 0, 1, 2, 3, 4 };
+        floatingDocument.image = new GameObject().AddComponent<UnityEngine.UI.Image>();
+        string name = "test";
+        string id = "123";
+        floatingDocument.exportPages = new List<Tuple<string, string, int>>
+        {
+            new Tuple<string, string, int>(name, id, 1),
+            new Tuple<string, string, int>(name, id, 2),
+            new Tuple<string, string, int>(name, id, 3),
+            new Tuple<string, string, int>(name, id, 4),
+            new Tuple<string, string, int>(name, id, 5),
+        };
+        floatingDocument.sprites = new List<Sprite> {
+            Sprite.Create(null, default(Rect), new Vector2(1, 2)),
+            Sprite.Create(null, default(Rect), new Vector2(1, 2)),
+            Sprite.Create(null, default(Rect), new Vector2(1, 2)),
+            Sprite.Create(null, default(Rect), new Vector2(1, 2)),
+            Sprite.Create(null, default(Rect), new Vector2(1, 2)),
+        };
+
+        gameManager.AddComponent<EnvironmentController>();
+
+        floatingDocument.currentPageIndex = 2;
+        floatingDocument.joystickValue = new Vector2(0, -1);
+        floatingDocument.available = true;
+        floatingDocument.isHovering = true;
+        floatingDocument.isHolding = false;
+
+        Vector2 testJoystickValue = new Vector2(0.5f, 0.5f);
+        var methodInfo = typeof(FloatingDocument).GetMethod("Update", BindingFlags.NonPublic | BindingFlags.Instance);
+        object result = methodInfo.Invoke(floatingDocument, null);
+
+        Assert.AreEqual(3, floatingDocument.currentPageIndex);
+
+        // Destroy all GameObjects
+        Destroy(gameManager);
+        Destroy(originalPdfCanvas);
+        Destroy(floatingDocument);
     }
 }

@@ -7,7 +7,10 @@ using UnityEngine;
 /// </summary>
 public class ShowKeyboard : MonoBehaviour
 {
-    private TMP_InputField inputField;
+    /// <summary>
+    /// This is the inputField for where you should type.
+    /// </summary>
+    public TMP_InputField inputField;
 
     /// <summary>
     /// Opens the keyboard.

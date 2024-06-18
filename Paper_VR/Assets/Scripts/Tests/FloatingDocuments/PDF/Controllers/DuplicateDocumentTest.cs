@@ -197,6 +197,23 @@ public class DuplicateDocumentTest : MonoBehaviour
     }
 
     /// <summary>
+    /// Tests when trying to duplicate a subsection of a floating document.
+    /// </summary>
+    [Test]
+    public void TestDuplicateSubsectionPDFCanvas()
+    {
+        // Create the DuplicateDocument component and set its fields
+        var duplicateDocument = this.SetupDuplicateDocument();
+        duplicateDocument.MenuController.StartPageNumber = 1;
+        duplicateDocument.MenuController.EndPageNumber = 2;
+
+        duplicateDocument.DuplicateSubsectionPDF();
+
+        Assert.IsFalse(duplicateDocument.MenuController.Menu.activeSelf);
+        Assert.IsFalse(duplicateDocument.MenuController.subsectionMenu.activeSelf);
+    }
+
+    /// <summary>
     /// Sets up the DuplicateController component.
     /// </summary>
     private DuplicateController SetupDuplicateDocument()

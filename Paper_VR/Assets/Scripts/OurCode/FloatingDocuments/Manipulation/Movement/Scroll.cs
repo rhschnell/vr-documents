@@ -22,10 +22,25 @@ public class Scroll : MonoBehaviour
     /// </summary>
     public FloatingDocument floatingDocument;
 
-    private bool isHovering = false;
-    private bool available = true;
-    private bool isHolding = false;
-    private Vector2 joystickValue;
+    /// <summary>
+    /// True when hovering over it otherwise false.
+    /// </summary>
+    public bool isHovering = false;
+
+    /// <summary>
+    /// True when available otherwise false.
+    /// </summary>
+    public bool available = true;
+
+    /// <summary>
+    /// True when holding otherwise false.
+    /// </summary>
+    public bool isHolding = false;
+
+    /// <summary>
+    /// The joystick vector.
+    /// </summary>
+    public Vector2 joystickValue;
 
     /// <summary>
     /// When called, we scroll up.
@@ -102,7 +117,10 @@ public class Scroll : MonoBehaviour
     private void SetJoystickValue()
     {
         // Read the joystick value
-        this.joystickValue = this.inputActionReference.action.ReadValue<Vector2>();
+        if (this.inputActionReference != null && this.inputActionReference.action != null)
+        {
+            this.joystickValue = this.inputActionReference.action.ReadValue<Vector2>();
+        }
     }
 
     private void ScrollCheck()

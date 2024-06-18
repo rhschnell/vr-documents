@@ -88,9 +88,20 @@ public class FloatingDocument : MonoBehaviour
     /// </summary>
     public bool isHovering = false;
 
-    private bool available;
-    private bool isHolding = false;
-    private Vector2 joystickValue;
+    /// <summary>
+    /// Ture when available otherwise false.
+    /// </summary>
+    public bool available;
+
+    /// <summary>
+    /// True when holding otherwise false.
+    /// </summary>
+    public bool isHolding = false;
+
+    /// <summary>
+    /// The joystick vector.
+    /// </summary>
+    public Vector2 joystickValue;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FloatingDocument"/> class.
