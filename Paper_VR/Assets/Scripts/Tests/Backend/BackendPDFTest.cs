@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Moq;
 using NUnit.Framework;
+using TMPro;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
@@ -113,6 +114,10 @@ public class BackendPDFTest
         floatingDocumentComponent.image = floatingDocumentGameObject.AddComponent<Image>();
         floatingDocumentComponent.currentPageIndex = 0;
         floatingDocumentComponent.exportPages = new List<Tuple<string, string, int>>();
+
+        GameObject loadingTextGameObject = new GameObject();
+        TextMeshProUGUI loadingTextComponent = loadingTextGameObject.AddComponent<TextMeshProUGUI>();
+        floatingDocumentComponent.loadingPDFText = loadingTextComponent;
 
         // Create a BackendPDF object
         GameObject convertPDFGameObject = new GameObject();

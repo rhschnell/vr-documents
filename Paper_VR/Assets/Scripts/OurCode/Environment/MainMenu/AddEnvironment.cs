@@ -50,10 +50,26 @@ public class AddEnvironment : MonoBehaviour
         {
             // Give an error in the environment when the given name is an empty string
             this.error.text = "Name must not be empty!";
+            return;
+        }
+
+        this.error.text = "";
+        bool nameExists = false;
+        foreach (var option in this.selectEnvironment.dropdown.options)
+        {
+            if (option.text == environmentName)
+            {
+                nameExists = true;
+                break;
+            }
+        }
+
+        if (nameExists)
+        {
+            this.error.text = "An environment with this name already exists";
         }
         else
         {
-            this.error.text = "";
             // Create a new environment folder in the PaperVR folder
             GoogleDriveFiles.CreateRequest createRequest = this.MakeRequest(environmentName);
             createRequest.Send();
