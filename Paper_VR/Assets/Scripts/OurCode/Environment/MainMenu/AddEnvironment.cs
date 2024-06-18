@@ -11,11 +11,6 @@ using UnityGoogleDrive;
 public class AddEnvironment : MonoBehaviour
 {
     /// <summary>
-    /// The manager of the game, containing all inportant information.
-    /// </summary>
-    public GameObject gameManager;
-
-    /// <summary>
     /// The input field where the environment name should be inserted.
     /// </summary>
     public TMP_InputField InputField;
@@ -36,9 +31,9 @@ public class AddEnvironment : MonoBehaviour
     public SelectEnvironment selectEnvironment;
 
     /// <summary>
-    /// CoroutineRunner used for testing.
+    /// The GoogleMethods class used for creating the environment folder.
     /// </summary>
-    public ICoroutineRunner coroutineRunner;
+    public GoogleMethods googleMethods = new GoogleMethods();
 
     /// <summary>
     /// Adds an environment.
@@ -71,35 +66,13 @@ public class AddEnvironment : MonoBehaviour
         else
         {
             // Create a new environment folder in the PaperVR folder
-            GoogleDriveFiles.CreateRequest createRequest = this.MakeRequest(environmentName);
+            GoogleDriveFiles.CreateRequest createRequest = this.googleMethods.MakeRequest(environmentName);
             createRequest.Send();
 
             // Disable the addButton for one second and reset the input field
             this.InputField.text = "";
-            this.coroutineRunner.StartCoroutine(this.DisableAddButton());
+            this.StartCoroutine(this.DisableAddButton());
         }
-    }
-
-    /// <summary>
-    /// Makes a request to create a new environment folder.
-    /// </summary>
-    /// <param name="name">The name of the new folder.</param>
-    /// <returns>A new create file request.</returns>
-    public virtual GoogleDriveFiles.CreateRequest MakeRequest(string name)
-    {
-        // Create a new folder with the name of the new environment
-        UnityGoogleDrive.Data.File newFile = new UnityGoogleDrive.Data.File { Name = name, MimeType = "application/vnd.google-apps.folder" };
-        newFile.Parents = new List<string> { GoogleLogin.folderID };
-        return GoogleDriveFiles.Create(newFile);
-    }
-
-    /// <summary>
-    /// Initializes the selectEnvironment object.
-    /// </summary>
-    void Start()
-    {
-        this.selectEnvironment = this.gameManager.GetComponent<SelectEnvironment>();
-        this.coroutineRunner = this.GetComponent<ICoroutineRunner>() ?? this.gameObject.AddComponent<CoroutineRunner>();
     }
 
     /// <summary>

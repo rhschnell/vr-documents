@@ -127,9 +127,9 @@ public class SelectEnvironmentTest
         responseMock.Setup(a => a.GoogleDriveRequest).Returns(this.mockListRequest.Object);
 
         var mock = new Mock<SelectEnvironment>();
-        mock.Setup(m => m.CoroutineRunner).Returns(this.mockCoroutineRunner.Object);
         mock.Object.dropdown = this.mockDropdown.Object;
         mock.Object.testing = true;
+        mock.Object.openEnvironmentButton = this.openButton.GetComponent<Button>();
 
         this.mockListRequest.Setup(req => req.Send()).Returns(responseMock.Object);
         this.mockListRequest.Setup(req => req.ResponseData.Files).Returns(mockFiles);
@@ -141,7 +141,7 @@ public class SelectEnvironmentTest
         Assert.True(this.mockDropdown.Object.options.Exists(option => option.text == "Env1"));
         Assert.True(this.mockDropdown.Object.options.Exists(option => option.text == "Env2"));
 
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(1f);
     }
 
     /// <summary>
@@ -278,8 +278,7 @@ public class SelectEnvironmentTest
         var requestMock = new Mock<GoogleDriveFiles.ListRequest>();
         var responseMock = new Mock<GoogleDriveRequestYieldInstruction<UnityGoogleDrive.Data.FileList>>();
         var coroutineRunnerMock = new Mock<ICoroutineRunner>();
-        mock.Object.CoroutineRunner = coroutineRunnerMock.Object;
-        mock.Setup(m => m.CoroutineRunner).Returns(coroutineRunnerMock.Object);
+        mock.Setup(m => m.CreateSavedDocFolder("123")).Returns(responseMock.Object);
 
         responseMock.Setup(a => a.GoogleDriveRequest).Returns(requestMock.Object);
         requestMock.Setup(req => req.Send()).Returns(responseMock.Object);

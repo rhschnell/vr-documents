@@ -100,7 +100,7 @@ public class ExportDocumentTest : MonoBehaviour
 
         // Create a ExportPDF game object
         GameObject pdfConvert = new GameObject("PDFConversionManager");
-        BackendPDF convertPDF = pdfConvert.AddComponent<BackendPDF>();
+        pdfConvert.AddComponent<BackendPDF>();
 
         yield return new WaitForSeconds(0.5f);
 

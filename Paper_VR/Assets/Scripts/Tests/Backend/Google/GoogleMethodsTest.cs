@@ -153,4 +153,20 @@ public class GoogleMethodsTest
 
         mockCreateRequest.Verify(a => a.Send());
     }
+
+    /// <summary>
+    /// Tests the MakeRequest method.
+    /// </summary>
+    [Test]
+    public void MakeRequest_ReturnsCreateRequest()
+    {
+        var name = "TestName";
+
+        GoogleDriveFiles.CreateRequest result = this.googleMethods.MakeRequest(name);
+
+        // Assert request is created
+        Assert.IsNotNull(result);
+        Assert.AreEqual(name, result.RequestData.Name);
+        Assert.AreEqual("application/vnd.google-apps.folder", result.RequestData.MimeType);
+    }
 }
