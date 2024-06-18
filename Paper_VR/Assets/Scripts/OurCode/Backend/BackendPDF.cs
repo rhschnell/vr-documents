@@ -11,25 +11,30 @@ using UnityGoogleDrive;
 public class BackendPDF : MonoBehaviour
 {
     /// <summary>
-    /// The URL for image conversion.
+    /// The URL for the server.
     /// </summary>
-    public static string imageURL = "http://localhost:8080/convert-pdf-to-image";
+    public static string url = "https://vrdocs.make-diff.nl/";
 
     /// <summary>
-    /// The URL for pdf extraction.
+    /// The endpoint for pdf to image conversion.
     /// </summary>
-    public static string extractURL = "http://localhost:8080/extract-pages";
+    public static string imageEndpoint = url + "convert-pdf-to-image";
 
     /// <summary>
-    /// The URL for pdf uploading.
+    /// The endpoint for pdf extraction.
+    /// </summary>
+    public static string extractEndpoint = url + "extract-pages";
+
+    /// <summary>
+    /// The endpoint for pdf uploading.
     /// This is done before merging the pdfs.
     /// </summary>
-    public static string uploadURL = "http://localhost:8080/upload-pdf";
+    public static string uploadEndpoint = url + "upload-pdf";
 
     /// <summary>
-    /// The URL for pdf merging.
+    /// The endpoint for pdf merging.
     /// </summary>
-    public static string mergeURL = "http://localhost:8080/merge-pdfs";
+    public static string mergeEndpoint = url + "merge-pdfs";
 
     /// <summary>
     /// The content of the extracted pdf after calling the extract endpoint.
@@ -40,6 +45,11 @@ public class BackendPDF : MonoBehaviour
     /// The content of the merged pdf after calling the merge endpoint.
     /// </summary>
     public byte[] mergedPDFcontent;
+
+    /// <summary>
+    /// The API key for the server.
+    /// </summary>
+    private static string apiKey = "92910bd9-ffb4-47ee-9a06-28d30b1cfea8";
 
     /// <summary>
     /// This method converts pdfs to sprites.
@@ -194,11 +204,15 @@ public class BackendPDF : MonoBehaviour
     private IEnumerator SendPdfToServerImage(byte[] pdfBytes, FloatingDocument floatingDocument)
     {
         // Create a UnityWebRequest to send the pdf to the server
-        UnityWebRequest www = new UnityWebRequest(imageURL, "POST");
+        Debug.Log(imageEndpoint);
+        UnityWebRequest www = new UnityWebRequest(imageEndpoint, "POST");
         UploadHandlerRaw uploadHandler = new UploadHandlerRaw(pdfBytes);
         uploadHandler.contentType = "application/pdf";
         www.uploadHandler = uploadHandler;
         www.downloadHandler = new DownloadHandlerBuffer();
+
+        // Set the API key in the header
+        www.SetRequestHeader("X-API-Key", apiKey);
 
         yield return www.SendWebRequest();
 
@@ -228,7 +242,7 @@ public class BackendPDF : MonoBehaviour
         string pagesString = string.Join(",", pages);
 
         // Create a UnityWebRequest to send the pdf to the server
-        UnityWebRequest www = new UnityWebRequest(extractURL, "POST");
+        UnityWebRequest www = new UnityWebRequest(extractEndpoint, "POST");
         UploadHandlerRaw uploadHandler = new UploadHandlerRaw(file.Content);
         uploadHandler.contentType = "application/pdf";
         www.uploadHandler = uploadHandler;
@@ -236,6 +250,9 @@ public class BackendPDF : MonoBehaviour
 
         // Set the header with the pages as a comma-separated string
         www.SetRequestHeader("x-pdf-pages", pagesString);
+
+        // Set the api key in the header
+        www.SetRequestHeader("X-API-Key", apiKey);
 
         yield return www.SendWebRequest();
 
@@ -261,10 +278,11 @@ public class BackendPDF : MonoBehaviour
     private IEnumerator SendPdfToServerMerge(string name1, string name2, string random)
     {
         // Create a UnityWebRequest to send the names of the pdfs to the server
-        UnityWebRequest www = new UnityWebRequest(mergeURL, "POST");
+        UnityWebRequest www = new UnityWebRequest(mergeEndpoint, "POST");
         www.downloadHandler = new DownloadHandlerBuffer();
         www.SetRequestHeader("file1", "1" + random + name1);
         www.SetRequestHeader("file2", "2" + random + name2);
+        www.SetRequestHeader("X-API-Key", apiKey);
         yield return www.SendWebRequest();
 
         // Check if the request was successful
@@ -290,7 +308,7 @@ public class BackendPDF : MonoBehaviour
     private IEnumerator UploadPDF(string name, byte[] content, string random)
     {
         // Create a UnityWebRequest to send the pdf to the server
-        UnityWebRequest www = new UnityWebRequest(uploadURL, "POST");
+        UnityWebRequest www = new UnityWebRequest(uploadEndpoint, "POST");
         UploadHandlerRaw uploadHandler = new UploadHandlerRaw(content);
         uploadHandler.contentType = "application/pdf";
         www.uploadHandler = uploadHandler;
@@ -298,6 +316,7 @@ public class BackendPDF : MonoBehaviour
 
         // Set the name of the pdf file in the header
         www.SetRequestHeader("name", random + name);
+        www.SetRequestHeader("X-API-Key", apiKey);
 
         yield return www.SendWebRequest();
     }

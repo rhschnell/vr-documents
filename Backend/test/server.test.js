@@ -7,6 +7,8 @@ const expect = chai.expect;
 
 chai.use(chaiHttp);
 
+const API_KEY = '92910bd9-ffb4-47ee-9a06-28d30b1cfea8';
+
 // Test the image conversion endpoint
 describe('PDF to Image Conversion', () => {
   const pdfPath = path.join(__dirname, 'test.pdf');
@@ -18,6 +20,7 @@ describe('PDF to Image Conversion', () => {
       .post('/convert-pdf-to-image')
       .set('Content-Type', 'application/pdf')
       .set('Origin', 'https://tychograpendaal.github.io/webxr/')
+      .set('X-API-Key', API_KEY)
       .send(pdfBuffer) // Send the PDF buffer as the request body
       .end((err, res) => {
         expect(err).to.be.null;
@@ -33,6 +36,7 @@ describe('PDF to Image Conversion', () => {
       .post('/convert-pdf-to-image')
       .set('Content-Type', 'application/pdf')
       .set('Origin', 'https://notallowed.com')
+      .set('X-API-Key', API_KEY)
       .send(pdfBuffer) // Send the PDF buffer as the request body
       .end((err, res) => {
         // console.log(err);
@@ -58,6 +62,7 @@ describe('Extract Pages Endpoint', () => {
       .set('Content-Type', 'application/pdf')
       .set('Origin', 'https://tychograpendaal.github.io/webxr/')
       .set('x-pdf-pages', pagesToExtract.join(',')) // Set the pages to extract in the header
+      .set('X-API-Key', API_KEY)
       .send(pdfBuffer) // Send the PDF buffer as the request body
       .end((err, res) => {
         expect(err).to.be.null;
@@ -71,6 +76,7 @@ describe('Extract Pages Endpoint', () => {
       .post('/extract-pages')
       .set('Content-Type', 'application/pdf')
       .set('Origin', 'https://tychograpendaal.github.io/webxr/')
+      .set('X-API-Key', API_KEY)
       .send(pdfBuffer) // Send the PDF buffer as the request body
       .end((err, res) => {
         expect(res).to.have.status(400);
@@ -84,6 +90,7 @@ describe('Extract Pages Endpoint', () => {
       .post('/extract-pages')
       .set('Content-Type', 'application/pdf')
       .set('Origin', 'https://notallowed.com')
+      .set('X-API-Key', API_KEY)
       .set('x-pdf-pages', pagesToExtract.join(','))
       .send(pdfBuffer) // Send the PDF buffer as the request body
       .end((err, res) => {
@@ -106,6 +113,7 @@ describe('Upload PDF Endpoint', () => {
       .post('/upload-pdf')
       .set('Content-Type', 'application/pdf')
       .set('name', pdfName)
+      .set('X-API-Key', API_KEY)
       .send(pdfBuffer) // Send the PDF buffer as the request body
       .end((err, res) => {
         expect(err).to.be.null;
@@ -124,6 +132,7 @@ describe('Upload PDF Endpoint', () => {
       .post('/upload-pdf')
       .set('Content-Type', 'application/pdf')
       .set('name', pdfName)
+      .set('X-API-Key', API_KEY)
       .send(invalidPdfBuffer) // Send an invalid PDF buffer as the request body
       .end((err, res) => {
         expect(res).to.have.status(400);
@@ -143,14 +152,15 @@ describe('Merge PDFs Endpoint', () => {
   it('should merge two PDFs and return the merged PDF', (done) => {
     // Upload the PDFs first
     Promise.all([
-      chai.request(app).post('/upload-pdf').set('Content-Type', 'application/pdf').set('name', 'test1.pdf').send(pdfBuffer1),
-      chai.request(app).post('/upload-pdf').set('Content-Type', 'application/pdf').set('name', 'test2.pdf').send(pdfBuffer2)
+      chai.request(app).post('/upload-pdf').set('Content-Type', 'application/pdf').set('name', 'test1.pdf').set('X-API-Key', API_KEY).send(pdfBuffer1),
+      chai.request(app).post('/upload-pdf').set('Content-Type', 'application/pdf').set('name', 'test2.pdf').set('X-API-Key', API_KEY).send(pdfBuffer2)
     ]).then((uploadResponses) => {
       // Perform the merge
       chai.request(app)
         .post('/merge-pdfs')
         .set('file1', 'test1.pdf')
         .set('file2', 'test2.pdf')
+        .set('X-API-Key', API_KEY)
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(200);
@@ -160,3 +170,36 @@ describe('Merge PDFs Endpoint', () => {
   });
 });
 
+// Test the API key authentication
+describe('API Key Authentication', () => {
+  it('should reject requests without an API key', (done) => {
+    chai.request(app)
+      .get('/')
+      .end((err, res) => {
+        expect(res).to.have.status(401);
+        expect(res.body).to.have.property('message', 'Invalid API Key');
+        done();
+      });
+  });
+
+  it('should reject requests with an incorrect API key', (done) => {
+    chai.request(app)
+      .get('/')
+      .set('X-API-Key', 'incorrect_key')
+      .end((err, res) => {
+        expect(res).to.have.status(401);
+        expect(res.body).to.have.property('message', 'Invalid API Key');
+        done();
+      });
+  });
+
+  it('should accept requests with a valid API key', (done) => {
+    chai.request(app)
+      .get('/')
+      .set('X-API-Key', API_KEY)
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        done();
+      });
+  });
+});

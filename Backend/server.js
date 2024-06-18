@@ -26,6 +26,20 @@ const corsOptions = {
   }
 };
 
+// Middleware for API key authentication
+const apiKeyMiddleware = (req, res, next) => {
+  const apiKey = req.get('X-API-Key');
+  if (apiKey && apiKey === '92910bd9-ffb4-47ee-9a06-28d30b1cfea8') {
+    next();
+  } else {
+    res.status(401).json({ message: 'Invalid API Key' });
+  }
+};
+
+// Apply the API key middleware to all routes
+app.use(apiKeyMiddleware);
+
+// Use the CORS middleware
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
