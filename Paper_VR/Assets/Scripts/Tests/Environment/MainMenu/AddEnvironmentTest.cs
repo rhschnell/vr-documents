@@ -18,7 +18,6 @@ public class AddEnvironmentTest
     private TextMeshPro mockError;
     private Button addButton;
     private Mock<SelectEnvironment> selectMock;
-    private Mock<ICoroutineRunner> mockCoroutineRunner;
 
     /// <summary>
     /// Set up the test environment.
@@ -36,14 +35,12 @@ public class AddEnvironmentTest
         this.mockError = new GameObject().AddComponent<TextMeshPro>();
         this.addButton = new GameObject().AddComponent<Button>();
         this.selectMock = new Mock<SelectEnvironment>();
-        this.mockCoroutineRunner = new Mock<ICoroutineRunner>();
 
         // Set up the component with the mocks
         this.addEnvironment.InputField = this.mockInputField;
         this.addEnvironment.error = this.mockError;
         this.addEnvironment.addButton = this.addButton;
         this.addEnvironment.selectEnvironment = this.selectMock.Object;
-        this.addEnvironment.coroutineRunner = this.mockCoroutineRunner.Object;
     }
 
     /// <summary>
@@ -56,22 +53,6 @@ public class AddEnvironmentTest
         GameObject.DestroyImmediate(this.mockInputField.gameObject);
         GameObject.DestroyImmediate(this.mockError.gameObject);
         GameObject.DestroyImmediate(this.addButton.gameObject);
-    }
-
-    /// <summary>
-    /// Tests the MakeRequest method.
-    /// </summary>
-    [Test]
-    public void MakeRequest_ReturnsCreateRequest()
-    {
-        var name = "TestName";
-
-        GoogleDriveFiles.CreateRequest result = this.addEnvironment.MakeRequest(name);
-
-        // Assert request is created
-        Assert.IsNotNull(result);
-        Assert.AreEqual(name, result.RequestData.Name);
-        Assert.AreEqual("application/vnd.google-apps.folder", result.RequestData.MimeType);
     }
 
     /// <summary>
@@ -96,7 +77,10 @@ public class AddEnvironmentTest
     {
         // Set the input field text
         this.mockInputField.text = "TestName";
-        Mock<AddEnvironment> addEnvironmentMock = new Mock<AddEnvironment>();
+        AddEnvironment addEnvironment = this.gameObject.AddComponent<AddEnvironment>();
+
+        // Mock googleMethods
+        var googleMethods = new Mock<GoogleMethods>();
 
         Mock<SelectEnvironment> selectEnvironmentMock = new Mock<SelectEnvironment>();
         Mock<TMP_Dropdown> dropdownMock = new Mock<TMP_Dropdown>();
@@ -111,14 +95,16 @@ public class AddEnvironmentTest
         // Setup mock behavior
         var responseMock = new Mock<GoogleDriveRequestYieldInstruction<UnityGoogleDrive.Data.File>>();
         responseMock.Setup(x => x.GoogleDriveRequest).Returns(this.mockCreateRequest.Object);
-        addEnvironmentMock.Setup(x => x.MakeRequest("TestName")).Returns(this.mockCreateRequest.Object);
+        googleMethods.Setup(x => x.MakeRequest("TestName")).Returns(this.mockCreateRequest.Object);
         this.mockCreateRequest.Setup(req => req.Send()).Returns(responseMock.Object);
 
-        addEnvironmentMock.Object.error = this.mockError;
-        addEnvironmentMock.Object.InputField = this.mockInputField;
-        addEnvironmentMock.Object.coroutineRunner = this.mockCoroutineRunner.Object;
-        addEnvironmentMock.Object.selectEnvironment = selectEnvironmentMock.Object;
-        addEnvironmentMock.Object.AddEnvironmentButton();
+        addEnvironment.error = this.mockError;
+        addEnvironment.InputField = this.mockInputField;
+        addEnvironment.googleMethods = googleMethods.Object;
+        addEnvironment.addButton = this.addButton;
+        addEnvironment.selectEnvironment = selectEnvironmentMock.Object;
+
+        addEnvironment.AddEnvironmentButton();
 
         Assert.AreEqual("", this.mockError.text);
     }
@@ -144,7 +130,6 @@ public class AddEnvironmentTest
 
         addEnvironmentMock.Object.error = this.mockError;
         addEnvironmentMock.Object.InputField = this.mockInputField;
-        addEnvironmentMock.Object.coroutineRunner = this.mockCoroutineRunner.Object;
         addEnvironmentMock.Object.selectEnvironment = selectEnvironmentMock.Object;
         addEnvironmentMock.Object.AddEnvironmentButton();
 

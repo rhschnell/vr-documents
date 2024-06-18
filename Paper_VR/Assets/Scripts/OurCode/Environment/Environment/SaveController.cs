@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -29,9 +30,9 @@ public class SaveController : MonoBehaviour
     public TMP_Text saveMenuConfirmation;
 
     /// <summary>
-    /// An instance of GoogleMethods used for testing.
+    /// An instance of GoogleMethods used for sending requests to Google Drive.
     /// </summary>
-    public GoogleMethods googleMethods;
+    public GoogleMethods googleMethods = new GoogleMethods();
 
     /// <summary>
     /// This method saves the environment information when the save button is clicked.
@@ -76,7 +77,6 @@ public class SaveController : MonoBehaviour
     {
         // Call the SaveEveryWhile method to enable autosave
         this.StartCoroutine(this.SaveEveryWhile());
-        this.googleMethods = new GoogleMethods();
     }
 
     /// <summary>

@@ -141,4 +141,17 @@ public class GoogleMethods
         yield return req.Send();
         this.returnFile = req.ResponseData;
     }
+
+    /// <summary>
+    /// Makes a request to create a new environment folder.
+    /// </summary>
+    /// <param name="name">The name of the new folder.</param>
+    /// <returns>A new create file request.</returns>
+    public virtual GoogleDriveFiles.CreateRequest MakeRequest(string name)
+    {
+        // Create a new folder with the name of the new environment
+        UnityGoogleDrive.Data.File newFile = new UnityGoogleDrive.Data.File { Name = name, MimeType = "application/vnd.google-apps.folder" };
+        newFile.Parents = new List<string> { GoogleLogin.folderID };
+        return GoogleDriveFiles.Create(newFile);
+    }
 }

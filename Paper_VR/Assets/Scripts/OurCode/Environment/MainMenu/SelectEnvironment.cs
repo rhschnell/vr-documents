@@ -231,6 +231,7 @@ public class SelectEnvironment : MonoBehaviour
     /// <param name="r">The request to get the list of folders.</param>
     public IEnumerator UpdateList(GoogleDriveFiles.ListRequest r)
     {
+        this.openEnvironmentButton.interactable = false;
         // Specify the fields to retrieve and the query to filter folders
         r.Fields = new List<string> { "files(id, name)" };
         r.Q = $"'{GoogleLogin.folderID}' in parents and trashed = false and mimeType = 'application/vnd.google-apps.folder'";
@@ -244,7 +245,7 @@ public class SelectEnvironment : MonoBehaviour
             foreach (var folder in r.ResponseData.Files)
             {
                 // Start coroutine to check if each folder contains saved documents
-                this.CoroutineRunner.StartCoroutine(this.HasSavedDocFolder(folder.Id, new GoogleDriveFiles.ListRequest()));
+                yield return this.HasSavedDocFolder(folder.Id, new GoogleDriveFiles.ListRequest());
                 environmentNames.Add(folder.Name);
             }
 
@@ -254,6 +255,7 @@ public class SelectEnvironment : MonoBehaviour
         }
 
         this.RequestList = r;
+        this.openEnvironmentButton.interactable = true;
     }
 
     /// <summary>
@@ -272,7 +274,7 @@ public class SelectEnvironment : MonoBehaviour
         if (r.ResponseData.Files.Count == 0)
         {
             // If the environment has no Saved Documents folder, create it
-            this.CoroutineRunner.StartCoroutine(this.CreateSavedDocFolder(parentID));
+            yield return this.CreateSavedDocFolder(parentID);
         } else
         {
             // Get the id of the saved documents folder
