@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using TMPro;
 using UnityEngine;
 
 /// <summary>
@@ -20,6 +21,16 @@ public class ExportController : MonoBehaviour
     public GameObject floatingDocument;
 
     /// <summary>
+    /// The panel that appears when the document is exported.
+    /// </summary>
+    public GameObject panel;
+
+    /// <summary>
+    /// The text that appears on the panel when the document is exported.
+    /// </summary>
+    public TMPro.TextMeshProUGUI text;
+
+    /// <summary>
     /// This method handles the click of the duplicate button; duplicating the whole floating document.
     /// </summary>
     public void OnExportClick()
@@ -27,7 +38,6 @@ public class ExportController : MonoBehaviour
         // Get the BackendPDF component and call the ExtractPDF method
         GameObject pdfConvert = GameObject.Find("PDFConversionManager");
         BackendPDF convertPDF = pdfConvert.GetComponent<BackendPDF>();
-
         this.StartCoroutine(this.ExportPDF(convertPDF));
     }
 
@@ -56,11 +66,34 @@ public class ExportController : MonoBehaviour
 
             // Upload the PDF file to the google drive
             yield return convertPDF.ExportPDFToDrive(EnvironmentController.saveFolderId, name, content, null, false);
+            this.StartCoroutine(this.OnExportSuccess());
         }
         else
         {
             // Log an error if the floating document is null
             Debug.LogError("The floating document is null");
         }
+    }
+
+    /// <summary>
+    /// Is called when the export is successful. Sets the panel to active and displays a message.
+    /// </summary>
+    /// <returns>It has to wait, so IEnumerator</returns>
+    public IEnumerator OnExportSuccess()
+    {
+        // find the game manager and get the environment controller
+        GameObject gameManager = GameObject.Find("GameManager");
+        EnvironmentController environmentController = gameManager.GetComponent<EnvironmentController>();
+
+        // Set the panel to active and display a message
+        string envName = environmentController.GetName();
+        this.panel.SetActive(true);
+        this.text.text = "Document saved in Saved Documents in " + envName + " on your drive!";
+
+        // Wait 5 seconds
+        yield return new WaitForSeconds(5.0f);
+
+        // Set the panel to inactive
+        this.panel.SetActive(false);
     }
 }

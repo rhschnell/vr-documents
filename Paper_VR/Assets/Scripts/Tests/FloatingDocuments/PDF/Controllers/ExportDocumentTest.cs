@@ -14,6 +14,8 @@ public class ExportDocumentTest : MonoBehaviour
     private GameObject originalPdfCanvas;
     private GameObject menu;
     private GameObject gameManager;
+    private GameObject panel;
+    private TMPro.TextMeshProUGUI text;
     private EnvironmentController envInfo;
 
     /// <summary>
@@ -27,6 +29,8 @@ public class ExportDocumentTest : MonoBehaviour
         this.originalPdfCanvas.AddComponent<FloatingDocument>();
 
         this.menu = new GameObject("Menu");
+        this.panel = new GameObject("Panel");
+        this.text = this.panel.AddComponent<TMPro.TextMeshProUGUI>();
 
         this.gameManager = new GameObject("GameManager");
         this.envInfo = this.gameManager.AddComponent<EnvironmentController>();
@@ -42,6 +46,8 @@ public class ExportDocumentTest : MonoBehaviour
         Destroy(this.originalPdfCanvas);
         Destroy(this.menu);
         Destroy(this.gameManager);
+        Destroy(this.panel);
+        Destroy(this.text);
     }
 
     /// <summary>
@@ -55,6 +61,8 @@ public class ExportDocumentTest : MonoBehaviour
         var exportDocument = new GameObject("ExportController").AddComponent<ExportController>();
         exportDocument.floatingDocument = this.originalPdfCanvas;
         exportDocument.menu = this.menu;
+        exportDocument.panel = this.panel;
+        exportDocument.text = this.text;
 
         // Create a new Mock object for the BackendPDF component
         Mock<BackendPDF> convertPDF = new Mock<BackendPDF>();
@@ -78,12 +86,18 @@ public class ExportDocumentTest : MonoBehaviour
 
         var initalFloatingDocument = this.originalPdfCanvas.GetComponent<FloatingDocument>();
         this.envInfo.GetFloatingDocuments().Add(initalFloatingDocument);
+        this.envInfo.SetName("Test");
 
         yield return exportDocument.ExportPDF(convertPDF.Object);
 
         Assert.IsFalse(this.menu.activeSelf, "The menu should be hidden after export");
+        Assert.IsTrue(this.panel.activeSelf, "The panel should be active after export");
+        Assert.AreEqual("Document saved in Saved Documents in Test on your drive!", this.text.text, "The text should be 'Exported Test'");
         // Verify that the ExtractPDF method was called
         convertPDF.Verify(c => c.ExtractPDF(It.IsAny<string>(), It.IsAny<string>(), pages));
+
+        yield return new WaitForSeconds(5.1f);
+        Assert.IsFalse(this.panel.activeSelf, "The panel should be hidden after 5 seconds");
     }
 
     /// <summary>
