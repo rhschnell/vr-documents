@@ -175,23 +175,6 @@ public class ImportList : MonoBehaviour
     }
 
     /// <summary>
-    /// Return to the Environment Menu
-    /// </summary>
-    public void OnClickReturn()
-    {
-        // Find all GameObjects in the scene
-        GameObject[] allObjects = FindObjectsOfType<GameObject>();
-
-        // Iterate through all GameObjects and destroy them
-        foreach (GameObject obj in allObjects)
-        {
-            Destroy(obj);
-        }
-
-        SceneManager.LoadSceneAsync("EnviromentMenu");
-    }
-
-    /// <summary>
     /// Makes the import button not interactable for two seconds.
     /// </summary>
     /// <returns>An IEnumerator.</returns>

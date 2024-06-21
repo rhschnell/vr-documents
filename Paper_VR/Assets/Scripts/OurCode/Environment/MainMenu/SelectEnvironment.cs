@@ -344,7 +344,10 @@ public class SelectEnvironment : MonoBehaviour
         envInformation.LoadNewInformation(envInfo);
 
         // Loads the environment scene
-        SceneManager.LoadSceneAsync("Environment");
+        if (!this.testing)
+        {
+            SceneManager.LoadSceneAsync("Environment");
+        }
     }
 
     /// <summary>

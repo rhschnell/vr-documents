@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Moq;
 using NUnit.Framework;
 using TMPro;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
@@ -64,6 +65,9 @@ public class SelectEnvironmentTest
     public void TearDown()
     {
         GameObject.DestroyImmediate(this.gameObject);
+        GameObject.Destroy(this.selectEnvironment);
+        GameObject.Destroy(this.openButton);
+
         if (SceneManager.GetSceneByName("Environment").isLoaded)
         {
             SceneManager.UnloadSceneAsync("Environment");
@@ -104,6 +108,7 @@ public class SelectEnvironmentTest
         mock.Object.Name = this.mockNameText.Object;
         mock.Object.Email = this.mockEmailText.Object;
         mock.Object.savedFolderIds = new List<string>() { "123", "567", "891", "1221" };
+        mock.Object.testing = true;
 
         mock.Object.Refresh();
 
@@ -192,6 +197,7 @@ public class SelectEnvironmentTest
         mock.Setup(m => m.RequestList).Returns(this.mockListRequest.Object);
         mock.Object.gameManager = new GameObject("GameManager");
         mock.Object.gameManager.AddComponent<EnvironmentController>();
+        mock.Object.testing = true;
 
         // Create a json file of a EnvironmentInformation object
         EnvironmentInformation environmentInfo = new EnvironmentInformation();
@@ -271,6 +277,7 @@ public class SelectEnvironmentTest
         mock.Setup(m => m.MakeRequest("123")).Returns(requestMock.Object);
         mock.CallBase = true;
         mock.Object.savedFolderIds = new List<string>();
+        mock.Object.testing = true;
 
         yield return mock.Object.CreateSavedDocFolder("123");
 
@@ -294,6 +301,7 @@ public class SelectEnvironmentTest
 
         mock.CallBase = true;
         mock.Object.savedFolderIds = new List<string>();
+        mock.Object.testing = true;
 
         yield return mock.Object.HasSavedDocFolder("123", requestMock.Object);
 
@@ -322,6 +330,7 @@ public class SelectEnvironmentTest
 
         mock.CallBase = true;
         mock.Object.savedFolderIds = new List<string>();
+        mock.Object.testing = true;
 
         yield return mock.Object.HasSavedDocFolder("123", requestMock.Object);
 
@@ -364,6 +373,7 @@ public class SelectEnvironmentTest
         mock.Object.dropdown = this.mockDropdown.Object;
         mock.Setup(m => m.CoroutineRunner).Returns(this.mockCoroutineRunner.Object);
         this.mockDropdown.Object.value = 0;
+        mock.Object.testing = true;
 
         mock.Object.DeleteEnvironmentButton();
         this.mockCoroutineRunner.Verify(runner => runner.StartCoroutine(It.IsAny<IEnumerator>()));
@@ -372,7 +382,7 @@ public class SelectEnvironmentTest
     /// <summary>
     /// Testing the delete environment method, checks if the request is send and if the next method is called.
     /// </summary>
-    /// <returns>its a unity test</returns>
+    /// <returns>An IEnumerator.</returns>
     [UnityTest]
     public IEnumerator DeleteEnvironmentTest()
     {
@@ -382,6 +392,7 @@ public class SelectEnvironmentTest
 
         mock.Setup(m => m.RequestList).Returns(this.mockListRequest.Object);
         mock.Setup(m => m.CoroutineRunner).Returns(this.mockCoroutineRunner.Object);
+        mock.Object.testing = true;
 
         var mockRequest = new Mock<GoogleDriveFiles.DeleteRequest>("123");
 
@@ -402,6 +413,7 @@ public class SelectEnvironmentTest
         mock.Setup(m => m.RequestList).Returns(this.mockListRequest.Object);
         mock.Object.gameManager = new GameObject("GameManager");
         mock.Object.gameManager.AddComponent<EnvironmentController>();
+        mock.Object.testing = true;
 
         // Create a json file of a EnvironmentInformation object
         EnvironmentInformation environmentInfo = new EnvironmentInformation();

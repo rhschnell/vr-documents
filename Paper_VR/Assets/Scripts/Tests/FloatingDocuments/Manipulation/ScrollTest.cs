@@ -134,9 +134,6 @@ public class ScrollTest : MonoBehaviour
         this.scroll.available = true;
         this.scroll.isHovering = true;
         this.scroll.isHolding = false;
-        GameObject testObject = new GameObject("TestObject");
-
-        Vector2 testJoystickValue = new Vector2(0.5f, 0.5f);
 
         // using the update method in the class
         var methodInfo = typeof(Scroll).GetMethod("Update", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -157,7 +154,6 @@ public class ScrollTest : MonoBehaviour
         this.scroll.available = true;
         this.scroll.isHovering = true;
         this.scroll.isHolding = false;
-        GameObject testObject = new GameObject("TestObject");
 
         // using the update method in the class
         var methodInfo = typeof(Scroll).GetMethod("Update", BindingFlags.NonPublic | BindingFlags.Instance);
