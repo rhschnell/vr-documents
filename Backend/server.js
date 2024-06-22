@@ -7,6 +7,7 @@ const { Readable } = require('stream');
 const cors = require('cors');
 var http = require('http');
 const app = express();
+const sharp = require('sharp');
 
 
 // Enable all CORS requests
@@ -45,9 +46,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Middleware for handling raw PDF data
-app.use('/convert-pdf-to-image', express.raw({ type: 'application/pdf', limit: '5mb' }));
-app.use('/extract-pages', express.raw({ type: 'application/pdf', limit: '5mb' }));
-app.use('/upload-pdf', express.raw({ type: 'application/pdf', limit: '5mb' }));
+app.use('/convert-pdf-to-image', express.raw({ type: 'application/pdf', limit: '50mb' }));
+app.use('/extract-pages', express.raw({ type: 'application/pdf', limit: '50mb' }));
+app.use('/upload-pdf', express.raw({ type: 'application/pdf', limit: '50mb' }));
 
 
 // Endpoint that receives a PDF file and writes it to the uploads folder
@@ -138,6 +139,7 @@ app.post('/merge-pdfs', async (req, res) => {
 app.post('/convert-pdf-to-image', async (req, res) => {
   console.log("convert-pdf-to-image");
   const tempDir = path.join(__dirname, 'temp');
+  const tempDir2 = path.join(__dirname, 'temp2');
 
   // Write the PDF to the 'temp' directory
   const currentDate = Date.now();
@@ -157,10 +159,39 @@ app.post('/convert-pdf-to-image', async (req, res) => {
 
   // Read all the image files that were created
   const imageFiles = fs.readdirSync(tempDir).filter(file => file.startsWith(`tempPNG-${currentDate}`));
-  const imagesData = imageFiles.map(file => {
+  // const imagesData = imageFiles.map(file => {
+  //   const imagePath = path.join(tempDir, file);
+  //   return fs.readFileSync(imagePath);
+  // });
+
+  const imagesDataPromises = imageFiles.map(async file => {
     const imagePath = path.join(tempDir, file);
+    const imageBuffer = fs.readFileSync(imagePath);
+  
+    // Use sharp to process the image
+    const processedImageBuffer = await sharp(imageBuffer)
+      .greyscale()
+      .threshold()
+      .toBuffer();
+  
+    // Write the processed image to the new directory
+    const newImagePath = path.join(tempDir2, file);
+    fs.writeFileSync(newImagePath, processedImageBuffer);
+  });
+
+  await Promise.all(imagesDataPromises);
+
+  const imagesData = imageFiles.map(file => {
+    const imagePath = path.join(tempDir2, file);
     return fs.readFileSync(imagePath);
   });
+
+
+
+  // Write the images to the temp2 directory
+  // for (const image of imagesData) {
+  //   fs.writeFileSync(path.join(tempDir, `temp2-${currentDate}.png`), image);
+  // }
 
   // Send back an array of images
   res.contentType('application/json');

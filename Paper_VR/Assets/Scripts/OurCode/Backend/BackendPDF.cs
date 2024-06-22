@@ -13,7 +13,7 @@ public class BackendPDF : MonoBehaviour
     /// <summary>
     /// The URL for the server.
     /// </summary>
-    public static string url = "https://vrdocs.make-diff.nl/";
+    public static string url = "http://localhost:8080/"; // "https://vrdocs.make-diff.nl/";
 
     /// <summary>
     /// The endpoint for pdf to image conversion.
