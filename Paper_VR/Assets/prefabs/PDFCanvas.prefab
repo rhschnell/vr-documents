@@ -7709,7 +7709,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &5327262367509388410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8047,6 +8047,7 @@ MonoBehaviour:
   available: 0
   isHolding: 0
   joystickValue: {x: 0, y: 0}
+  mainMenu: {fileID: 5844786527756617074}
 --- !u!114 &4306564634564859700
 MonoBehaviour:
   m_ObjectHideFlags: 0

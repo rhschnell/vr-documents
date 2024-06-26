@@ -114,6 +114,7 @@ public class BackendPDFTest
         floatingDocumentComponent.image = floatingDocumentGameObject.AddComponent<Image>();
         floatingDocumentComponent.currentPageIndex = 0;
         floatingDocumentComponent.exportPages = new List<Tuple<string, string, int>>();
+        floatingDocumentComponent.mainMenu = new GameObject("Main Menu");
 
         GameObject loadingTextGameObject = new GameObject();
         TextMeshProUGUI loadingTextComponent = loadingTextGameObject.AddComponent<TextMeshProUGUI>();

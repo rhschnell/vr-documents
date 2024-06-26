@@ -104,6 +104,11 @@ public class FloatingDocument : MonoBehaviour
     public Vector2 joystickValue;
 
     /// <summary>
+    /// The main menu object.
+    /// </summary>
+    public GameObject mainMenu;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="FloatingDocument"/> class.
     /// Constructor for the FloatingDocument class.
     /// </summary>
@@ -205,6 +210,9 @@ public class FloatingDocument : MonoBehaviour
         this.image.sprite = currentSprite;
         Vector2 dimensions = this.CalculateWidthAndHeight(currentSprite.rect.width, currentSprite.rect.height);
 
+        // Get the current local scale of the floating document
+        Vector3 currentLocal = this.transform.localScale;
+
         if (this.IsScaleZero(this.scale))
         {
             this.transform.localScale = new Vector3(dimensions.x, dimensions.y, this.transform.localScale.z);
@@ -212,6 +220,13 @@ public class FloatingDocument : MonoBehaviour
         {
             this.transform.localScale = this.scale;
         }
+
+        // Calculate the increace or decrease in scale for x and y
+        float scaleX = this.transform.localScale.x / currentLocal.x;
+        float scaleY = this.transform.localScale.y / currentLocal.y;
+
+        // Set the scale of the main menu back to the original scale
+        this.mainMenu.transform.localScale = new Vector3(this.mainMenu.transform.localScale.x / scaleX, this.mainMenu.transform.localScale.y / scaleY, this.mainMenu.transform.localScale.z);
     }
 
     /// <summary>
