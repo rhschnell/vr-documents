@@ -46,6 +46,11 @@ public class AddEnvironment : MonoBehaviour
             // Give an error in the environment when the given name is an empty string
             this.error.text = "Name must not be empty!";
             return;
+        } else if (environmentName.Length > 11)
+        {
+            // Give an error in the environment when name is too long.
+            this.error.text = "Name should have less then 10 characters";
+            return;
         }
 
         this.error.text = "";

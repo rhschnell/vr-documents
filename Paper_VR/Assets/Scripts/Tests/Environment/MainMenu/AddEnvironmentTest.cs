@@ -116,14 +116,14 @@ public class AddEnvironmentTest
     public void AddEnvironmentButton_WhenNameIsNotEmpty_DuplicateName()
     {
         // Set the input field text
-        this.mockInputField.text = "Environment 1";
+        this.mockInputField.text = "Env1";
         Mock<AddEnvironment> addEnvironmentMock = new Mock<AddEnvironment>();
         Mock<SelectEnvironment> selectEnvironmentMock = new Mock<SelectEnvironment>();
         Mock<TMP_Dropdown> dropdownMock = new Mock<TMP_Dropdown>();
         var optionsDropdown = new List<TMP_Dropdown.OptionData>
         {
-            new TMP_Dropdown.OptionData("Environment 1"),
-            new TMP_Dropdown.OptionData("Environment 2"),
+            new TMP_Dropdown.OptionData("Env1"),
+            new TMP_Dropdown.OptionData("Env2"),
         };
         dropdownMock.Object.options = optionsDropdown;
         selectEnvironmentMock.Object.dropdown = dropdownMock.Object;
