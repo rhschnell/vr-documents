@@ -222,8 +222,8 @@ public class FloatingDocument : MonoBehaviour
         }
 
         // Calculate the increace or decrease in scale for x and y
-        float scaleX = this.transform.localScale.x / currentLocal.x;
-        float scaleY = this.transform.localScale.y / currentLocal.y;
+        float scaleX = dimensions.x / currentLocal.x;
+        float scaleY = dimensions.y / currentLocal.y;
 
         // Set the scale of the main menu back to the original scale
         this.mainMenu.transform.localScale = new Vector3(this.mainMenu.transform.localScale.x / scaleX, this.mainMenu.transform.localScale.y / scaleY, this.mainMenu.transform.localScale.z);
