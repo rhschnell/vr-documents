@@ -129,7 +129,7 @@ public class FloatingDocumentTests : MonoBehaviour
         newDoc.image = canvas.AddComponent<Image>();
         newDoc.currentPageIndex = 0;
         newDoc.scale = new Vector3(0.1f, 0.1f, 0.1f);
-        newDoc.mainMenu = new GameObject("MainMenu");
+        newDoc.subMenu = new GameObject("MainMenu");
         List<Sprite> sprites = new List<Sprite>();
         Texture2D texture = new Texture2D(100, 100);
 

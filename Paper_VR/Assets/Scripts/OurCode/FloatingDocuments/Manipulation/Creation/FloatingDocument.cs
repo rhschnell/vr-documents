@@ -104,9 +104,9 @@ public class FloatingDocument : MonoBehaviour
     public Vector2 joystickValue;
 
     /// <summary>
-    /// The main menu object.
+    /// The sub menu object.
     /// </summary>
-    public GameObject mainMenu;
+    public GameObject subMenu;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FloatingDocument"/> class.
@@ -226,7 +226,7 @@ public class FloatingDocument : MonoBehaviour
         float scaleY = dimensions.y / currentLocal.y;
 
         // Set the scale of the main menu back to the original scale
-        this.mainMenu.transform.localScale = new Vector3(this.mainMenu.transform.localScale.x / scaleX, this.mainMenu.transform.localScale.y / scaleY, this.mainMenu.transform.localScale.z);
+        this.subMenu.transform.localScale = new Vector3(this.subMenu.transform.localScale.x / scaleX, this.subMenu.transform.localScale.y / scaleY, this.subMenu.transform.localScale.z);
     }
 
     /// <summary>
