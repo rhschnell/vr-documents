@@ -165,22 +165,15 @@ public class FloatingDocument : MonoBehaviour
             return false;
         }
 
-        // Check if the attributes of the pdf are the same
         FloatingDocument other = (FloatingDocument)obj;
         if (other == this)
         {
             return true;
         }
 
-        // Return if the PDFs are equal
-        return this.pdfId == other.pdfId &&
-            this.pdfName == other.pdfName &&
-            Enumerable.SequenceEqual(this.pages, other.pages) &&
-            Enumerable.SequenceEqual(this.exportPages, other.exportPages) &&
-            this.currentPageIndex == other.currentPageIndex &&
-            this.gameObject.transform.position == other.gameObject.transform.position &&
-            this.gameObject.transform.rotation == other.gameObject.transform.rotation &&
-            this.gameObject.transform.localScale == other.gameObject.transform.localScale;
+        // Checks seperately if the PDF attributes are equal and then if
+        // the GameObject transforms are equal.
+        return this.ArePdfAttributesEqual(other) && this.AreGameObjectTransformsEqual(other);
     }
 
     /// <summary>
@@ -269,6 +262,36 @@ public class FloatingDocument : MonoBehaviour
     {
         // Set isHolding boolean
         this.isHolding = isHolding;
+    }
+
+    /// <summary>
+    /// Checks if the PDF attributes are equal.
+    /// </summary>
+    /// <param name="other">The other FloatingDocument to compare against.</param>
+    /// <returns>
+    /// Returns true if the PDF attributes are equal; otherwise, false.
+    /// </returns>
+    private bool ArePdfAttributesEqual(FloatingDocument other)
+    {
+        return this.pdfId == other.pdfId &&
+               this.pdfName == other.pdfName &&
+               Enumerable.SequenceEqual(this.pages, other.pages) &&
+               Enumerable.SequenceEqual(this.exportPages, other.exportPages) &&
+               this.currentPageIndex == other.currentPageIndex;
+    }
+
+    /// <summary>
+    /// Checks if the game object transforms are equal.
+    /// </summary>
+    /// <param name="other">The other FloatingDocument to compare against.</param>
+    /// <returns>
+    /// Returns true if the game object transforms are equal; otherwise, false.
+    /// </returns>
+    private bool AreGameObjectTransformsEqual(FloatingDocument other)
+    {
+        return this.gameObject.transform.position == other.gameObject.transform.position &&
+               this.gameObject.transform.rotation == other.gameObject.transform.rotation &&
+               this.gameObject.transform.localScale == other.gameObject.transform.localScale;
     }
 
     /// <summary>

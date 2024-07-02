@@ -113,32 +113,7 @@ public class BackendPDF : MonoBehaviour
     /// <param name="floatingDocument">The floating document to add the images to.</param>
     public void CreateImages(string jsonResponse, FloatingDocument floatingDocument)
     {
-        // Initialize a list to store the sprites
-        List<Sprite> sprites = new List<Sprite>();
-
-        // Parse the JSON response containing base64-encoded images
-        ImageDataList imageDataList = JsonUtility.FromJson<ImageDataList>("{\"images\":" + jsonResponse + "}");
-
-        // Convert each base64 string to a byte array
-        List<byte[]> imageBytesList = new List<byte[]>();
-        foreach (string base64Image in imageDataList.images)
-        {
-            byte[] imageBytes = System.Convert.FromBase64String(base64Image);
-            imageBytesList.Add(imageBytes);
-        }
-
-        // Create Texture2D and Sprite for each image (you can adjust this part based on your UI setup)
-        foreach (byte[] imageBytes in imageBytesList)
-        {
-            Texture2D texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
-            texture.LoadImage(imageBytes);
-
-            // Create a Sprite from the Texture2D
-            Sprite sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
-
-            // Add the Sprite to the list
-            sprites.Add(sprite);
-        }
+        List<Sprite> sprites = this.CreateSpritesFromJsonResponse(jsonResponse);
 
         // Set the list of sprites in the floating document
         floatingDocument.sprites = sprites;
@@ -191,6 +166,30 @@ public class BackendPDF : MonoBehaviour
         request.Fields = new List<string> { "id" };
 
         yield return request.Send();
+    }
+
+    /// <summary>
+    /// Helper method for converting the json to the sprites.
+    /// </summary>
+    /// <param name="jsonResponse"> the json of the sprites </param>
+    /// <returns> the sprites </returns>
+    private List<Sprite> CreateSpritesFromJsonResponse(string jsonResponse)
+    {
+        List<Sprite> sprites = new List<Sprite>();
+        ImageDataList imageDataList = JsonUtility.FromJson<ImageDataList>("{\"images\":" + jsonResponse + "}");
+
+        foreach (string base64Image in imageDataList.images)
+        {
+            byte[] imageBytes = System.Convert.FromBase64String(base64Image);
+            Texture2D texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            texture.LoadImage(imageBytes);
+            Sprite sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
+
+            // Add the Sprite to the list
+            sprites.Add(sprite);
+        }
+
+        return sprites;
     }
 
     /// <summary>
@@ -331,5 +330,14 @@ public class BackendPDF : MonoBehaviour
         /// A list of base64-encoded images.
         /// </summary>
         public List<string> images;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImageDataList"/> class.
+        /// This is the contructor for the ImageDataList.
+        /// </summary>
+        public ImageDataList()
+        {
+            this.images = new List<string>();
+        }
     }
 }
