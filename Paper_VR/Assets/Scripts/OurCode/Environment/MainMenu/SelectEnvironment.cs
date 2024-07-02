@@ -150,7 +150,7 @@ public class SelectEnvironment : MonoBehaviour
     /// <summary>
     /// This method will get the environment information from the selected environment and load the scene.
     /// </summary>
-    /// <param name="id">The id of the folder,</param>
+    /// <param name="id">The id of the folder.</param>
     /// <param name="envName">The name of the enviorment.</param>
     /// <returns>An IEnumerator.</returns>
     public IEnumerator GetEnvironment(string id, string envName)
@@ -160,29 +160,18 @@ public class SelectEnvironment : MonoBehaviour
 
         yield return requestList.Send();
 
-        EnvironmentInformation envInfo = new EnvironmentInformation();
+        EnvironmentInformation envInfo;
 
-        // Check if the file exists, if not create an empty environment
         if (requestList.ResponseData.Files.Count == 0)
         {
-            envInfo.environmentName = envName;
-            envInfo.floatingDocuments = new List<FloatingDocumentInfo>();
-            envInfo.importList = new List<string>();
-            envInfo.backgroundColor = Color.white;
-
-            Material loadedMaterial = Resources.Load<Material>("Material/Default");
-            envInfo.material = loadedMaterial;
+           envInfo = this.SetEmptyEnvironment(envName);
         }
         else
         {
-            // Get the json file
-            yield return this.googleMethods.DownloadFile(requestList.ResponseData.Files[0].Id);
+           string fileId = requestList.ResponseData.Files[0].Id;
+           yield return this.googleMethods.DownloadFile(fileId);
 
-            // Get the json from the request
-            var content = this.googleMethods.returnFile.Content;
-            Debug.Log(content);
-            string json = System.Text.Encoding.ASCII.GetString(content);
-            envInfo = EnvironmentInformation.LoadFromJson(json);
+           envInfo = this.LoadEnvironmentFromGoogleDrive();
         }
 
         this.RequestList = requestList;
@@ -329,6 +318,39 @@ public class SelectEnvironment : MonoBehaviour
 
         // Return a new request to create the folder
         return new GoogleDriveFiles.CreateRequest(folder);
+    }
+
+    /// <summary>
+    /// Sets to an empty environment.
+    /// </summary>
+    /// <param name="envName"> the environment name </param>
+    /// <returns> the new environment </returns>
+    private EnvironmentInformation SetEmptyEnvironment(string envName)
+    {
+        EnvironmentInformation envInfo = new EnvironmentInformation();
+        // Sets the environment information attributes
+        envInfo.environmentName = envName;
+        envInfo.floatingDocuments = new List<FloatingDocumentInfo>();
+        envInfo.importList = new List<string>();
+        envInfo.backgroundColor = Color.white;
+
+        Material loadedMaterial = Resources.Load<Material>("Material/Default");
+        envInfo.material = loadedMaterial;
+        return envInfo;
+    }
+
+    /// <summary>
+    /// Loads the environment from the google drive.
+    /// </summary>
+    /// <param name="fileId"> the id of the file </param>
+    /// <param name="envInfo"> the environment </param>
+    private EnvironmentInformation LoadEnvironmentFromGoogleDrive()
+    {
+        // loads the environment from the google drive
+        var content = this.googleMethods.returnFile.Content;
+        Debug.Log(content);
+        string json = System.Text.Encoding.ASCII.GetString(content);
+        return EnvironmentInformation.LoadFromJson(json);
     }
 
     /// <summary>

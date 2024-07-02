@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// Class handeling the merging of two PDFs, creating a new PDF.
 /// </summary>
-public class MergePDF : MonoBehaviour
+public class MergePDF
 {
     FloatingDocument pdf1;
     FloatingDocument pdf2;
