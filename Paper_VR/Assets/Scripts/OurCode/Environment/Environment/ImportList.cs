@@ -140,29 +140,7 @@ public class ImportList : MonoBehaviour
     {
         if (file != null)
         {
-            // Calculate the position of the new pdf
-            float spawnDistance = 2.0f;
-            Vector3 offset = new Vector3(0.0f, 0.0f, 0.0f);
-            Vector3 spawnPosition = this.characterTransform.position + (this.characterTransform.forward * spawnDistance) + offset;
-            Vector3 direction = spawnPosition - this.characterTransform.position;
-            Quaternion lookRotation = Quaternion.LookRotation(direction);
-
-            // Instantiate a new PDFCanvas in the scene
-            GameObject pdf = Instantiate(this.pdfPrefab, spawnPosition, lookRotation);
-            FloatingDocument script = pdf.GetComponent<FloatingDocument>();
-
-            // Set fields of the floating document
-            script.pdfName = name;
-            script.pdfId = file.Id;
-            script.exportPages = new List<Tuple<string, string, int>>();
-
-            // Find the game object called GameManeger
-            GameObject gameManager = GameObject.Find("GameManager");
-
-            // Get the GameManager component with the environment script
-            EnvironmentController environment = gameManager.GetComponent<EnvironmentController>();
-
-            environment.GetFloatingDocuments().Add(script);
+            FloatingDocument script = this.InstantiateFloatingDocument(name, file);
 
             // Convert the pdf to sprites and set the first page of the floating document to the first sprite
             yield return this.pdfConverter.AddImagesToFloatingDocument(file.Content, script);
@@ -172,6 +150,41 @@ public class ImportList : MonoBehaviour
             // If the file is null, throw an error
             Debug.LogError("File is null");
         }
+    }
+
+    /// <summary>
+    /// The helper method for import a pdf that helps instantiate a floating document
+    /// </summary>
+    /// <param name="name">the name of the file </param>
+    /// <param name="file"> the imported file </param>
+    /// <returns> the floating document </returns>
+    private FloatingDocument InstantiateFloatingDocument(string name, UnityGoogleDrive.Data.File file)
+    {
+        // Calculate the position of the new pdf
+        float spawnDistance = 2.0f;
+        Vector3 offset = new Vector3(0.0f, 0.0f, 0.0f);
+        Vector3 spawnPosition = this.characterTransform.position + (this.characterTransform.forward * spawnDistance) + offset;
+        Vector3 direction = spawnPosition - this.characterTransform.position;
+        Quaternion lookRotation = Quaternion.LookRotation(direction);
+
+        // Instantiate a new PDFCanvas in the scene
+        GameObject pdf = Instantiate(this.pdfPrefab, spawnPosition, lookRotation);
+        FloatingDocument script = pdf.GetComponent<FloatingDocument>();
+
+        // Set fields of the floating document
+        script.pdfName = name;
+        script.pdfId = file.Id;
+        script.exportPages = new List<Tuple<string, string, int>>();
+
+        // Find the game object called GameManeger
+        GameObject gameManager = GameObject.Find("GameManager");
+
+        // Get the GameManager component with the environment script
+        EnvironmentController environment = gameManager.GetComponent<EnvironmentController>();
+
+        environment.GetFloatingDocuments().Add(script);
+
+        return script;
     }
 
     /// <summary>
